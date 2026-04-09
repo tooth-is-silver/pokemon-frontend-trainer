@@ -18,6 +18,9 @@ interface GameStore {
   session: SessionState;
   loaded: boolean;
 
+  // 상태 초기화 (로그아웃 시)
+  reset: () => void;
+
   // 서버에서 상태 로드
   loadFromServer: (userId: string) => Promise<void>;
 
@@ -41,25 +44,29 @@ interface GameStore {
 }
 
 const initialState = {
-  trainer: { starterChosen: false, activePokemonInstanceId: null },
-  party: { instances: [] },
-  pokedex: { unlockedSpeciesIds: [], normalPokedexCompleted: false },
+  trainer: { starterChosen: false, activePokemonInstanceId: null } as TrainerState,
+  party: { instances: [] } as PartyState,
+  pokedex: { unlockedSpeciesIds: [], normalPokedexCompleted: false } as PokedexState,
   progression: {
     streakCorrectCount: 0,
     pendingPokemonSelection: false,
     pendingEvolutionInstanceId: null,
-    unlockedLegendaryStage: "none" as const,
-  },
+    unlockedLegendaryStage: "none",
+  } as ProgressionState,
   session: {
     currentQuestionId: null,
     solvedQuestionIds: [],
     lastAnswerCorrect: null,
-  },
+  } as SessionState,
   loaded: false,
 };
 
 export const useGameStore = create<GameStore>((set, get) => ({
   ...initialState,
+
+  reset: () => {
+    set({ ...initialState });
+  },
 
   loadFromServer: async (userId) => {
     const [trainerRes, instancesRes, pokedexRes, progressionRes, solvedRes] =
@@ -75,9 +82,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
           .eq("correct", true),
       ]);
 
-    // 신규 유저: 트레이너 레코드가 없으면 초기 상태 유지
+    // 신규 유저: 이전 상태를 초기화하고 loaded만 true
     if (trainerRes.error || !trainerRes.data) {
-      set({ loaded: true });
+      set({ ...initialState, loaded: true });
       return;
     }
 
@@ -128,45 +135,17 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   chooseStarter: async (userId, speciesId) => {
-    // 트레이너 생성
-    await supabase.from("trainers").upsert({
-      user_id: userId,
-      starter_chosen: true,
+    const { data, error } = await supabase.rpc("choose_starter", {
+      p_species_id: speciesId,
     });
 
-    // 포켓몬 인스턴스 생성
-    const { data: instance } = await supabase
-      .from("pokemon_instances")
-      .insert({
-        user_id: userId,
-        species_id: speciesId,
-        current_stage: 1,
-      })
-      .select()
-      .single();
+    if (error) throw error;
 
-    if (!instance) return;
-
-    // 트레이너에 활성 포켓몬 설정
-    await supabase
-      .from("trainers")
-      .update({ active_pokemon_instance_id: instance.id })
-      .eq("user_id", userId);
-
-    // 도감 등록
-    await supabase.from("pokedex_entries").insert({
-      user_id: userId,
-      species_id: speciesId,
-    });
-
-    // 진행 상태 생성
-    await supabase.from("progression").upsert({
-      user_id: userId,
-    });
+    const instanceId = data.instance_id as string;
 
     const newInstance: PokemonInstance = {
-      instanceId: instance.id,
-      speciesId: instance.species_id,
+      instanceId,
+      speciesId,
       currentStage: 1,
       stats: { hp: 0, attack: 0, defense: 0, speed: 0 },
       totalCorrectCount: 0,
@@ -177,7 +156,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({
       trainer: {
         starterChosen: true,
-        activePokemonInstanceId: instance.id,
+        activePokemonInstanceId: instanceId,
       },
       party: { instances: [newInstance] },
       pokedex: {
@@ -224,6 +203,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
       session: {
         ...state.session,
         lastAnswerCorrect: correct,
+        solvedQuestionIds:
+          correct && isFirstSolve
+            ? [...new Set([...state.session.solvedQuestionIds, questionId])]
+            : state.session.solvedQuestionIds,
       },
     });
 
@@ -232,30 +215,31 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   evolve: async (instanceId, nextSpeciesId) => {
     const state = get();
+    const instance = state.party.instances.find((i) => i.instanceId === instanceId);
+    if (!instance) throw new Error("포켓몬 인스턴스를 찾을 수 없습니다.");
+
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData.user?.id;
+    if (!userId) throw new Error("인증 정보를 찾을 수 없습니다.");
 
     await supabase
       .from("pokemon_instances")
       .update({
         species_id: nextSpeciesId,
-        current_stage: state.party.instances.find(
-          (i) => i.instanceId === instanceId
-        )!.currentStage + 1,
+        current_stage: instance.currentStage + 1,
         evolution_pending: false,
       })
       .eq("id", instanceId);
 
     await supabase.from("pokedex_entries").upsert({
-      user_id: (await supabase.auth.getUser()).data.user!.id,
+      user_id: userId,
       species_id: nextSpeciesId,
     });
 
     await supabase
       .from("progression")
       .update({ pending_evolution_instance_id: null })
-      .eq(
-        "user_id",
-        (await supabase.auth.getUser()).data.user!.id
-      );
+      .eq("user_id", userId);
 
     set({
       party: {
@@ -284,6 +268,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   skipEvolution: async (instanceId) => {
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData.user?.id;
+    if (!userId) throw new Error("인증 정보를 찾을 수 없습니다.");
+
     await supabase
       .from("pokemon_instances")
       .update({ evolution_pending: false })
@@ -292,10 +280,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     await supabase
       .from("progression")
       .update({ pending_evolution_instance_id: null })
-      .eq(
-        "user_id",
-        (await supabase.auth.getUser()).data.user!.id
-      );
+      .eq("user_id", userId);
 
     const state = get();
     set({

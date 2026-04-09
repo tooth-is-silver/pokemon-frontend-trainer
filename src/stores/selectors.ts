@@ -22,9 +22,13 @@ export const useActiveStats = () =>
 export const useStreak = () =>
   useGameStore((state) => state.progression.streakCorrectCount);
 
-// 진화 대기 여부
-export const useEvolutionPending = () =>
+// 진화 대기 중인 인스턴스 ID (string | null)
+export const usePendingEvolutionInstanceId = () =>
   useGameStore((state) => state.progression.pendingEvolutionInstanceId);
+
+// 진화 대기 여부 (boolean)
+export const useIsEvolutionPending = () =>
+  useGameStore((state) => state.progression.pendingEvolutionInstanceId !== null);
 
 // 풀이 완료 문제 ID 목록
 export const useSolvedQuestionIds = () =>
