@@ -16,10 +16,12 @@ begin
     species_id = p_next_species_id,
     current_stage = p_next_stage,
     evolution_pending = false
-  where id = p_instance_id and user_id = v_user_id;
+  where id = p_instance_id
+    and user_id = v_user_id
+    and evolution_pending = true;
 
   if not found then
-    raise exception '포켓몬 인스턴스를 찾을 수 없습니다.';
+    raise exception '진화 대기 상태인 포켓몬을 찾을 수 없습니다.';
   end if;
 
   -- 도감 등록
@@ -43,10 +45,12 @@ declare
   v_user_id uuid := auth.uid();
 begin
   update pokemon_instances set evolution_pending = false
-    where id = p_instance_id and user_id = v_user_id;
+    where id = p_instance_id
+      and user_id = v_user_id
+      and evolution_pending = true;
 
   if not found then
-    raise exception '포켓몬 인스턴스를 찾을 수 없습니다.';
+    raise exception '진화 대기 상태인 포켓몬을 찾을 수 없습니다.';
   end if;
 
   update progression set pending_evolution_instance_id = null

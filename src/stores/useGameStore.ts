@@ -71,10 +71,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   loadFromServer: async (userId) => {
     const [trainerRes, instancesRes, pokedexRes, progressionRes, solvedRes] =
       await Promise.all([
-        supabase.from("trainers").select("*").eq("user_id", userId).single(),
+        supabase.from("trainers").select("*").eq("user_id", userId).maybeSingle(),
         supabase.from("pokemon_instances").select("*").eq("user_id", userId),
         supabase.from("pokedex_entries").select("species_id").eq("user_id", userId),
-        supabase.from("progression").select("*").eq("user_id", userId).single(),
+        supabase.from("progression").select("*").eq("user_id", userId).maybeSingle(),
         supabase
           .from("solved_questions")
           .select("question_id")
@@ -82,8 +82,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
           .eq("correct", true),
       ]);
 
-    // 신규 유저: 이전 상태를 초기화하고 loaded만 true
-    if (trainerRes.error || !trainerRes.data) {
+    // 서버 에러 시 로드 실패 처리
+    if (trainerRes.error) {
+      console.error("트레이너 로드 실패:", trainerRes.error);
+      set({ ...initialState, loaded: true });
+      return;
+    }
+
+    // 신규 유저: 데이터 없음
+    if (!trainerRes.data) {
       set({ ...initialState, loaded: true });
       return;
     }
