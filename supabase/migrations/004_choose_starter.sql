@@ -25,7 +25,7 @@ begin
   -- 도감 등록
   insert into pokedex_entries (user_id, species_id)
     values (v_user_id, p_species_id)
-    on conflict do nothing;
+    on conflict (user_id, species_id) do nothing;
 
   -- 진행 상태 생성
   insert into progression (user_id)

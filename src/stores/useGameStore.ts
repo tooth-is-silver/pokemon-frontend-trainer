@@ -218,28 +218,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const instance = state.party.instances.find((i) => i.instanceId === instanceId);
     if (!instance) throw new Error("포켓몬 인스턴스를 찾을 수 없습니다.");
 
-    const { data: userData } = await supabase.auth.getUser();
-    const userId = userData.user?.id;
-    if (!userId) throw new Error("인증 정보를 찾을 수 없습니다.");
-
-    await supabase
-      .from("pokemon_instances")
-      .update({
-        species_id: nextSpeciesId,
-        current_stage: instance.currentStage + 1,
-        evolution_pending: false,
-      })
-      .eq("id", instanceId);
-
-    await supabase.from("pokedex_entries").upsert({
-      user_id: userId,
-      species_id: nextSpeciesId,
+    const { error } = await supabase.rpc("evolve_pokemon", {
+      p_instance_id: instanceId,
+      p_next_species_id: nextSpeciesId,
+      p_next_stage: instance.currentStage + 1,
     });
 
-    await supabase
-      .from("progression")
-      .update({ pending_evolution_instance_id: null })
-      .eq("user_id", userId);
+    if (error) throw error;
 
     set({
       party: {
@@ -268,19 +253,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   skipEvolution: async (instanceId) => {
-    const { data: userData } = await supabase.auth.getUser();
-    const userId = userData.user?.id;
-    if (!userId) throw new Error("인증 정보를 찾을 수 없습니다.");
+    const { error } = await supabase.rpc("skip_evolution", {
+      p_instance_id: instanceId,
+    });
 
-    await supabase
-      .from("pokemon_instances")
-      .update({ evolution_pending: false })
-      .eq("id", instanceId);
-
-    await supabase
-      .from("progression")
-      .update({ pending_evolution_instance_id: null })
-      .eq("user_id", userId);
+    if (error) throw error;
 
     const state = get();
     set({
