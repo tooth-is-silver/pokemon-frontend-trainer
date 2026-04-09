@@ -1,4 +1,4 @@
-import { getAllQuestions } from "../content/questions";
+import { getAllQuestions, questionPages } from "../content/questions";
 import type { Question } from "../content/questions/types";
 
 // 전체 문제 풀에서 다음 문제를 선택한다
@@ -30,14 +30,12 @@ export function getNextQuestion(
     return others[Math.floor(Math.random() * others.length)];
   }
 
-  // 문제가 1개뿐이면 그대로 반환
-  return allQuestions[0];
+  // 문제가 1개뿐이고 현재 문제와 같으면 출제 불가
+  return null;
 }
 
 // 특정 소스 페이지의 문제만 로드
 export function loadQuestionsBySource(sourceId: string): Question[] {
-  return getAllQuestions().filter((q) => {
-    const page = (q as { sourceExcerptId: string }).sourceExcerptId;
-    return page.startsWith(sourceId);
-  });
+  const page = questionPages.find((p) => p.sourceId === sourceId);
+  return page?.questions ?? [];
 }
