@@ -12,7 +12,8 @@ export const objectMethods: QuestionPage = {
       answer: false,
       acceptedAnswers: ["아니오", "false"],
       conceptGroup: "this-core",
-      explanation: "화살표 함수는 자신만의 this를 가지지 않는다. 외부 렉시컬 환경의 this를 그대로 사용한다.",
+      explanation:
+        "화살표 함수는 자신만의 this를 가지지 않는다. 외부 렉시컬 환경의 this를 그대로 사용한다.",
       sourceExcerptId: "object-methods-001",
     },
     {
@@ -64,7 +65,8 @@ export const objectMethods: QuestionPage = {
         "new 키워드로 호출할 수 있다",
       ],
       conceptGroup: "this-core",
-      explanation: "화살표 함수는 자신만의 this를 가지지 않으며, 외부 컨텍스트의 this를 그대로 가져온다.",
+      explanation:
+        "화살표 함수는 자신만의 this를 가지지 않으며, 외부 컨텍스트의 this를 그대로 가져온다.",
       sourceExcerptId: "object-methods-001",
     },
     {
@@ -80,7 +82,8 @@ export const objectMethods: QuestionPage = {
         "const sayHi = () => { ... }",
       ],
       conceptGroup: "this-core",
-      explanation: "객체 리터럴에서 메서드를 정의할 때 function 키워드를 생략한 단축 구문을 사용할 수 있다.",
+      explanation:
+        "객체 리터럴에서 메서드를 정의할 때 function 키워드를 생략한 단축 구문을 사용할 수 있다.",
       sourceExcerptId: "object-methods-005",
     },
     {
