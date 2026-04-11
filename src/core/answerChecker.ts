@@ -20,7 +20,7 @@ export function checkAnswer(question: Question, userAnswer: string): boolean {
 function checkYesNo(answer: boolean, userAnswer: string): boolean {
   const normalized = normalizeAnswer(userAnswer);
   if (answer) {
-    return ["예", "yes", "true", "o", "맞다"].includes(normalized);
+    return ["예", "네", "yes", "true", "o", "맞다"].includes(normalized);
   }
   return ["아니오", "아니요", "no", "false", "x", "틀리다"].includes(normalized);
 }
