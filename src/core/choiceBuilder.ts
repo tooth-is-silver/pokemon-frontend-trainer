@@ -14,9 +14,7 @@ function shuffle<T>(arr: T[]): T[] {
 // 오지선다 보기 생성
 // 같은 conceptGroup 내 다른 문제의 정답에서 오답 후보를 추출하고,
 // 정답 포함 5개로 셔플하여 반환
-export function buildMultipleChoiceOptions(
-  question: MultipleChoiceQuestion
-): string[] {
+export function buildMultipleChoiceOptions(question: MultipleChoiceQuestion): string[] {
   // 이미 보기가 5개 있으면 셔플만
   if (question.choices.length === 5) {
     return shuffle(question.choices);
@@ -30,7 +28,7 @@ export function buildMultipleChoiceOptions(
       (q) =>
         q.type === "multiple_choice" &&
         q.conceptGroup === question.conceptGroup &&
-        q.questionId !== question.questionId
+        q.questionId !== question.questionId,
     )
     .map((q) => (q as MultipleChoiceQuestion).answer)
     .filter((answer) => answer !== question.answer);

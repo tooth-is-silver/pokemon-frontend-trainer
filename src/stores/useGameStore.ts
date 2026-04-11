@@ -25,13 +25,13 @@ interface GameStore {
   loadFromServer: (userId: string) => Promise<void>;
 
   // 스타터 선택
-  chooseStarter: (userId: string, speciesId: string) => Promise<void>;
+  chooseStarter: (speciesId: string) => Promise<void>;
 
   // 정답 처리
   submitAnswer: (
     questionId: string,
     correct: boolean,
-    isFirstSolve: boolean
+    isFirstSolve: boolean,
   ) => Promise<ProcessAnswerResult>;
 
   // 진화 처리
@@ -69,18 +69,17 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   loadFromServer: async (userId) => {
-    const [trainerRes, instancesRes, pokedexRes, progressionRes, solvedRes] =
-      await Promise.all([
-        supabase.from("trainers").select("*").eq("user_id", userId).maybeSingle(),
-        supabase.from("pokemon_instances").select("*").eq("user_id", userId),
-        supabase.from("pokedex_entries").select("species_id").eq("user_id", userId),
-        supabase.from("progression").select("*").eq("user_id", userId).maybeSingle(),
-        supabase
-          .from("solved_questions")
-          .select("question_id")
-          .eq("user_id", userId)
-          .eq("correct", true),
-      ]);
+    const [trainerRes, instancesRes, pokedexRes, progressionRes, solvedRes] = await Promise.all([
+      supabase.from("trainers").select("*").eq("user_id", userId).maybeSingle(),
+      supabase.from("pokemon_instances").select("*").eq("user_id", userId),
+      supabase.from("pokedex_entries").select("species_id").eq("user_id", userId),
+      supabase.from("progression").select("*").eq("user_id", userId).maybeSingle(),
+      supabase
+        .from("solved_questions")
+        .select("question_id")
+        .eq("user_id", userId)
+        .eq("correct", true),
+    ]);
 
     // 서버 에러 시 로드 실패 처리
     if (trainerRes.error) {
@@ -110,9 +109,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       evolutionPending: row.evolution_pending,
     }));
 
-    const solvedIds = [
-      ...new Set((solvedRes.data ?? []).map((r) => r.question_id)),
-    ];
+    const solvedIds = [...new Set((solvedRes.data ?? []).map((r) => r.question_id))];
 
     set({
       trainer: {
@@ -141,7 +138,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     });
   },
 
-  chooseStarter: async (userId, speciesId) => {
+  chooseStarter: async (speciesId) => {
     const { data, error } = await supabase.rpc("choose_starter", {
       p_species_id: speciesId,
     });
@@ -197,7 +194,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
                 totalCorrectCount: inst.totalCorrectCount + (correct ? 1 : 0),
                 evolutionPending: result.evolution_pending,
               }
-            : inst
+            : inst,
         ),
       },
       progression: {
@@ -243,14 +240,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
                 currentStage: inst.currentStage + 1,
                 evolutionPending: false,
               }
-            : inst
+            : inst,
         ),
       },
       pokedex: {
         ...state.pokedex,
-        unlockedSpeciesIds: [
-          ...new Set([...state.pokedex.unlockedSpeciesIds, nextSpeciesId]),
-        ],
+        unlockedSpeciesIds: [...new Set([...state.pokedex.unlockedSpeciesIds, nextSpeciesId])],
       },
       progression: {
         ...state.progression,
@@ -270,9 +265,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({
       party: {
         instances: state.party.instances.map((inst) =>
-          inst.instanceId === instanceId
-            ? { ...inst, evolutionPending: false }
-            : inst
+          inst.instanceId === instanceId ? { ...inst, evolutionPending: false } : inst,
         ),
       },
       progression: {
@@ -292,9 +285,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set((state) => ({
       session: {
         ...state.session,
-        solvedQuestionIds: [
-          ...new Set([...state.session.solvedQuestionIds, questionId]),
-        ],
+        solvedQuestionIds: [...new Set([...state.session.solvedQuestionIds, questionId])],
       },
     }));
   },

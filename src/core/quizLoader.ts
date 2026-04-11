@@ -5,7 +5,7 @@ import type { Question } from "../content/questions/types";
 // 안 푼 문제 우선, 다 풀었으면 기존 문제 재출제
 export function getNextQuestion(
   solvedQuestionIds: string[],
-  currentQuestionId: string | null
+  currentQuestionId: string | null,
 ): Question | null {
   const allQuestions = getAllQuestions();
   if (allQuestions.length === 0) return null;
@@ -14,7 +14,7 @@ export function getNextQuestion(
 
   // 안 푼 문제 필터링 (현재 문제 제외)
   const unsolved = allQuestions.filter(
-    (q) => !solvedSet.has(q.questionId) && q.questionId !== currentQuestionId
+    (q) => !solvedSet.has(q.questionId) && q.questionId !== currentQuestionId,
   );
 
   if (unsolved.length > 0) {
@@ -22,9 +22,7 @@ export function getNextQuestion(
   }
 
   // 모두 풀었으면 현재 문제만 제외하고 랜덤 재출제
-  const others = allQuestions.filter(
-    (q) => q.questionId !== currentQuestionId
-  );
+  const others = allQuestions.filter((q) => q.questionId !== currentQuestionId);
 
   if (others.length > 0) {
     return others[Math.floor(Math.random() * others.length)];

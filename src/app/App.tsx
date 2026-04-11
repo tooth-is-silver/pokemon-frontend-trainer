@@ -10,7 +10,9 @@ const MyPokemon = lazy(() => import("../features/pokemon/MyPokemonPage"));
 export function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<div className="flex items-center justify-center h-screen">로딩 중...</div>}>
+      <Suspense
+        fallback={<div className="flex items-center justify-center h-screen">로딩 중...</div>}
+      >
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/starter" element={<Starter />} />
