@@ -15,6 +15,8 @@ export function checkAnswer(question: Question, userAnswer: string): boolean {
       return normalizeAnswer(userAnswer) === normalizeAnswer(question.answer);
     case "fill_blank":
       return checkFillBlank(question.acceptedAnswers, userAnswer);
+    default:
+      return false;
   }
 }
 
