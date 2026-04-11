@@ -82,8 +82,16 @@ export const useGameStore = create<GameStore>((set, get) => ({
     ]);
 
     // 서버 에러 시 로드 실패 처리
-    if (trainerRes.error) {
-      console.error("트레이너 로드 실패:", trainerRes.error);
+    const errors = [
+      trainerRes.error,
+      instancesRes.error,
+      pokedexRes.error,
+      progressionRes.error,
+      solvedRes.error,
+    ].filter(Boolean);
+
+    if (errors.length > 0) {
+      errors.forEach((err) => console.error("상태 로드 실패:", err));
       set({ ...initialState, loaded: true });
       return;
     }
