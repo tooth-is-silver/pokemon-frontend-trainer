@@ -6,23 +6,16 @@ export function normalizeAnswer(input: string): string {
 }
 
 // 정답 판정
+// yes_no: userAnswer는 버튼 클릭으로 전달되는 "true" | "false"
 export function checkAnswer(question: Question, userAnswer: string): boolean {
   switch (question.type) {
     case "yes_no":
-      return checkYesNo(question.answer, userAnswer);
+      return question.answer === (userAnswer === "true");
     case "multiple_choice":
       return normalizeAnswer(userAnswer) === normalizeAnswer(question.answer);
     case "fill_blank":
       return checkFillBlank(question.acceptedAnswers, userAnswer);
   }
-}
-
-function checkYesNo(answer: boolean, userAnswer: string): boolean {
-  const normalized = normalizeAnswer(userAnswer);
-  if (answer) {
-    return ["예", "네", "yes", "true", "o", "맞다"].includes(normalized);
-  }
-  return ["아니오", "아니요", "no", "false", "x", "틀리다"].includes(normalized);
 }
 
 function checkFillBlank(acceptedAnswers: string[], userAnswer: string): boolean {
