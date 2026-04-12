@@ -114,31 +114,31 @@
 
 ## Phase 5.5. 테스트 프레임워크 셋업 및 순수 로직 테스트
 
-- [ ] Vitest 설치 및 설정
-- [ ] npm scripts 추가 (`test`, `test:watch`)
-- [ ] `src/core/answerChecker` 테스트
-  - [ ] yes_no: true/false 판정
-  - [ ] multiple_choice: 정규화 후 일치
-  - [ ] fill_blank: acceptedAnswers 매칭, 대소문자/공백 무관
+- [x] Vitest 설치 및 설정
+- [x] npm scripts 추가 (`test`, `test:watch`)
+- [x] `src/core/answerChecker` 테스트
+  - [x] yes_no: true/false 판정
+  - [x] multiple_choice: 정규화 후 일치
+  - [x] fill_blank: acceptedAnswers 매칭, 대소문자/공백 무관
   - [ ] default: 알 수 없는 타입 → false
-- [ ] `src/core/quizLoader` 테스트
-  - [ ] 안 푼 문제 우선 출제
-  - [ ] 전부 풀면 재출제
-  - [ ] 현재 문제 중복 방지
-  - [ ] 문제 1개뿐이면 null
-- [ ] `src/core/choiceBuilder` 테스트
-  - [ ] 보기에 정답 포함
-  - [ ] 기존 보기 5개면 셔플만
-- [ ] `src/core/rewardEngine` 테스트
-  - [ ] 첫 정답 +5, 재정답 +1
-  - [ ] 스탯 100 캡
-  - [ ] 연속 10개 열매 지급, 오답 시 리셋
-  - [ ] 열매 적용 스탯 +5
-- [ ] `src/core/evolutionChecker` 테스트
-  - [ ] 3단 진화: 49/50, 84/85 경계
-  - [ ] 졸업: 99/100 경계
-  - [ ] 무진화 포켓몬: graduated 없이 50+ 선택 가능
-  - [ ] 오답 시 선택 UI 안 열림
+- [x] `src/core/quizLoader` 테스트
+  - [x] 안 푼 문제 우선 출제
+  - [x] 전부 풀면 재출제
+  - [x] 현재 문제 중복 방지
+  - [x] 문제 1개뿐이면 null
+- [x] `src/core/choiceBuilder` 테스트
+  - [x] 보기에 정답 포함
+  - [x] 기존 보기 5개면 셔플만
+- [x] `src/core/rewardEngine` 테스트
+  - [x] 첫 정답 +5, 재정답 +1
+  - [x] 스탯 100 캡
+  - [x] 연속 10개 열매 지급, 오답 시 리셋
+  - [x] 열매 적용 스탯 +5
+- [x] `src/core/evolutionChecker` 테스트
+  - [x] 3단 진화: 49/50, 84/85 경계
+  - [x] 졸업: 99/100 경계
+  - [x] 무진화 포켓몬: graduated 없이 50+ 선택 가능
+  - [x] 오답 시 선택 UI 안 열림
 
 ## Phase 6. 학습 화면
 
