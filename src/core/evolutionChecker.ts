@@ -1,5 +1,19 @@
-import type { PokemonInstance } from "@/stores/types";
+import type { PokemonInstance, PokemonStats } from "@/stores/types";
 import type { PokemonSpecies } from "@/content/pokemon/types";
+
+const EVOLUTION_FIRST = 50;
+const EVOLUTION_SECOND = 85;
+const GRADUATION = 100;
+const SINGLE_STAGE_THRESHOLD = 50;
+
+function hasMinStats(stats: PokemonStats, threshold: number): boolean {
+  return (
+    stats.hp >= threshold &&
+    stats.attack >= threshold &&
+    stats.defense >= threshold &&
+    stats.speed >= threshold
+  );
+}
 
 // 진화 가능 여부 판정
 // 3단 진화: 1차→2차 (4스탯 50+), 2차→3차 (4스탯 85+)
@@ -8,22 +22,15 @@ export function isEvolutionReady(instance: PokemonInstance, species: PokemonSpec
   if (!species.nextEvolutionSpeciesId) return false;
   if (instance.evolutionPending) return false;
 
-  const { hp, attack, defense, speed } = instance.stats;
   const maxStages = species.evolutionLine.length;
 
-  // 3단 진화 포켓몬
   if (maxStages === 3) {
-    if (instance.currentStage === 1) {
-      return hp >= 50 && attack >= 50 && defense >= 50 && speed >= 50;
-    }
-    if (instance.currentStage === 2) {
-      return hp >= 85 && attack >= 85 && defense >= 85 && speed >= 85;
-    }
+    if (instance.currentStage === 1) return hasMinStats(instance.stats, EVOLUTION_FIRST);
+    if (instance.currentStage === 2) return hasMinStats(instance.stats, EVOLUTION_SECOND);
   }
 
-  // 2단 진화 포켓몬
   if (maxStages === 2 && instance.currentStage === 1) {
-    return hp >= 50 && attack >= 50 && defense >= 50 && speed >= 50;
+    return hasMinStats(instance.stats, EVOLUTION_FIRST);
   }
 
   return false;
@@ -36,28 +43,27 @@ export function isGraduationReady(instance: PokemonInstance, species: PokemonSpe
   const isLastStage = !species.nextEvolutionSpeciesId;
   if (!isLastStage) return false;
 
-  const { hp, attack, defense, speed } = instance.stats;
-  return hp >= 100 && attack >= 100 && defense >= 100 && speed >= 100;
+  return hasMinStats(instance.stats, GRADUATION);
 }
 
 // 신규 포켓몬 선택 가능 여부
 // 졸업 상태에서 다음 정답을 맞히면 선택 UI를 띄운다
+// 무진화 포켓몬: 4스탯 50+ 이면 선택 가능 (졸업 개념 없음)
 export function shouldOpenPokemonSelection(
   instance: PokemonInstance,
   species: PokemonSpecies,
   isCorrectAnswer: boolean,
 ): boolean {
   if (!isCorrectAnswer) return false;
-  if (!instance.graduated) return false;
 
   const isLastStage = !species.nextEvolutionSpeciesId;
   if (!isLastStage) return false;
 
-  // 무진화 포켓몬: 4스탯 50+ 이면 선택 가능
+  // 무진화 포켓몬: graduated 체크 없이 스탯 기준만 적용
   if (species.evolutionLine.length === 1) {
-    const { hp, attack, defense, speed } = instance.stats;
-    return hp >= 50 && attack >= 50 && defense >= 50 && speed >= 50;
+    return hasMinStats(instance.stats, SINGLE_STAGE_THRESHOLD);
   }
 
-  return true;
+  // 다단 진화 포켓몬: 졸업 상태여야 함
+  return instance.graduated;
 }
