@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useGameStore } from "@/stores/useGameStore";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { starters } from "@/content/pokemon/starters";
@@ -18,8 +18,7 @@ export default function StarterPage() {
 
   // 이미 스타터를 선택했으면 학습 화면으로
   if (starterChosen) {
-    navigate("/learn", { replace: true });
-    return null;
+    return <Navigate to="/learn" replace />;
   }
 
   const handleSelect = async (species: PokemonSpecies) => {
