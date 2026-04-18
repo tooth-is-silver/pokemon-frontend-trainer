@@ -18,7 +18,8 @@
 
 - [ ] `npm run build`
 - [ ] `npm run lint`
-- [ ] Relevant tests passed
+- [ ] `npm test`
+- [ ] Additional relevant tests passed (if applicable)
 
 ## CodeRabbit Follow-up
 

@@ -102,7 +102,7 @@
 ## Phase 5. 퀴즈 엔진 (순수 로직)
 
 - [x] `loadQuestionsBySource(sourceId)` — 페이지별 문제 로드
-- [x] `getNextQuestion(solvedIds, sourceId)` — 다음 문제 선택
+- [x] `getNextQuestion(solvedIds, currentQuestionId)` — 다음 문제 선택
 - [x] `checkAnswer(question, userAnswer)` — 정답 판정
   - [x] `yes_no`: boolean 비교
   - [x] `multiple_choice`: 문자열 일치
