@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+msg_file="$1"
+msg="$(head -n 1 "$msg_file")"
+
+pattern='^(feat|fix|refactor|test|docs|chore|style|perf)(\([a-z0-9._/-]+\))?: .+'
+
+if ! printf '%s\n' "$msg" | grep -Eq "$pattern"; then
+  echo "Invalid commit message: $msg"
+  echo "Use Conventional Commits. Example: feat: 스타터 선택 화면 구현"
+  exit 1
+fi
