@@ -27,10 +27,10 @@
 
 ## Phase 1. 프로젝트 셋업
 
-- [ ] Vite + React + TypeScript 프로젝트 생성
-- [ ] Tailwind CSS v4 설치 및 설정
-- [ ] ESLint + Prettier 설정
-- [ ] `src/` 디렉토리 구조 생성
+- [x] Vite + React + TypeScript 프로젝트 생성
+- [x] Tailwind CSS v4 설치 및 설정
+- [x] ESLint + Prettier 설정
+- [x] `src/` 디렉토리 구조 생성
   ```
   src/
     app/          # 라우터, 레이아웃
@@ -42,75 +42,75 @@
     lib/          # 유틸리티
     styles/       # 글로벌 스타일
   ```
-- [ ] React Router 라우트 구성 (`/starter`, `/learn`, `/pokedex`, `/pokemon`)
-- [ ] 라우트별 `React.lazy` + `Suspense` 적용
+- [x] React Router 라우트 구성 (`/starter`, `/learn`, `/pokedex`, `/pokemon`)
+- [x] 라우트별 `React.lazy` + `Suspense` 적용
 - [ ] 기본 레이아웃 컴포넌트 생성
 
 ## Phase 2. 정적 데이터 레이어
 
 - [ ] `source-index.json` 작성 (ko.javascript.info 페이지 목록)
-- [ ] 문제 JSON 작성 — 최소 1개 페이지분 (`object-methods`)
-  - [ ] `yes_no` 문제 3개 이상
-  - [ ] `multiple_choice` 문제 3개 이상 (보기 5개 검증)
-  - [ ] `fill_blank` 문제 3개 이상 (acceptedAnswers 포함)
+- [x] 문제 JSON 작성 — 최소 1개 페이지분 (`object-methods`)
+  - [x] `yes_no` 문제 3개 이상
+  - [x] `multiple_choice` 문제 3개 이상 (보기 5개 검증)
+  - [x] `fill_blank` 문제 3개 이상 (acceptedAnswers 포함)
 - [ ] `question-index.json` 작성
-- [ ] concept pool JSON 작성 (`this-core` 등)
-- [ ] 스타터 3마리 포켓몬 종 데이터 작성
-  - [ ] `bulbasaur.json` (이상해씨 → 이상해풀 → 이상해꽃)
-  - [ ] `charmander.json` (파이리 → 리자드 → 리자몽)
-  - [ ] `squirtle.json` (꼬부기 → 어니부기 → 거북왕)
+- [x] concept pool JSON 작성 (`this-core` 등)
+- [x] 스타터 3마리 포켓몬 종 데이터 작성
+  - [x] `bulbasaur.json` (이상해씨 → 이상해풀 → 이상해꽃)
+  - [x] `charmander.json` (파이리 → 리자드 → 리자몽)
+  - [x] `squirtle.json` (꼬부기 → 어니부기 → 거북왕)
 - [ ] `pokemon-index.json` 작성
 - [ ] 전설 포켓몬 wave 데이터 작성 (`legendary-order.json`)
-- [ ] 포켓몬 이미지 에셋 준비 (스타터 라인 우선)
+- [x] 포켓몬 이미지 에셋 준비 (스타터 라인 우선)
 - [ ] JSON 검증 스크립트 작성 (questionId 중복, choices 5개, answer 포함 등)
 
 ## Phase 3. Supabase 셋업 및 DB 스키마
 
 - [ ] Supabase 프로젝트 생성
-- [ ] 테이블 생성 (마이그레이션 SQL)
-  - [ ] `trainers` — user_id, starter_chosen, active_pokemon_instance_id, created_at
-  - [ ] `pokemon_instances` — id, user_id, species_id, current_stage, hp, attack, defense, speed, total_correct_count, graduated, evolution_pending, created_at
-  - [ ] `pokedex_entries` — user_id, species_id, unlocked_at
-  - [ ] `solved_questions` — user_id, question_id, correct, solved_at
-  - [ ] `progression` — user_id, streak_correct_count, pending_pokemon_selection, pending_evolution_instance_id, unlocked_legendary_stage
-- [ ] RLS 정책 설정 (각 테이블 `user_id = auth.uid()`)
-- [ ] `process_answer` rpc 함수 작성 (정답 처리 트랜잭션)
-  - [ ] 스탯 증가 (첫 정답 +5 / 재정답 +1)
-  - [ ] 풀이 기록 삽입
-  - [ ] 연속 정답 수 갱신
-  - [ ] 열매 지급 조건 체크 및 적용
-  - [ ] 진화 가능 여부 플래그 갱신
+- [x] 테이블 생성 (마이그레이션 SQL)
+  - [x] `trainers` — user_id, starter_chosen, active_pokemon_instance_id, created_at
+  - [x] `pokemon_instances` — id, user_id, species_id, current_stage, hp, attack, defense, speed, total_correct_count, graduated, evolution_pending, created_at
+  - [x] `pokedex_entries` — user_id, species_id, unlocked_at
+  - [x] `solved_questions` — user_id, question_id, correct, solved_at
+  - [x] `progression` — user_id, streak_correct_count, pending_pokemon_selection, pending_evolution_instance_id, unlocked_legendary_stage
+- [x] RLS 정책 설정 (각 테이블 `user_id = auth.uid()`)
+- [x] `process_answer` rpc 함수 작성 (정답 처리 트랜잭션)
+  - [x] 스탯 증가 (첫 정답 +5 / 재정답 +1)
+  - [x] 풀이 기록 삽입
+  - [x] 연속 정답 수 갱신
+  - [x] 열매 지급 조건 체크 및 적용
+  - [x] 진화 가능 여부 플래그 갱신
   - [ ] 졸업 가능 여부 플래그 갱신
 - [ ] Supabase Auth 설정 (OAuth — Google 등)
-- [ ] 프론트에 `@supabase/supabase-js` 설치 및 클라이언트 초기화
+- [x] 프론트에 `@supabase/supabase-js` 설치 및 클라이언트 초기화
 
 ## Phase 4. 상태 관리 레이어
 
-- [ ] Zustand 설치
-- [ ] `useGameStore` 루트 스토어 생성
-  - [ ] `trainer` 슬라이스 (starterChosen, activePokemonInstanceId)
-  - [ ] `party` 슬라이스 (instances: PokemonInstance[])
-  - [ ] `pokedex` 슬라이스 (unlockedSpeciesIds, normalPokedexCompleted 등)
-  - [ ] `progression` 슬라이스 (streakCorrectCount, pendingEvolution 등)
+- [x] Zustand 설치
+- [x] `useGameStore` 루트 스토어 생성
+  - [x] `trainer` 슬라이스 (starterChosen, activePokemonInstanceId)
+  - [x] `party` 슬라이스 (instances: PokemonInstance[])
+  - [x] `pokedex` 슬라이스 (unlockedSpeciesIds, normalPokedexCompleted 등)
+  - [x] `progression` 슬라이스 (streakCorrectCount, pendingEvolution 등)
   - [ ] `session` 슬라이스 (currentSourceId, currentQuestionId 등)
-- [ ] TypeScript 타입 정의 (`data-structures.md` 기준)
-- [ ] Supabase ↔ Zustand 동기화 레이어 구현
+- [x] TypeScript 타입 정의 (`data-structures.md` 기준)
+- [x] Supabase ↔ Zustand 동기화 레이어 구현
   - [ ] 로그인 시 서버에서 상태 로드 → Zustand 초기화
-  - [ ] 상태 변경 시 Supabase에 저장 (rpc 호출)
-- [ ] selector 함수 정의 (리렌더 최적화용)
+  - [x] 상태 변경 시 Supabase에 저장 (rpc 호출)
+- [x] selector 함수 정의 (리렌더 최적화용)
 
 ## Phase 5. 퀴즈 엔진 (순수 로직)
 
-- [ ] `loadQuestionsBySource(sourceId)` — 페이지별 문제 로드
-- [ ] `getNextQuestion(solvedIds, sourceId)` — 다음 문제 선택
-- [ ] `checkAnswer(question, userAnswer)` — 정답 판정
-  - [ ] `yes_no`: boolean 비교
-  - [ ] `multiple_choice`: 문자열 일치
-  - [ ] `fill_blank`: trim + 소문자 변환 후 acceptedAnswers 배열 비교
-- [ ] `normalizeAnswer(input)` — 입력 정규화 (trim, lowercase, 공백 정리)
-- [ ] `buildMultipleChoiceOptions(question, conceptPool)` — 오답 보기 생성
-  - [ ] 같은 conceptGroup 내에서 추출
-  - [ ] 정답 포함 5개 셔플
+- [x] `loadQuestionsBySource(sourceId)` — 페이지별 문제 로드
+- [x] `getNextQuestion(solvedIds, sourceId)` — 다음 문제 선택
+- [x] `checkAnswer(question, userAnswer)` — 정답 판정
+  - [x] `yes_no`: boolean 비교
+  - [x] `multiple_choice`: 문자열 일치
+  - [x] `fill_blank`: trim + 소문자 변환 후 acceptedAnswers 배열 비교
+- [x] `normalizeAnswer(input)` — 입력 정규화 (trim, lowercase, 공백 정리)
+- [x] `buildMultipleChoiceOptions(question, conceptPool)` — 오답 보기 생성
+  - [x] 같은 conceptGroup 내에서 추출
+  - [x] 정답 포함 5개 셔플
 
 ## Phase 5.5. 테스트 프레임워크 셋업 및 순수 로직 테스트
 
@@ -165,12 +165,12 @@
 
 ## Phase 8. 스타터 선택 화면
 
-- [ ] `/starter` 페이지 컴포넌트
-- [ ] 이상해씨 / 파이리 / 꼬부기 카드 3개 표시
-- [ ] 선택 시 첫 PokemonInstance 생성
-- [ ] 도감 등록
-- [ ] `/learn`으로 이동
-- [ ] 이미 선택한 경우 `/learn`으로 리다이렉트
+- [x] `/starter` 페이지 컴포넌트
+- [x] 이상해씨 / 파이리 / 꼬부기 카드 3개 표시
+- [x] 선택 시 첫 PokemonInstance 생성
+- [x] 도감 등록
+- [x] `/learn`으로 이동
+- [x] 이미 선택한 경우 `/learn`으로 리다이렉트
 
 ## Phase 9. 진화 및 신규 포켓몬 선택
 
