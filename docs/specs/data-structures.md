@@ -2,101 +2,64 @@
 
 ## 1. Purpose
 
-이 문서는 MVP 구현에 필요한 데이터 구조를 정의한다.
+이 문서는 현재 코드 기준의 데이터 구조를 정리한다.
+구현 시 이 문서와 실제 타입 정의를 함께 본다.
 
-- 문제 데이터
-- 포켓몬 데이터
-- 게임 상태 데이터
+기준 파일:
+
+- `src/content/questions/types.ts`
+- `src/content/pokemon/types.ts`
+- `src/stores/types.ts`
 
 ## 2. Directory Layout
 
 ```text
 src/
+  app/
   content/
-    sources/
-      source-index.json
-      pages/
-    questions/
-      question-index.json
-      by-page/
-      pools/
     pokemon/
-      pokemon-index.json
-      species/
-      groups/
+    questions/
+  core/
+  features/
+  lib/
+  stores/
+  styles/
 ```
+
+현재 구현 기준으로는 JSON 파일 중심 구조보다 TypeScript 모듈 기반 정적 데이터 구조를 먼저 사용한다.
 
 ## 3. Question Data
 
-### 3.1 Question File Example
-
-```json
-{
-  "sourceId": "object-methods",
-  "title": "메서드와 this",
-  "url": "https://ko.javascript.info/object-methods",
-  "questions": [
-    {
-      "questionId": "object-methods-yes-no-001",
-      "type": "yes_no",
-      "prompt": "화살표 함수는 자신만의 this를 가진다.",
-      "answer": false,
-      "acceptedAnswers": ["아니오", "false"],
-      "conceptGroup": "this-core",
-      "explanation": "화살표 함수는 자신만의 this를 가지지 않는다.",
-      "sourceExcerptId": "object-methods-001"
-    },
-    {
-      "questionId": "object-methods-choice-001",
-      "type": "multiple_choice",
-      "prompt": "메서드 안의 this는 보통 무엇을 가리키나?",
-      "answer": "점 앞의 객체",
-      "choices": [
-        "전역 객체",
-        "점 앞의 객체",
-        "항상 undefined",
-        "항상 함수 자신",
-        "새로 생성된 빈 객체"
-      ],
-      "conceptGroup": "this-core",
-      "explanation": "메서드 호출에서 this는 점 앞의 객체를 가리킨다.",
-      "sourceExcerptId": "object-methods-002"
-    },
-    {
-      "questionId": "object-methods-blank-001",
-      "type": "fill_blank",
-      "prompt": "화살표 함수는 자신만의 ____ 를 가지지 않는다.",
-      "answer": "this",
-      "acceptedAnswers": ["this", "디스"],
-      "conceptGroup": "this-core",
-      "explanation": "화살표 함수는 자신만의 this를 가지지 않는다.",
-      "sourceExcerptId": "object-methods-001"
-    }
-  ]
-}
-```
-
-### 3.2 Concept Pool Example
-
-```json
-{
-  "this-core": [
-    "this",
-    "lexical environment",
-    "closure",
-    "prototype",
-    "scope",
-    "constructor"
-  ]
-}
-```
-
-### 3.3 Question Types
+### 3.1 Question Page
 
 ```ts
+type QuestionPage = {
+  sourceId: string;
+  title: string;
+  url: string;
+  questions: Question[];
+};
+```
+
+예시:
+
+```ts
+{
+  sourceId: "object-methods",
+  title: "메서드와 this",
+  url: "https://ko.javascript.info/object-methods",
+  questions: [...]
+}
+```
+
+### 3.2 Question Types
+
+```ts
+type QuestionType = "yes_no" | "multiple_choice" | "fill_blank";
+
 type QuestionBase = {
   questionId: string;
-  type: "yes_no" | "multiple_choice" | "fill_blank";
+  type: QuestionType;
   prompt: string;
   answer: string | boolean;
   conceptGroup: string;
@@ -129,70 +92,37 @@ type FillBlankQuestion = QuestionBase & {
 };
 ```
 
-### 3.4 Validation
+```ts
+type Question = YesNoQuestion | MultipleChoiceQuestion | FillBlankQuestion;
+```
+
+### 3.3 Concept Pool
+
+현재 구현은 문자열 배열 기반 concept pool을 사용한다.
+
+```ts
+type ConceptPools = Record<string, string[]>;
+```
+
+예시:
+
+```ts
+{
+  "this-core": ["this", "렉시컬 환경", "클로저", "프로토타입", "스코프", "생성자 함수"]
+}
+```
+
+### 3.4 Validation Rules
 
 - `questionId` 중복 금지
-- `multiple_choice.choices.length === 5`
-- `answer`가 보기 안에 포함되어야 함
+- `multiple_choice`는 보기 5개 유지
+- `multiple_choice.answer`는 보기 안에 포함
 - `fill_blank.acceptedAnswers.length >= 1`
-- `sourceExcerptId`는 실제 source excerpt와 연결되어야 함
+- `sourceId`, `conceptGroup`, `sourceExcerptId`는 일관되게 유지
 
 ## 4. Pokemon Data
 
-### 4.1 Species Example
-
-```json
-{
-  "speciesId": "charmander",
-  "dexNumber": 4,
-  "nameKo": "파이리",
-  "nameEn": "Charmander",
-  "category": "normal",
-  "isStarter": true,
-  "canRepeat": true,
-  "imageKey": "charmander",
-  "evolutionStage": 1,
-  "evolutionLine": ["charmander", "charmeleon", "charizard"],
-  "nextEvolutionSpeciesId": "charmeleon",
-  "branchEvolutionSpeciesIds": [],
-  "statRuleId": "three-stage-default",
-  "graduationRuleId": "final-all-100",
-  "unlockRuleId": "normal-default"
-}
-```
-
-### 4.2 Legendary Order Example
-
-```json
-{
-  "excludedFromNormalSelection": [
-    "articuno",
-    "zapdos",
-    "moltres",
-    "mewtwo",
-    "mew"
-  ],
-  "waves": [
-    {
-      "waveId": "legendary-birds",
-      "speciesIds": ["articuno", "zapdos", "moltres"],
-      "unlockCondition": "complete-normal-pokedex"
-    },
-    {
-      "waveId": "mewtwo",
-      "speciesIds": ["mewtwo"],
-      "unlockCondition": "graduate-legendary-birds"
-    },
-    {
-      "waveId": "mew",
-      "speciesIds": ["mew"],
-      "unlockCondition": "graduate-mewtwo"
-    }
-  ]
-}
-```
-
-### 4.3 Species Type
+### 4.1 Species Type
 
 ```ts
 type PokemonSpecies = {
@@ -202,16 +132,36 @@ type PokemonSpecies = {
   nameEn: string;
   category: "normal" | "legendary";
   isStarter: boolean;
-  canRepeat: boolean;
-  imageKey: string;
   evolutionStage: number;
   evolutionLine: string[];
   nextEvolutionSpeciesId: string | null;
   branchEvolutionSpeciesIds: string[];
-  statRuleId: string;
-  graduationRuleId: string;
-  unlockRuleId: string;
 };
+```
+
+예시:
+
+```ts
+{
+  speciesId: "charmander",
+  dexNumber: 4,
+  nameKo: "파이리",
+  nameEn: "Charmander",
+  category: "normal",
+  isStarter: true,
+  evolutionStage: 1,
+  evolutionLine: ["charmander", "charmeleon", "charizard"],
+  nextEvolutionSpeciesId: "charmeleon",
+  branchEvolutionSpeciesIds: []
+}
+```
+
+### 4.2 Sprite Rule
+
+스프라이트 경로는 종 데이터에 직접 저장하지 않고 `dexNumber`로 계산한다.
+
+```ts
+getSpriteUrl(dexNumber: number) => `/sprites/${dexNumber}.png`
 ```
 
 ## 5. Game State
@@ -232,8 +182,6 @@ type AppState = {
 
 ```ts
 type TrainerState = {
-  trainerId: string;
-  createdAt: string;
   starterChosen: boolean;
   activePokemonInstanceId: string | null;
 };
@@ -242,21 +190,6 @@ type TrainerState = {
 ### 5.3 Party
 
 ```ts
-type PartyState = {
-  instances: PokemonInstance[];
-};
-
-type PokemonInstance = {
-  instanceId: string;
-  speciesId: string;
-  currentStage: number;
-  stats: PokemonStats;
-  totalCorrectCount: number;
-  graduated: boolean;
-  evolutionPending: boolean;
-  createdAt: string;
-};
-
 type PokemonStats = {
   hp: number;
   attack: number;
@@ -265,14 +198,30 @@ type PokemonStats = {
 };
 ```
 
+```ts
+type PokemonInstance = {
+  instanceId: string;
+  speciesId: string;
+  currentStage: number;
+  stats: PokemonStats;
+  totalCorrectCount: number;
+  graduated: boolean;
+  evolutionPending: boolean;
+};
+```
+
+```ts
+type PartyState = {
+  instances: PokemonInstance[];
+};
+```
+
 ### 5.4 Pokedex
 
 ```ts
 type PokedexState = {
   unlockedSpeciesIds: string[];
-  completedDexNumbers: number[];
   normalPokedexCompleted: boolean;
-  legendaryWaveUnlocked: string[];
 };
 ```
 
@@ -280,25 +229,42 @@ type PokedexState = {
 
 ```ts
 type ProgressionState = {
-  unlockedLegendaryStage:
-    | "none"
-    | "legendary-birds"
-    | "mewtwo"
-    | "mew";
   streakCorrectCount: number;
   pendingPokemonSelection: boolean;
   pendingEvolutionInstanceId: string | null;
+  unlockedLegendaryStage: "none" | "legendary-birds" | "mewtwo" | "mew";
 };
 ```
 
 ### 5.6 Session
 
+`session`은 프론트 전용 상태다.
+
 ```ts
 type SessionState = {
-  currentSourceId: string | null;
   currentQuestionId: string | null;
   solvedQuestionIds: string[];
-  repeatedSolvedQuestionIds: string[];
   lastAnswerCorrect: boolean | null;
+};
+```
+
+### 5.7 Auth
+
+```ts
+type AuthState = {
+  userId: string | null;
+  loading: boolean;
+};
+```
+
+### 5.8 RPC Result
+
+```ts
+type ProcessAnswerResult = {
+  correct: boolean;
+  stats: PokemonStats;
+  streak: number;
+  berry_given: string | null;
+  evolution_pending: boolean;
 };
 ```

@@ -55,8 +55,7 @@ src/
 
 해야 할 일:
 
-- `question-data-structure.md` 기준으로 JSON 구조 생성
-- `pokemon-data-structure.md` 기준으로 포켓몬 데이터 생성
+- `docs/specs/data-structures.md` 기준으로 문제/포켓몬 데이터 구조 생성
 - 스타터 3마리 데이터 우선 작성
 - 첫 학습 페이지용 문제 데이터 우선 작성
 
@@ -73,7 +72,7 @@ src/content/pokemon/species/squirtle.json
 
 해야 할 일:
 
-- `game-state-structure.md` 기반 타입 정의
+- `docs/specs/data-structures.md` 기반 타입 정의
 - 초기 상태 생성기 작성
 - 로컬 저장소 연동
 - selector 함수 정의
@@ -139,12 +138,12 @@ buildMultipleChoiceOptions(question, conceptPool)
 핵심 함수 예시:
 
 ```ts
-applyCorrectAnswerReward()
-applyRepeatAnswerReward()
-applyBerryReward()
-isEvolutionReady(instance)
-isGraduationReady(instance)
-shouldOpenPokemonSelection(state)
+applyCorrectAnswerReward();
+applyRepeatAnswerReward();
+applyBerryReward();
+isEvolutionReady(instance);
+isGraduationReady(instance);
+shouldOpenPokemonSelection(state);
 ```
 
 ## 9. Phase 7: Evolution and Selection
