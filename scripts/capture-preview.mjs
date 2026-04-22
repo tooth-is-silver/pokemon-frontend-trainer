@@ -17,20 +17,22 @@ const sections = [
 await mkdir(outDir, { recursive: true });
 
 const browser = await chromium.launch();
-const context = await browser.newContext({
-  viewport: { width: 960, height: 1200 },
-  deviceScaleFactor: 2,
-});
-const page = await context.newPage();
+try {
+  const context = await browser.newContext({
+    viewport: { width: 960, height: 1200 },
+    deviceScaleFactor: 2,
+  });
+  const page = await context.newPage();
 
-await page.goto(url, { waitUntil: "networkidle" });
-await page.waitForSelector("[data-screenshot]");
+  await page.goto(url, { waitUntil: "networkidle" });
+  await page.waitForSelector("[data-screenshot]");
 
-for (const { id, name } of sections) {
-  const locator = page.locator(`#${id}`);
-  const file = resolve(outDir, `${name}.png`);
-  await locator.screenshot({ path: file });
-  console.log(`saved ${file}`);
+  for (const { id, name } of sections) {
+    const locator = page.locator(`#${id}`);
+    const file = resolve(outDir, `${name}.png`);
+    await locator.screenshot({ path: file });
+    console.log(`saved ${file}`);
+  }
+} finally {
+  await browser.close();
 }
-
-await browser.close();
