@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Suspense, lazy } from "react";
-import { devRoutes } from "./DevRoutes";
+import { devRoutes } from "@/features/preview/routes";
 
 const Landing = lazy(() => import("../features/landing/LandingPage"));
 const Starter = lazy(() => import("../features/starter/StarterPage"));
