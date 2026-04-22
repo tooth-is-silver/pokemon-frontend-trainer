@@ -2,8 +2,15 @@
 
 ## Read This First
 
-- 제품 전체 개요: `docs/planning-draft.md`
-- 구현 순서: `docs/implementation-roadmap.md`
+- 문서 우선순위
+  1. `AGENTS.md`
+  2. `docs/specs/*`
+  3. `TODO.md`
+  4. `docs/implementation-roadmap.md`
+  5. `docs/planning-draft.md`
+
+- 제품 전체 개요와 초기 기획 배경: `docs/planning-draft.md`
+- 구현 순서와 단계 구분: `docs/implementation-roadmap.md`
 
 ## Task Routing
 
@@ -21,9 +28,11 @@
 
 ## Recommended Reading Order
 
-1. `docs/planning-draft.md`
+1. `AGENTS.md`
 2. `docs/specs/data-structures.md`
 3. `docs/specs/game-rules.md`
 4. `docs/specs/content-rules.md`
 5. `docs/specs/screen-flow.md`
-6. `docs/implementation-roadmap.md`
+6. `TODO.md`
+7. `docs/implementation-roadmap.md`
+8. `docs/planning-draft.md`

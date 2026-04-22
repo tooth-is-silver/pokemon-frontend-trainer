@@ -5,6 +5,8 @@
 이 문서는 구현 순서를 정의한다.  
 목표는 다른 모델이나 개발자가 바로 작업을 시작할 수 있게 하는 것이다.
 
+작업 시작 전 확인 순서: `docs/INDEX.md` → `docs/specs/*` → `TODO.md`.
+
 읽기 기준:
 
 - 전체 라우팅: `docs/INDEX.md`
@@ -55,25 +57,22 @@ src/
 
 해야 할 일:
 
-- `question-data-structure.md` 기준으로 JSON 구조 생성
-- `pokemon-data-structure.md` 기준으로 포켓몬 데이터 생성
+- `docs/specs/data-structures.md` 기준으로 문제/포켓몬 데이터 구조 생성
 - 스타터 3마리 데이터 우선 작성
 - 첫 학습 페이지용 문제 데이터 우선 작성
 
 최소 필요 파일:
 
 ```text
-src/content/questions/by-page/object-methods.questions.json
-src/content/pokemon/species/bulbasaur.json
-src/content/pokemon/species/charmander.json
-src/content/pokemon/species/squirtle.json
+src/content/questions/by-page/object-methods.ts
+src/content/pokemon/starters.ts
 ```
 
 ## 5. Phase 3: State Layer
 
 해야 할 일:
 
-- `game-state-structure.md` 기반 타입 정의
+- `docs/specs/data-structures.md` 기반 타입 정의
 - 초기 상태 생성기 작성
 - 로컬 저장소 연동
 - selector 함수 정의
@@ -139,12 +138,12 @@ buildMultipleChoiceOptions(question, conceptPool)
 핵심 함수 예시:
 
 ```ts
-applyCorrectAnswerReward()
-applyRepeatAnswerReward()
-applyBerryReward()
-isEvolutionReady(instance)
-isGraduationReady(instance)
-shouldOpenPokemonSelection(state)
+applyCorrectAnswerReward();
+applyRepeatAnswerReward();
+applyBerryReward();
+isEvolutionReady(instance);
+isGraduationReady(instance);
+shouldOpenPokemonSelection(state);
 ```
 
 ## 9. Phase 7: Evolution and Selection
@@ -175,8 +174,8 @@ shouldOpenPokemonSelection(state)
 
 해야 할 일:
 
-- 문제 JSON 검증 스크립트
-- 포켓몬 JSON 검증 스크립트
+- 문제 데이터 모듈 검증 스크립트
+- 포켓몬 데이터 모듈 검증 스크립트
 - 중복 키 검사
 - 잘못된 진화 라인 검사
 - 보기 5개 규칙 검사

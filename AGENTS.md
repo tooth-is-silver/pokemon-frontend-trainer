@@ -3,7 +3,7 @@
 포켓몬을 키우며 자바스크립트를 공부하는 사이드 프로젝트.
 2~3명이 개인화된 상태로 플레이하는 소규모 웹앱이다.
 
-> 작업 시작 전: `docs/INDEX.md`, `docs/specs/` 아래 관련 스펙을 먼저 확인한다.
+> 작업 시작 전: `docs/INDEX.md`를 먼저 보고, 그 다음 `docs/specs/`, `TODO.md` 순서로 확인한다.
 
 ## 행동 원칙
 
@@ -33,6 +33,7 @@
 - 코드 변경 후 `npm run build`가 통과해야 한다.
 - `npm run lint`가 통과해야 한다.
 - `src/core/` 아래 순수 함수는 입출력 기준으로 검증한다.
+- PR 리뷰에서 must-fix로 판단한 항목은 바로 수정하고 같은 브랜치에 커밋까지 반영한다.
 
 ## 기술 스택
 
@@ -112,4 +113,5 @@ VITE_SUPABASE_ANON_KEY
 - `npm run dev`
 - `npm run build`
 - `npm run lint`
+- `npm test`
 - `npm run format`
