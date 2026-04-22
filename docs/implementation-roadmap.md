@@ -5,6 +5,8 @@
 이 문서는 구현 순서를 정의한다.  
 목표는 다른 모델이나 개발자가 바로 작업을 시작할 수 있게 하는 것이다.
 
+작업 시작 전 확인 순서: `docs/INDEX.md` → `docs/specs/*` → `TODO.md`.
+
 읽기 기준:
 
 - 전체 라우팅: `docs/INDEX.md`
@@ -62,10 +64,8 @@ src/
 최소 필요 파일:
 
 ```text
-src/content/questions/by-page/object-methods.questions.json
-src/content/pokemon/species/bulbasaur.json
-src/content/pokemon/species/charmander.json
-src/content/pokemon/species/squirtle.json
+src/content/questions/by-page/object-methods.ts
+src/content/pokemon/starters.ts
 ```
 
 ## 5. Phase 3: State Layer
@@ -174,8 +174,8 @@ shouldOpenPokemonSelection(state);
 
 해야 할 일:
 
-- 문제 JSON 검증 스크립트
-- 포켓몬 JSON 검증 스크립트
+- 문제 데이터 모듈 검증 스크립트
+- 포켓몬 데이터 모듈 검증 스크립트
 - 중복 키 검사
 - 잘못된 진화 라인 검사
 - 보기 5개 규칙 검사
