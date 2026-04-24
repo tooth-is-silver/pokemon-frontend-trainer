@@ -1,5 +1,6 @@
 import { PokemonCard } from "@/components/pokemon/PokemonCard";
 import { PokemonStats } from "@/components/pokemon/PokemonStats";
+import { EvolutionContent } from "@/components/pokemon/EvolutionContent";
 import { QuizCard } from "@/components/quiz/QuizCard";
 import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
 import { starters } from "@/content/pokemon/starters";
@@ -11,6 +12,7 @@ import type {
 } from "@/content/questions/types";
 
 const sampleSpecies = starters.find((s) => s.speciesId === "charmander") ?? starters[0];
+const evolutionNext = starters.find((s) => s.speciesId === "charmeleon") ?? starters[0];
 const sampleStats = { hp: 42, attack: 57, defense: 33, speed: 61 };
 
 const yesNoSample: YesNoQ = {
@@ -96,6 +98,18 @@ export default function QuizPreviewPage() {
             question={yesNoSample as Question}
             sourceUrl="https://ko.javascript.info/object-methods"
             onNext={noop}
+          />
+        </div>
+      </Section>
+
+      <Section id="preview-evolution" title="진화 모달">
+        <div className="rounded-2xl bg-white shadow-xl border border-gray-200">
+          <EvolutionContent
+            currentSpecies={sampleSpecies}
+            nextSpecies={evolutionNext}
+            submitting={false}
+            onEvolve={noop}
+            onSkip={noop}
           />
         </div>
       </Section>

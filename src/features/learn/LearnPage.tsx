@@ -8,6 +8,7 @@ import { getNextQuestion } from "@/core/quizLoader";
 import { checkAnswer } from "@/core/answerChecker";
 import { PokemonCard } from "@/components/pokemon/PokemonCard";
 import { PokemonStats } from "@/components/pokemon/PokemonStats";
+import { EvolutionModal } from "@/components/pokemon/EvolutionModal";
 import { QuizCard } from "@/components/quiz/QuizCard";
 import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
 import type { Question } from "@/content/questions/types";
@@ -34,6 +35,8 @@ export default function LearnPage() {
   const streak = useGameStore((s) => s.progression.streakCorrectCount);
   const setCurrentQuestion = useGameStore((s) => s.setCurrentQuestion);
   const submitAnswer = useGameStore((s) => s.submitAnswer);
+  const evolve = useGameStore((s) => s.evolve);
+  const skipEvolution = useGameStore((s) => s.skipEvolution);
 
   const [submitting, setSubmitting] = useState(false);
   const [wrongQuestion, setWrongQuestion] = useState<Question | null>(null);
@@ -91,6 +94,24 @@ export default function LearnPage() {
     setWrongQuestion(null);
   };
 
+  const nextEvolutionSpecies =
+    activeSpecies?.nextEvolutionSpeciesId != null
+      ? (starters.find((s) => s.speciesId === activeSpecies.nextEvolutionSpeciesId) ?? null)
+      : null;
+  const showEvolutionModal = Boolean(
+    activeInstance?.evolutionPending && activeSpecies && nextEvolutionSpecies,
+  );
+
+  const handleEvolve = async () => {
+    if (!activeInstance || !nextEvolutionSpecies) return;
+    await evolve(activeInstance.instanceId, nextEvolutionSpecies.speciesId);
+  };
+
+  const handleSkipEvolution = async () => {
+    if (!activeInstance) return;
+    await skipEvolution(activeInstance.instanceId);
+  };
+
   return (
     <div className="flex flex-col items-center gap-6 min-h-screen p-6 bg-gray-50">
       {activeSpecies && activeInstance && (
@@ -124,6 +145,16 @@ export default function LearnPage() {
           />
         )}
       </section>
+
+      {showEvolutionModal && activeSpecies && nextEvolutionSpecies && (
+        <EvolutionModal
+          open={true}
+          currentSpecies={activeSpecies}
+          nextSpecies={nextEvolutionSpecies}
+          onEvolve={handleEvolve}
+          onSkip={handleSkipEvolution}
+        />
+      )}
     </div>
   );
 }
