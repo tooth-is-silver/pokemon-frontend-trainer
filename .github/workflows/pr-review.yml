@@ -29,24 +29,61 @@ jobs:
             echo 'DIFF_EOF'
           } >> $GITHUB_OUTPUT
 
+      - name: Load project context
+        id: ctx
+        run: |
+          AGENTS=$(head -c 4000 AGENTS.md 2>/dev/null || true)
+          TODO=$(head -c 3000 TODO.md 2>/dev/null || true)
+          {
+            echo 'agents<<AGENTS_EOF'
+            echo "$AGENTS"
+            echo 'AGENTS_EOF'
+            echo 'todo<<TODO_EOF'
+            echo "$TODO"
+            echo 'TODO_EOF'
+          } >> $GITHUB_OUTPUT
+
       - name: AI Review via Anthropic
         id: ai_review
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BODY: ${{ github.event.pull_request.body }}
           PR_DIFF: ${{ steps.diff.outputs.diff }}
+          CTX_AGENTS: ${{ steps.ctx.outputs.agents }}
+          CTX_TODO: ${{ steps.ctx.outputs.todo }}
         run: |
           PAYLOAD=$(jq -n \
             --arg pr_title "$PR_TITLE" \
             --arg pr_number "$PR_NUMBER" \
+            --arg pr_body "$PR_BODY" \
             --arg pr_diff "$PR_DIFF" \
+            --arg agents "$CTX_AGENTS" \
+            --arg todo "$CTX_TODO" \
             '{
               model: "claude-haiku-4-5",
-              max_tokens: 1024,
+              max_tokens: 1500,
               messages: [{
                 role: "user",
-                content: ("다음은 GitHub PR의 코드 diff입니다. 시니어 프론트엔드 개발자 입장에서 간결하게 리뷰해주세요.\n\nPR 제목: " + $pr_title + "\n\ndiff:\n" + $pr_diff + "\n\n## 리뷰 원칙\n- 이슈는 반드시 우선순위를 구분해서 표시\n- 불필요한 설명, 코드 예시는 최소화\n- 머지 여부 판단에 집중\n\n## 출력 형식 (마크다운, 간결하게)\n\n## 🔍 PR #" + $pr_number + " — " + $pr_title + "\n\n🚨 **[BLOCK] 머지 전 필수 수정** (없으면 이 섹션 생략):\n- 버그, 빌드 오류, 보안 이슈, 런타임 크래시 등\n\n⚠️ **[WARN] 권장 수정** (있으면 좋지만 머지 블록 아님):\n- 코드 품질, 타입 안전성, 성능 고려사항 등\n\n💬 **[NIT] 사소한 제안** (선택사항, 1줄 이내):\n\n🏁 **결론**: ✅ 머지 가능 / ⚠️ WARN 확인 후 머지 / ❌ BLOCK 수정 필요")
+                content: ("다음은 GitHub PR 코드 리뷰 요청입니다. 시니어 프론트엔드 개발자 입장에서 간결하게 리뷰해주세요.\n\n" +
+                "## 프로젝트 컨텍스트\n개인 학습/포트폴리오용 소규모 MVP 프로젝트입니다. 콘텐츠(포켓몬 151마리, 문제 데이터, Supabase RPC 등)는 Phase 순서대로 점진적으로 추가됩니다. 즉 \"스타터 9마리만 있다\" 같은 상태는 의도된 진행 단계이며 버그가 아닙니다.\n\n" +
+                "## 프로젝트 규칙 (AGENTS.md 발췌)\n" + $agents + "\n\n" +
+                "## 진행 상태 (TODO.md 발췌)\n" + $todo + "\n\n" +
+                "## PR 정보\n제목: " + $pr_title + "\n\n설명:\n" + $pr_body + "\n\n" +
+                "## Diff\n" + $pr_diff + "\n\n" +
+                "## 리뷰 원칙 (반드시 지키세요)\n" +
+                "- **BLOCK** 은 다음 중 하나에만 해당: 빌드/린트/테스트 실패, 런타임 크래시, 보안 이슈, 데이터 손상, 스펙 위반\n" +
+                "- 점진적 확장 중인 데이터/기능(151마리 중 일부만 있음, 특정 RPC 미구현, 차후 Phase 로 분리된 작업 등)은 **절대 BLOCK 아님**. WARN 도 아니면 언급 생략\n" +
+                "- PR 설명의 \"범위 밖\" 또는 \"후속 PR\" 섹션에 명시된 항목은 의도된 제외이므로 지적하지 말 것\n" +
+                "- 모호하거나 확신 없는 건은 한 단계 낮추기 (BLOCK→WARN, WARN→NIT, NIT→생략)\n" +
+                "- 프로젝트에 이미 없는 라이브러리(clsx 등) 도입 제안은 하지 말 것\n" +
+                "- 한국어, 간결하게. 코드 예시 최소화\n\n" +
+                "## 출력 형식\n\n## 🔍 PR #" + $pr_number + " — " + $pr_title + "\n\n" +
+                "🚨 **[BLOCK] 머지 전 필수 수정** (해당 없으면 섹션 통째로 생략)\n\n" +
+                "⚠️ **[WARN] 권장 수정** (해당 없으면 섹션 통째로 생략)\n\n" +
+                "💬 **[NIT] 사소한 제안** (1줄, 없으면 생략)\n\n" +
+                "🏁 **결론**: ✅ 머지 가능 / ⚠️ WARN 확인 후 머지 / ❌ BLOCK 수정 필요")
               }]
             }')
 
