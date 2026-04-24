@@ -14,3 +14,6 @@ export type PokemonSpecies = {
 export function getSpriteUrl(dexNumber: number): string {
   return `/sprites/${dexNumber}.png`;
 }
+
+// 1세대 전체 포켓몬 수
+export const TOTAL_DEX = 151;
