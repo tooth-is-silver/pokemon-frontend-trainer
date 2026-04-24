@@ -1,10 +1,12 @@
 import { PokemonCard } from "@/components/pokemon/PokemonCard";
 import { PokemonStats } from "@/components/pokemon/PokemonStats";
 import { EvolutionContent } from "@/components/pokemon/EvolutionContent";
+import { PartyMemberCard } from "@/components/pokemon/PartyMemberCard";
 import { PokedexGrid } from "@/components/pokedex/PokedexGrid";
 import { QuizCard } from "@/components/quiz/QuizCard";
 import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
 import { starters } from "@/content/pokemon/starters";
+import type { PokemonInstance } from "@/stores/types";
 import type {
   Question,
   YesNoQuestion as YesNoQ,
@@ -15,6 +17,34 @@ import type {
 const sampleSpecies = starters.find((s) => s.speciesId === "charmander") ?? starters[0];
 const evolutionNext = starters.find((s) => s.speciesId === "charmeleon") ?? starters[0];
 const sampleStats = { hp: 42, attack: 57, defense: 33, speed: 61 };
+
+const partyMockActive: PokemonInstance = {
+  instanceId: "mock-1",
+  speciesId: "charmeleon",
+  currentStage: 2,
+  stats: { hp: 72, attack: 81, defense: 58, speed: 77 },
+  totalCorrectCount: 24,
+  graduated: false,
+  evolutionPending: false,
+};
+const partyMockSecondary: PokemonInstance = {
+  instanceId: "mock-2",
+  speciesId: "bulbasaur",
+  currentStage: 1,
+  stats: { hp: 33, attack: 28, defense: 41, speed: 22 },
+  totalCorrectCount: 8,
+  graduated: false,
+  evolutionPending: false,
+};
+const partyMockGraduated: PokemonInstance = {
+  instanceId: "mock-3",
+  speciesId: "venusaur",
+  currentStage: 3,
+  stats: { hp: 100, attack: 100, defense: 100, speed: 100 },
+  totalCorrectCount: 120,
+  graduated: true,
+  evolutionPending: false,
+};
 
 const yesNoSample: YesNoQ = {
   questionId: "preview-yn",
@@ -132,6 +162,38 @@ export default function QuizPreviewPage() {
           </div>
           <div className="max-h-[320px] overflow-hidden">
             <PokedexGrid unlockedSpeciesIds={["bulbasaur", "charmander", "ivysaur"]} />
+          </div>
+        </div>
+      </Section>
+
+      <Section id="preview-party" title="내 포켓몬 화면" wide>
+        <div className="flex flex-col gap-3 p-6 bg-white rounded-2xl border border-gray-200">
+          <div>
+            <h3 className="text-xl font-bold">내 포켓몬</h3>
+            <p className="text-sm text-gray-500">파티 3마리 · 학습할 포켓몬을 선택하세요</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <PartyMemberCard
+              instance={partyMockActive}
+              species={starters.find((s) => s.speciesId === "charmeleon") ?? null}
+              isActive={true}
+              switching={false}
+              onSetActive={noop}
+            />
+            <PartyMemberCard
+              instance={partyMockSecondary}
+              species={starters.find((s) => s.speciesId === "bulbasaur") ?? null}
+              isActive={false}
+              switching={false}
+              onSetActive={noop}
+            />
+            <PartyMemberCard
+              instance={partyMockGraduated}
+              species={starters.find((s) => s.speciesId === "venusaur") ?? null}
+              isActive={false}
+              switching={false}
+              onSetActive={noop}
+            />
           </div>
         </div>
       </Section>

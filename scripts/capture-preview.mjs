@@ -14,6 +14,7 @@ const sections = [
   { id: "preview-wrong", name: "wrong-answer-panel" },
   { id: "preview-evolution", name: "evolution-modal" },
   { id: "preview-pokedex", name: "pokedex-page" },
+  { id: "preview-party", name: "my-pokemon-page" },
 ];
 
 await mkdir(outDir, { recursive: true });

@@ -38,6 +38,9 @@ interface GameStore {
   evolve: (instanceId: string, nextSpeciesId: string) => Promise<void>;
   skipEvolution: (instanceId: string) => Promise<void>;
 
+  // 활성 포켓몬 교체
+  setActivePokemon: (instanceId: string) => Promise<void>;
+
   // 세션 (프론트 전용)
   setCurrentQuestion: (questionId: string) => void;
   addSolvedQuestion: (questionId: string) => void;
@@ -279,6 +282,31 @@ export const useGameStore = create<GameStore>((set, get) => ({
       progression: {
         ...state.progression,
         pendingEvolutionInstanceId: null,
+      },
+    });
+  },
+
+  setActivePokemon: async (instanceId) => {
+    const state = get();
+    if (state.trainer.activePokemonInstanceId === instanceId) return;
+
+    const target = state.party.instances.find((i) => i.instanceId === instanceId);
+    if (!target) throw new Error("포켓몬 인스턴스를 찾을 수 없습니다.");
+
+    const { error } = await supabase.rpc("set_active_pokemon", {
+      p_instance_id: instanceId,
+    });
+    if (error) throw error;
+
+    set({
+      trainer: {
+        ...state.trainer,
+        activePokemonInstanceId: instanceId,
+      },
+      session: {
+        ...state.session,
+        currentQuestionId: null,
+        lastAnswerCorrect: null,
       },
     });
   },
