@@ -1,8 +1,6 @@
 import { starters } from "@/content/pokemon/starters";
-import type { PokemonSpecies } from "@/content/pokemon/types";
+import { TOTAL_DEX, type PokemonSpecies } from "@/content/pokemon/types";
 import { PokedexCard } from "./PokedexCard";
-
-const TOTAL_DEX = 151;
 
 function findSpeciesByDex(dexNumber: number): PokemonSpecies | null {
   return starters.find((s) => s.dexNumber === dexNumber) ?? null;

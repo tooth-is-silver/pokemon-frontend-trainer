@@ -2,8 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
 import { PokedexGrid } from "@/components/pokedex/PokedexGrid";
-
-const TOTAL_DEX = 151;
+import { TOTAL_DEX } from "@/content/pokemon/types";
 
 const LEGENDARY_MESSAGE: Record<"none" | "legendary-birds" | "mewtwo" | "mew", string> = {
   none: "일반 도감을 완성하면 전설이 해금돼요.",
