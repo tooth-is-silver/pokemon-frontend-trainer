@@ -1,5 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { PokemonSpecies } from "@/content/pokemon/types";
 import { EvolutionContent } from "./EvolutionContent";
 
@@ -12,14 +12,20 @@ interface Props {
 }
 
 export function EvolutionModal({ open, currentSpecies, nextSpecies, onEvolve, onSkip }: Props) {
+  const submittingRef = useRef(false);
   const [submitting, setSubmitting] = useState(false);
 
+  // 연타 방지: state는 리렌더 전이라 stale할 수 있어 ref로 동기 guard
   const run = async (action: () => Promise<void>) => {
-    if (submitting) return;
+    if (submittingRef.current) return;
+    submittingRef.current = true;
     setSubmitting(true);
     try {
       await action();
+    } catch (error) {
+      console.error("진화 처리 실패:", error);
     } finally {
+      submittingRef.current = false;
       setSubmitting(false);
     }
   };
