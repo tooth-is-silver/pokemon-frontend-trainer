@@ -1,0 +1,91 @@
+name: AI PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches: [main]
+
+jobs:
+  review:
+    name: AI Code Review
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get PR diff
+        id: diff
+        run: |
+          git fetch origin main
+          DIFF=$(git diff origin/main...HEAD -- '*.ts' '*.tsx' '*.css' '*.md' '*.sql' '*.yml' '*.yaml' 'package.json' ':!package-lock.json' | head -c 8000)
+          {
+            echo 'diff<<DIFF_EOF'
+            echo "$DIFF"
+            echo 'DIFF_EOF'
+          } >> $GITHUB_OUTPUT
+
+      - name: AI Review via Anthropic
+        id: ai_review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_DIFF: ${{ steps.diff.outputs.diff }}
+        run: |
+          PAYLOAD=$(jq -n \
+            --arg pr_title "$PR_TITLE" \
+            --arg pr_number "$PR_NUMBER" \
+            --arg pr_diff "$PR_DIFF" \
+            '{
+              model: "claude-haiku-4-5",
+              max_tokens: 1024,
+              messages: [{
+                role: "user",
+                content: ("다음은 GitHub PR의 코드 diff입니다. 시니어 프론트엔드 개발자 입장에서 간결하게 리뷰해주세요.\n\nPR 제목: " + $pr_title + "\n\ndiff:\n" + $pr_diff + "\n\n## 리뷰 원칙\n- 이슈는 반드시 우선순위를 구분해서 표시\n- 불필요한 설명, 코드 예시는 최소화\n- 머지 여부 판단에 집중\n\n## 출력 형식 (마크다운, 간결하게)\n\n## 🔍 PR #" + $pr_number + " — " + $pr_title + "\n\n🚨 **[BLOCK] 머지 전 필수 수정** (없으면 이 섹션 생략):\n- 버그, 빌드 오류, 보안 이슈, 런타임 크래시 등\n\n⚠️ **[WARN] 권장 수정** (있으면 좋지만 머지 블록 아님):\n- 코드 품질, 타입 안전성, 성능 고려사항 등\n\n💬 **[NIT] 사소한 제안** (선택사항, 1줄 이내):\n\n🏁 **결론**: ✅ 머지 가능 / ⚠️ WARN 확인 후 머지 / ❌ BLOCK 수정 필요")
+              }]
+            }')
+
+          RESPONSE=$(curl -sf https://api.anthropic.com/v1/messages \
+            -H "x-api-key: $ANTHROPIC_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "content-type: application/json" \
+            -d "$PAYLOAD")
+
+          REVIEW=$(echo "$RESPONSE" | jq -r '.content[0].text // "리뷰 생성 실패"')
+          {
+            echo 'review<<REVIEW_EOF'
+            echo "$REVIEW"
+            echo 'REVIEW_EOF'
+          } >> $GITHUB_OUTPUT
+
+      - name: Post review comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REVIEW: ${{ steps.ai_review.outputs.review }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          BODY=$(printf '%s\n\n---\n*🤖 자동 AI 리뷰 (claude-haiku)*' "$REVIEW")
+          gh api "repos/$REPO/issues/$PR_NUMBER/comments" \
+            -f body="$BODY"
+
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then exit 0; fi
+          curl -sf -X POST "$DISCORD_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg title "$PR_TITLE" \
+              --arg number "$PR_NUMBER" \
+              --arg url "$PR_URL" \
+              '{content: ("🔍 **PR #" + $number + " 자동 리뷰 완료**\n**" + $title + "**\n" + $url + "\n\nPR 코멘트에서 리뷰 결과를 확인하세요!")}')"
