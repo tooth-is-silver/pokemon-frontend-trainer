@@ -22,7 +22,7 @@ jobs:
         id: diff
         run: |
           git fetch origin main
-          DIFF=$(git diff origin/main...HEAD -- '*.ts' '*.tsx' '*.css' '*.md' '*.sql' 'package.json' ':!package-lock.json' | head -c 8000)
+          DIFF=$(git diff origin/main...HEAD -- '*.ts' '*.tsx' '*.css' '*.md' '*.sql' '*.yml' '*.yaml' 'package.json' ':!package-lock.json' | head -c 8000)
           {
             echo 'diff<<DIFF_EOF'
             echo "$DIFF"
