@@ -1,6 +1,7 @@
 import { PokemonCard } from "@/components/pokemon/PokemonCard";
 import { PokemonStats } from "@/components/pokemon/PokemonStats";
 import { EvolutionContent } from "@/components/pokemon/EvolutionContent";
+import { PokedexGrid } from "@/components/pokedex/PokedexGrid";
 import { QuizCard } from "@/components/quiz/QuizCard";
 import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
 import { starters } from "@/content/pokemon/starters";
@@ -54,11 +55,16 @@ interface SectionProps {
   id: string;
   title: string;
   children: React.ReactNode;
+  wide?: boolean;
 }
 
-function Section({ id, title, children }: SectionProps) {
+function Section({ id, title, children, wide }: SectionProps) {
   return (
-    <section id={id} data-screenshot className="w-full max-w-lg flex flex-col gap-3">
+    <section
+      id={id}
+      data-screenshot
+      className={`w-full ${wide ? "max-w-3xl" : "max-w-lg"} flex flex-col gap-3`}
+    >
       <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">{title}</h2>
       {children}
     </section>
@@ -111,6 +117,22 @@ export default function QuizPreviewPage() {
             onEvolve={noop}
             onSkip={noop}
           />
+        </div>
+      </Section>
+
+      <Section id="preview-pokedex" title="도감 화면" wide>
+        <div className="flex flex-col gap-3 p-6 bg-white rounded-2xl border border-gray-200">
+          <h3 className="text-xl font-bold">포켓몬 도감</h3>
+          <div className="flex flex-wrap justify-between items-center gap-2 text-sm text-gray-600">
+            <span className="tabular-nums">3 / 151 · 1%</span>
+            <span>일반 도감을 완성하면 전설이 해금돼요.</span>
+          </div>
+          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-full bg-blue-400" style={{ width: "2%" }} />
+          </div>
+          <div className="max-h-[320px] overflow-hidden">
+            <PokedexGrid unlockedSpeciesIds={["bulbasaur", "charmander", "ivysaur"]} />
+          </div>
         </div>
       </Section>
     </div>

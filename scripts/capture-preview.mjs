@@ -13,6 +13,7 @@ const sections = [
   { id: "preview-fillblank", name: "question-fillblank" },
   { id: "preview-wrong", name: "wrong-answer-panel" },
   { id: "preview-evolution", name: "evolution-modal" },
+  { id: "preview-pokedex", name: "pokedex-page" },
 ];
 
 await mkdir(outDir, { recursive: true });
