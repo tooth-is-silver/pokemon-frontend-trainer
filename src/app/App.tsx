@@ -6,7 +6,6 @@ const Landing = lazy(() => import("../features/landing/LandingPage"));
 const Starter = lazy(() => import("../features/starter/StarterPage"));
 const Learn = lazy(() => import("../features/learn/LearnPage"));
 const Pokedex = lazy(() => import("../features/pokedex/PokedexPage"));
-const MyPokemon = lazy(() => import("../features/pokemon/MyPokemonPage"));
 
 export function App() {
   return (
@@ -19,7 +18,6 @@ export function App() {
           <Route path="/starter" element={<Starter />} />
           <Route path="/learn" element={<Learn />} />
           <Route path="/pokedex" element={<Pokedex />} />
-          <Route path="/pokemon" element={<MyPokemon />} />
           {import.meta.env.DEV && devRoutes}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

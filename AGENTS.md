@@ -49,7 +49,7 @@
 src/
   app/          # 라우터, 레이아웃
   components/   # 공통 UI 컴포넌트
-  features/     # 페이지별 컴포넌트 (landing, starter, learn, pokedex, pokemon)
+  features/     # 페이지별 컴포넌트 (landing, starter, learn, pokedex)
   content/      # 정적 데이터
   core/         # 순수 로직
   stores/       # Zustand 스토어
@@ -87,7 +87,7 @@ src/
 ### 라우팅
 
 - 모든 페이지는 `React.lazy` + `Suspense`를 사용한다.
-- 라우트는 `/`, `/starter`, `/learn`, `/pokedex`, `/pokemon`.
+- 라우트는 `/`, `/starter`, `/learn`, `/pokedex`. 동시 보유 1마리 정책이라 별도 `/pokemon` 라우트는 두지 않는다.
 
 ### DB 변경
 
