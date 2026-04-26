@@ -1,10 +1,6 @@
-import { starters } from "@/content/pokemon/starters";
-import { TOTAL_DEX, type PokemonSpecies } from "@/content/pokemon/types";
+import { findSpeciesByDex } from "@/content/pokemon";
+import { TOTAL_DEX } from "@/content/pokemon/types";
 import { PokedexCard } from "./PokedexCard";
-
-function findSpeciesByDex(dexNumber: number): PokemonSpecies | null {
-  return starters.find((s) => s.dexNumber === dexNumber) ?? null;
-}
 
 interface Props {
   unlockedSpeciesIds: string[];

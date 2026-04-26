@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
-import { starters } from "@/content/pokemon/starters";
+import { findSpeciesById } from "@/content/pokemon";
 import { questionPages, getAllQuestions } from "@/content/questions";
 import { getNextQuestion } from "@/core/quizLoader";
 import { checkAnswer } from "@/core/answerChecker";
@@ -42,9 +42,7 @@ export default function LearnPage() {
   const [wrongQuestion, setWrongQuestion] = useState<Question | null>(null);
 
   const activeInstance = instances.find((i) => i.instanceId === activeInstanceId) ?? null;
-  const activeSpecies = activeInstance
-    ? (starters.find((s) => s.speciesId === activeInstance.speciesId) ?? null)
-    : null;
+  const activeSpecies = activeInstance ? findSpeciesById(activeInstance.speciesId) : null;
   const currentQuestion = findQuestion(currentQuestionId);
 
   // 현재 문제가 없으면 다음 문제 로드
@@ -96,7 +94,7 @@ export default function LearnPage() {
 
   const nextEvolutionSpecies =
     activeSpecies?.nextEvolutionSpeciesId != null
-      ? (starters.find((s) => s.speciesId === activeSpecies.nextEvolutionSpeciesId) ?? null)
+      ? findSpeciesById(activeSpecies.nextEvolutionSpeciesId)
       : null;
   const showEvolutionModal = Boolean(
     activeInstance?.evolutionPending && activeSpecies && nextEvolutionSpecies,
