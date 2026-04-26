@@ -26,8 +26,8 @@
 5. 학습 화면 구현
 6. 정답 판정 로직 구현
 7. 스탯/진화/졸업 로직 구현
-8. 신규 포켓몬 선택 로직 구현
-9. 도감 화면 구현
+8. 졸업 모달 + 신규 인스턴스 시작 로직 구현
+9. 도감 화면 구현 (현재 포켓몬 카드 포함)
 10. 데이터 검증 및 시드 추가
 
 ## 3. Phase 1: Project Setup
@@ -133,7 +133,7 @@ buildMultipleChoiceOptions(question, conceptPool)
 - 열매 즉시 적용
 - 진화 가능 여부 계산
 - 졸업 가능 여부 계산
-- 신규 포켓몬 선택 가능 여부 계산
+- 졸업 모달 트리거 계산
 
 핵심 함수 예시:
 
@@ -143,23 +143,26 @@ applyRepeatAnswerReward();
 applyBerryReward();
 isEvolutionReady(instance);
 isGraduationReady(instance);
-shouldOpenPokemonSelection(state);
+pickGraduationCandidates(state);
 ```
 
-## 9. Phase 7: Evolution and Selection
+## 9. Phase 7: Evolution and Graduation
 
 해야 할 일:
 
-- 진화 모달 또는 페이지 구현
+- 진화 모달 구현
 - 진화 수락/보류 처리
-- 신규 포켓몬 선택 후보 2마리 생성
-- 선택 후 새 인스턴스 생성
+- 졸업 모달 구현 (학습 화면 위에 표시)
+- 후보 카드 3장 (이미지 + 이름) 노출 → 1마리 선택 → 새 인스턴스 시작
 
 필수 규칙:
 
-- 미등록 일반 포켓몬 우선
-- 후보 부족 시에만 중복 허용
-- 전설 포켓몬은 별도 wave 규칙 적용
+- 동시 보유 1마리, 중간 교체 불가
+- 일반 wave: 미등록 일반 1세대 종 중 랜덤 3마리
+- 전설은 일반 wave 후보에서 항상 제외
+- 전설 wave 1: 프리저/썬더/파이어 (풀 3 → 2 → 1)
+- 전설 wave 2: 뮤츠 / wave 3: 뮤
+- 풀 크기보다 후보 수가 작으면 풀 그대로 노출, 풀이 비면 다음 wave로 자동 전환
 
 ## 10. Phase 8: Pokedex
 

@@ -5,10 +5,9 @@
 - 메인 화면 (랜딩)
 - 스타터 선택 화면
 - 학습 화면
-- 진화 모달 또는 진화 페이지
-- 신규 포켓몬 선택 모달 또는 페이지
+- 진화 모달
+- 졸업 모달
 - 도감 화면
-- 내 포켓몬 화면
 
 ## 2. Main Screen (Landing)
 
@@ -49,7 +48,7 @@
 정답 시:
 
 - 스탯 즉시 갱신
-- 필요 시 진화/선택 트리거 계산
+- 필요 시 진화/졸업 트리거 계산
 - 바로 다음 문제 이동
 
 오답 시:
@@ -60,55 +59,54 @@
 ## 5. Evolution Flow
 
 1. 진화 가능 상태 감지
-2. 진화 모달 또는 전용 페이지 표시
+2. 진화 모달 표시
 3. `진화한다` 또는 `보류`
 4. 진화 시 포켓몬 데이터 갱신
 5. 진화체 도감 등록
 6. 학습 화면 복귀
 
-## 6. New Pokemon Selection Flow
+## 6. Graduation Flow
 
-1. 후보 2마리 생성
-2. 선택 모달 또는 페이지 표시
-3. 2마리 중 1마리 선택
-4. 새 instance 생성
-5. 도감 등록
-6. active 포켓몬 전환
-7. 학습 화면 복귀
+1. 최종 진화체에서 4스탯 100 도달 → 졸업 트리거
+2. 학습 화면 위로 졸업 모달 오픈
+3. 졸업 정보 표시 (졸업한 포켓몬·진화 라인·최종 스탯)
+4. 후보 카드 3장 (이미지 + 이름) 표시
+5. 1마리 선택 → 새 instance 생성 → 도감 등록 → 현재 포켓몬 교체
+6. 모달 닫고 학습 재개
 
 후보 규칙:
 
-- 미등록 일반 포켓몬 우선
-- 전설 제외
-- 후보 부족 시에만 중복 허용
+- 일반 wave: 미등록 일반 1세대 종 중 랜덤 3마리. 전설은 제외.
+- 풀이 wave 후보 수보다 작으면 풀 그대로 노출 (예: wave1 마지막 1장).
+- 풀이 비면 다음 wave로 자동 전환 (정상 진행에서 풀 바닥 = 단계 종료 시점).
+- 이브이 분기 진화 시 쥬피썬더/샤미드/부스터 중 직접 선택 (이브이에 한해 동일 종 복수 보유 허용).
 
 ## 7. Legendary Flow
 
-1. 일반 도감 완성
-2. 전설 선택창 오픈
-3. 프리저/썬더/파이어 육성
-4. 3마리 모두 100 졸업
-5. 뮤츠 선택 가능
-6. 뮤츠 졸업 후 뮤 선택 가능
+1. 일반 1세대 도감 완성 (146마리)
+2. 전설 wave 1 자동 진입: 프리저/썬더/파이어 후보 풀 (3 → 2 → 1)
+3. wave 1 모두 졸업 → wave 2로 전환 (뮤츠 단독)
+4. 뮤츠 졸업 → wave 3으로 전환 (뮤 단독)
+5. 뮤 졸업 → 엔딩
 
 ## 8. Pokedex Screen
 
-- 1세대 도감 번호
-- 획득 여부
-- 현재 형태 이미지
-- 전설 해금 상태
+- 1세대 도감 번호 (1~151)
+- 획득/미획득 표시 (미획득은 실루엣)
+- 현재 보유 포켓몬 카드 (헤더): 이미지·이름·진화 단계·4스탯·진화/졸업 대기 뱃지
+- 전설 해금 단계 안내 배너
+- 일반 도감 완성률 / 전체 도감 진행률
 
 ## 9. Recommended Navigation
 
 - `/starter`
 - `/learn`
 - `/pokedex`
-- `/pokemon`
 
 모달:
 
 - `evolution-modal`
-- `pokemon-selection-modal`
+- `graduation-modal`
 
 ## 10. UI Component Structure
 
@@ -117,10 +115,10 @@ src/
   components/
     pokemon/
       PokemonCard.tsx
-      PokemonImage.tsx
       PokemonStats.tsx
       EvolutionModal.tsx
-      PokemonSelectionModal.tsx
+      EvolutionContent.tsx
+      GraduationModal.tsx
     quiz/
       QuizCard.tsx
       YesNoQuestion.tsx
@@ -130,9 +128,4 @@ src/
     pokedex/
       PokedexGrid.tsx
       PokedexCard.tsx
-    common/
-      Button.tsx
-      Modal.tsx
-      ProgressBar.tsx
-      ScreenLayout.tsx
 ```
