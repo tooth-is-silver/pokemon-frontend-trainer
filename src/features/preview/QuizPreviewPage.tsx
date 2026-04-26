@@ -4,7 +4,7 @@ import { EvolutionContent } from "@/components/pokemon/EvolutionContent";
 import { PokedexGrid } from "@/components/pokedex/PokedexGrid";
 import { QuizCard } from "@/components/quiz/QuizCard";
 import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
-import { starters } from "@/content/pokemon/starters";
+import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
 import type {
   Question,
   YesNoQuestion as YesNoQ,
@@ -12,8 +12,8 @@ import type {
   FillBlankQuestion as FBQ,
 } from "@/content/questions/types";
 
-const sampleSpecies = starters.find((s) => s.speciesId === "charmander") ?? starters[0];
-const evolutionNext = starters.find((s) => s.speciesId === "charmeleon") ?? starters[0];
+const sampleSpecies = findSpeciesById("charmander") ?? getAllSpecies()[0];
+const evolutionNext = findSpeciesById("charmeleon") ?? getAllSpecies()[0];
 const sampleStats = { hp: 42, attack: 57, defense: 33, speed: 61 };
 
 const yesNoSample: YesNoQ = {

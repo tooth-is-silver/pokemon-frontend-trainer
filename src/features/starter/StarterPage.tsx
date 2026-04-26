@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { useGameStore } from "@/stores/useGameStore";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { starters } from "@/content/pokemon/starters";
+import { getStarters } from "@/content/pokemon";
 import { getSpriteUrl } from "@/content/pokemon/types";
 import type { PokemonSpecies } from "@/content/pokemon/types";
 
-const starterSpecies = starters.filter((s) => s.isStarter);
+const starterSpecies = getStarters();
 
 export default function StarterPage() {
   const navigate = useNavigate();
