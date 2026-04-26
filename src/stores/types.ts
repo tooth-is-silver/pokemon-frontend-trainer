@@ -36,8 +36,8 @@ export interface PokedexState {
 // 진행 상태
 export interface ProgressionState {
   streakCorrectCount: number;
-  pendingPokemonSelection: boolean;
   pendingEvolutionInstanceId: string | null;
+  pendingGraduationInstanceId: string | null;
   unlockedLegendaryStage: "none" | "legendary-birds" | "mewtwo" | "mew";
 }
 

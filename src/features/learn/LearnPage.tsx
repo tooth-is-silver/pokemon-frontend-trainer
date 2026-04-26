@@ -2,15 +2,17 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
-import { findSpeciesById } from "@/content/pokemon";
+import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
 import { questionPages, getAllQuestions } from "@/content/questions";
 import { getNextQuestion } from "@/core/quizLoader";
 import { checkAnswer } from "@/core/answerChecker";
 import { PokemonCard } from "@/components/pokemon/PokemonCard";
 import { PokemonStats } from "@/components/pokemon/PokemonStats";
 import { EvolutionModal } from "@/components/pokemon/EvolutionModal";
+import { GraduationModal } from "@/components/pokemon/GraduationModal";
 import { QuizCard } from "@/components/quiz/QuizCard";
 import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
+import { pickGraduationCandidates } from "@/core/candidatePicker";
 import type { Question } from "@/content/questions/types";
 
 function findSourceUrl(questionId: string): string {
@@ -33,10 +35,16 @@ export default function LearnPage() {
   const currentQuestionId = useGameStore((s) => s.session.currentQuestionId);
   const solvedQuestionIds = useGameStore((s) => s.session.solvedQuestionIds);
   const streak = useGameStore((s) => s.progression.streakCorrectCount);
+  const pendingGraduationInstanceId = useGameStore(
+    (s) => s.progression.pendingGraduationInstanceId,
+  );
+  const unlockedSpeciesIds = useGameStore((s) => s.pokedex.unlockedSpeciesIds);
+  const legendaryStage = useGameStore((s) => s.progression.unlockedLegendaryStage);
   const setCurrentQuestion = useGameStore((s) => s.setCurrentQuestion);
   const submitAnswer = useGameStore((s) => s.submitAnswer);
   const evolve = useGameStore((s) => s.evolve);
   const skipEvolution = useGameStore((s) => s.skipEvolution);
+  const startNextPokemon = useGameStore((s) => s.startNextPokemon);
 
   const [submitting, setSubmitting] = useState(false);
   const [wrongQuestion, setWrongQuestion] = useState<Question | null>(null);
@@ -110,6 +118,28 @@ export default function LearnPage() {
     await skipEvolution(activeInstance.instanceId);
   };
 
+  const graduatedInstance =
+    pendingGraduationInstanceId !== null
+      ? (instances.find((i) => i.instanceId === pendingGraduationInstanceId) ?? null)
+      : null;
+  const graduatedSpecies = graduatedInstance
+    ? findSpeciesById(graduatedInstance.speciesId)
+    : null;
+  const graduatedSpeciesIds = instances.filter((i) => i.graduated).map((i) => i.speciesId);
+  const graduationCandidates = graduatedInstance
+    ? pickGraduationCandidates({
+        unlockedSpeciesIds,
+        graduatedSpeciesIds,
+        legendaryStage,
+        allSpecies: getAllSpecies(),
+      })
+    : [];
+  const showGraduationModal = Boolean(graduatedSpecies && graduationCandidates.length > 0);
+
+  const handleGraduationSelect = async (speciesId: string) => {
+    await startNextPokemon(speciesId);
+  };
+
   return (
     <div className="flex flex-col items-center gap-6 min-h-screen p-6 bg-gray-50">
       {activeSpecies && activeInstance && (
@@ -151,6 +181,15 @@ export default function LearnPage() {
           nextSpecies={nextEvolutionSpecies}
           onEvolve={handleEvolve}
           onSkip={handleSkipEvolution}
+        />
+      )}
+
+      {showGraduationModal && graduatedSpecies && (
+        <GraduationModal
+          open={true}
+          graduatedSpecies={graduatedSpecies}
+          candidates={graduationCandidates}
+          onSelect={handleGraduationSelect}
         />
       )}
     </div>
