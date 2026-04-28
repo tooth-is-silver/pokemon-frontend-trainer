@@ -160,15 +160,17 @@ export default function QuizPreviewPage() {
         <div className="flex flex-col gap-3 p-6 bg-white rounded-2xl border border-gray-200">
           <h3 className="text-xl font-bold">포켓몬 도감</h3>
           <div className="flex flex-wrap justify-between items-center gap-2 text-sm text-gray-600">
-            <span className="tabular-nums">3 / 151 · 1%</span>
+            <span className="tabular-nums">5 / 151 · 3%</span>
             <span>일반 도감을 완성하면 전설이 해금돼요.</span>
           </div>
           <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div className="h-full bg-blue-400" style={{ width: "2%" }} />
+            <div className="h-full bg-blue-400" style={{ width: "3%" }} />
           </div>
           <CurrentPokemonCard instance={currentInstanceMock} species={currentSpeciesMock} />
           <div className="max-h-[320px] overflow-hidden">
-            <PokedexGrid unlockedSpeciesIds={["bulbasaur", "charmander", "ivysaur"]} />
+            <PokedexGrid
+              unlockedSpeciesIds={["bulbasaur", "ivysaur", "venusaur", "charmander", "charmeleon"]}
+            />
           </div>
         </div>
       </Section>
