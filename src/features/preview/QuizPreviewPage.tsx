@@ -3,6 +3,7 @@ import { PokemonStats } from "@/components/pokemon/PokemonStats";
 import { EvolutionContent } from "@/components/pokemon/EvolutionContent";
 import { GraduationContent } from "@/components/pokemon/GraduationContent";
 import { PokedexGrid } from "@/components/pokedex/PokedexGrid";
+import { CurrentPokemonCard } from "@/components/pokedex/CurrentPokemonCard";
 import { QuizCard } from "@/components/quiz/QuizCard";
 import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
 import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
@@ -13,6 +14,7 @@ import type {
   MultipleChoiceQuestion as MCQ,
   FillBlankQuestion as FBQ,
 } from "@/content/questions/types";
+import type { PokemonInstance } from "@/stores/types";
 
 const allSpecies = getAllSpecies();
 const sampleSpecies = findSpeciesById("charmander") ?? allSpecies[0];
@@ -26,6 +28,17 @@ const graduationCandidates = pickGraduationCandidates({
   allSpecies,
 });
 const sampleStats = { hp: 42, attack: 57, defense: 33, speed: 61 };
+
+const currentInstanceMock: PokemonInstance = {
+  instanceId: "mock-active",
+  speciesId: "charmeleon",
+  currentStage: 2,
+  stats: { hp: 72, attack: 81, defense: 58, speed: 77 },
+  totalCorrectCount: 24,
+  graduated: false,
+  evolutionPending: false,
+};
+const currentSpeciesMock = findSpeciesById("charmeleon") ?? allSpecies[0];
 
 const yesNoSample: YesNoQ = {
   questionId: "preview-yn",
@@ -153,6 +166,7 @@ export default function QuizPreviewPage() {
           <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
             <div className="h-full bg-blue-400" style={{ width: "2%" }} />
           </div>
+          <CurrentPokemonCard instance={currentInstanceMock} species={currentSpeciesMock} />
           <div className="max-h-[320px] overflow-hidden">
             <PokedexGrid unlockedSpeciesIds={["bulbasaur", "charmander", "ivysaur"]} />
           </div>
