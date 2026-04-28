@@ -1,10 +1,12 @@
 import { PokemonCard } from "@/components/pokemon/PokemonCard";
 import { PokemonStats } from "@/components/pokemon/PokemonStats";
 import { EvolutionContent } from "@/components/pokemon/EvolutionContent";
+import { GraduationContent } from "@/components/pokemon/GraduationContent";
 import { PokedexGrid } from "@/components/pokedex/PokedexGrid";
 import { QuizCard } from "@/components/quiz/QuizCard";
 import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
 import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
+import { pickGraduationCandidates } from "@/core/candidatePicker";
 import type {
   Question,
   YesNoQuestion as YesNoQ,
@@ -12,8 +14,17 @@ import type {
   FillBlankQuestion as FBQ,
 } from "@/content/questions/types";
 
-const sampleSpecies = findSpeciesById("charmander") ?? getAllSpecies()[0];
-const evolutionNext = findSpeciesById("charmeleon") ?? getAllSpecies()[0];
+const allSpecies = getAllSpecies();
+const sampleSpecies = findSpeciesById("charmander") ?? allSpecies[0];
+const evolutionNext = findSpeciesById("charmeleon") ?? allSpecies[0];
+const graduatedSample = findSpeciesById("charizard") ?? allSpecies[0];
+// 실제 candidatePicker 호출로 정합 보장 (1차 진화체만 + 도감 미등록만 + 전설 제외)
+const graduationCandidates = pickGraduationCandidates({
+  unlockedSpeciesIds: ["charmander", "charmeleon", "charizard"],
+  graduatedSpeciesIds: ["charizard"],
+  legendaryStage: "none",
+  allSpecies,
+});
 const sampleStats = { hp: 42, attack: 57, defense: 33, speed: 61 };
 
 const yesNoSample: YesNoQ = {
@@ -116,6 +127,18 @@ export default function QuizPreviewPage() {
             submitting={false}
             onEvolve={noop}
             onSkip={noop}
+          />
+        </div>
+      </Section>
+
+      <Section id="preview-graduation" title="졸업 모달">
+        <div className="rounded-2xl bg-white shadow-xl border border-gray-200">
+          <GraduationContent
+            graduatedSpecies={graduatedSample}
+            candidates={graduationCandidates}
+            submitting={false}
+            selectedSpeciesId={null}
+            onSelect={noop}
           />
         </div>
       </Section>
