@@ -18,7 +18,7 @@ export function CurrentPokemonCard({ instance, species }: Props) {
         <img
           src={getSpriteUrl(species.dexNumber)}
           alt={species.nameKo}
-          className="w-24 h-24 image-rendering-pixelated"
+          className="w-24 h-24 [image-rendering:pixelated]"
           loading="lazy"
         />
         <div className="flex items-center gap-2">
