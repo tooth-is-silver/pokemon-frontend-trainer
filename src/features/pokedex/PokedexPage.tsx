@@ -2,7 +2,9 @@ import { Navigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
 import { PokedexGrid } from "@/components/pokedex/PokedexGrid";
+import { CurrentPokemonCard } from "@/components/pokedex/CurrentPokemonCard";
 import { TOTAL_DEX } from "@/content/pokemon/types";
+import { findSpeciesById } from "@/content/pokemon";
 
 const LEGENDARY_MESSAGE: Record<"none" | "legendary-birds" | "mewtwo" | "mew", string> = {
   none: "일반 도감을 완성하면 전설이 해금돼요.",
@@ -18,6 +20,8 @@ export default function PokedexPage() {
   const starterChosen = useGameStore((s) => s.trainer.starterChosen);
   const unlockedSpeciesIds = useGameStore((s) => s.pokedex.unlockedSpeciesIds);
   const legendaryStage = useGameStore((s) => s.progression.unlockedLegendaryStage);
+  const activeInstanceId = useGameStore((s) => s.trainer.activePokemonInstanceId);
+  const instances = useGameStore((s) => s.party.instances);
 
   if (authLoading || !loaded) {
     return <div className="flex items-center justify-center min-h-screen">로딩 중...</div>;
@@ -27,6 +31,9 @@ export default function PokedexPage() {
 
   const unlockedCount = unlockedSpeciesIds.length;
   const percent = Math.floor((unlockedCount / TOTAL_DEX) * 100);
+
+  const activeInstance = instances.find((i) => i.instanceId === activeInstanceId) ?? null;
+  const activeSpecies = activeInstance ? findSpeciesById(activeInstance.speciesId) : null;
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center gap-6 p-6">
@@ -52,6 +59,12 @@ export default function PokedexPage() {
           />
         </div>
       </header>
+
+      {activeInstance && activeSpecies && (
+        <section className="w-full max-w-4xl">
+          <CurrentPokemonCard instance={activeInstance} species={activeSpecies} />
+        </section>
+      )}
 
       <main className="w-full max-w-4xl">
         <PokedexGrid unlockedSpeciesIds={unlockedSpeciesIds} />
