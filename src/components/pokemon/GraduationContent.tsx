@@ -49,7 +49,7 @@ export function GraduationContent({
                   <img
                     src={getSpriteUrl(species.dexNumber)}
                     alt={species.nameKo}
-                    className="w-16 h-16 image-rendering-pixelated"
+                    className="w-16 h-16 [image-rendering:pixelated]"
                     loading="lazy"
                   />
                   <span className="text-sm font-semibold">{species.nameKo}</span>

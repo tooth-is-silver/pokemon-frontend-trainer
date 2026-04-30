@@ -20,7 +20,7 @@ export function PokedexCard({ dexNumber, species, unlocked }: Props) {
         src={getSpriteUrl(dexNumber)}
         alt={label}
         loading="lazy"
-        className={`w-14 h-14 image-rendering-pixelated ${
+        className={`w-14 h-14 [image-rendering:pixelated] ${
           unlocked ? "" : "brightness-0 opacity-20"
         }`}
       />
