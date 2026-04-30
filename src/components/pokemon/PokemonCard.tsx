@@ -11,7 +11,7 @@ export function PokemonCard({ species }: Props) {
       <img
         src={getSpriteUrl(species.dexNumber)}
         alt={species.nameKo}
-        className="w-32 h-32 image-rendering-pixelated"
+        className="w-32 h-32 [image-rendering:pixelated]"
         loading="lazy"
       />
       <span className="text-xl font-bold">{species.nameKo}</span>

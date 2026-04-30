@@ -28,7 +28,7 @@ export function EvolutionContent({
           <img
             src={getSpriteUrl(currentSpecies.dexNumber)}
             alt={currentSpecies.nameKo}
-            className="w-24 h-24 image-rendering-pixelated opacity-60"
+            className="w-24 h-24 [image-rendering:pixelated] opacity-60"
             loading="lazy"
           />
           <figcaption className="text-sm text-gray-500">{currentSpecies.nameKo}</figcaption>
@@ -40,7 +40,7 @@ export function EvolutionContent({
           <img
             src={getSpriteUrl(nextSpecies.dexNumber)}
             alt={nextSpecies.nameKo}
-            className="w-28 h-28 image-rendering-pixelated drop-shadow-md"
+            className="w-28 h-28 [image-rendering:pixelated] drop-shadow-md"
             loading="lazy"
           />
           <figcaption className="text-sm font-bold text-gray-800">{nextSpecies.nameKo}</figcaption>

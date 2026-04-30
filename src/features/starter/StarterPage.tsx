@@ -55,7 +55,7 @@ export default function StarterPage() {
             <img
               src={getSpriteUrl(species.dexNumber)}
               alt={species.nameKo}
-              className="w-24 h-24 image-rendering-pixelated"
+              className="w-24 h-24 [image-rendering:pixelated]"
               loading="lazy"
             />
             <span className="text-lg font-semibold">{species.nameKo}</span>
