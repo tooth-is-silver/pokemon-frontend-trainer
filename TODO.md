@@ -186,12 +186,12 @@
 
 > 기획 근거: game-rules.md 7, screen-flow.md 7
 
-- [ ] 일반 도감 완성 감지 (`unlockedSpeciesIds` 중 일반 146마리 모두 등록)
-  - [ ] `progression.unlockedLegendaryStage` 트랜지션 `none` → `legendary-birds`
-  - [ ] 트랜지션은 `start_next_pokemon` rpc 안에서 처리 (트랜잭션)
-- [ ] wave1 → wave2: 프리저/썬더/파이어 모두 졸업 → `mewtwo`
-- [ ] wave2 → wave3: 뮤츠 졸업 → `mew`
-- [ ] wave3 종료: 뮤 졸업 → 엔딩 처리
+- [x] 일반 도감 완성 감지 (`unlockedSpeciesIds` 중 일반 146마리 모두 등록)
+  - [x] `progression.unlockedLegendaryStage` 트랜지션 `none` → `legendary-birds`
+  - [x] 트랜지션은 `start_next_pokemon` rpc 안에서 처리 (트랜잭션)
+- [x] wave1 → wave2: 프리저/썬더/파이어 모두 졸업 → `mewtwo`
+- [x] wave2 → wave3: 뮤츠 졸업 → `mew`
+- [ ] wave3 종료: 뮤 졸업 → 엔딩 처리 (008 RPC 가 `is_ending: true` 반환만, UI 분기는 별도 PR)
 - [ ] `PokedexPage` 전설 해금 단계 배너 (이미 메시지 룩업 있음)
 - [ ] `candidatePicker` 가 wave 단계에 따라 후보 풀 변경하는지 통합 테스트
 
