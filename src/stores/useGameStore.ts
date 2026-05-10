@@ -10,6 +10,7 @@ import type {
   SessionState,
   PokemonInstance,
   ProcessAnswerResult,
+  StartNextPokemonResult,
 } from "./types";
 
 interface GameStore {
@@ -306,7 +307,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     });
     if (error) throw error;
 
-    const newInstanceId = data.instance_id as string;
+    const result = data as StartNextPokemonResult;
+    const newInstanceId = result.instance_id;
     const state = get();
     const oldActiveId = state.trainer.activePokemonInstanceId;
 
@@ -344,6 +346,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         streakCorrectCount: 0,
         pendingEvolutionInstanceId: null,
         pendingGraduationInstanceId: null,
+        unlockedLegendaryStage: result.unlocked_legendary_stage,
       },
       session: {
         ...state.session,

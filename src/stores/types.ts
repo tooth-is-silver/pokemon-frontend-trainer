@@ -62,3 +62,12 @@ export interface ProcessAnswerResult {
   berry_given: string | null;
   evolution_pending: boolean;
 }
+
+// 신규 인스턴스 시작 결과 (rpc 반환값)
+// unlocked_legendary_stage 는 트랜지션이 일어났든 아니든 갱신 후 최종 단계
+// is_ending 은 뮤 졸업 직후에만 true (엔딩 UI 분기용)
+export interface StartNextPokemonResult {
+  instance_id: string;
+  unlocked_legendary_stage: ProgressionState["unlockedLegendaryStage"];
+  is_ending: boolean;
+}
