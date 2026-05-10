@@ -5,6 +5,10 @@
 --   legendary-birds → mewtwo          : 프리저/썬더/파이어 모두 졸업 시
 --   mewtwo          → mew             : 뮤츠 졸업 시
 --   mew             → (유지)          : 뮤 졸업 시 is_ending=true 반환만 (엔딩 UI 는 별도 PR)
+--
+-- 전설 종 ID 동기화:
+--   src/content/pokemon/legendary.ts 와 아래 하드코딩된 ID 목록은 함께 갱신해야 한다.
+--   현재 1세대 한정이라 변경 가능성이 낮아 species 마스터 테이블 도입은 보류.
 
 create or replace function start_next_pokemon(p_species_id text)
 returns jsonb
@@ -34,7 +38,7 @@ begin
 
   v_old_instance_id := v_trainer.active_pokemon_instance_id;
 
-  -- 졸업한 인스턴스의 species 식별 (트랜지션 판정용)
+  -- 졸업한 인스턴스의 species 식별 (mewtwo / mew 단계 트랜지션 판정에서 사용)
   if v_old_instance_id is not null then
     select species_id into v_old_species_id
       from pokemon_instances
