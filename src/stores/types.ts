@@ -39,6 +39,7 @@ export interface ProgressionState {
   pendingEvolutionInstanceId: string | null;
   pendingGraduationInstanceId: string | null;
   unlockedLegendaryStage: "none" | "legendary-birds" | "mewtwo" | "mew";
+  isEnding: boolean;
 }
 
 // 세션 (서버 저장 안 함, 프론트 전용)

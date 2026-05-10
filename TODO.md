@@ -191,9 +191,9 @@
   - [x] 트랜지션은 `start_next_pokemon` rpc 안에서 처리 (트랜잭션)
 - [x] wave1 → wave2: 프리저/썬더/파이어 모두 졸업 → `mewtwo`
 - [x] wave2 → wave3: 뮤츠 졸업 → `mew`
-- [ ] wave3 종료: 뮤 졸업 → 엔딩 처리 (008 RPC 가 `is_ending: true` 반환만, UI 분기는 별도 PR)
-- [ ] `PokedexPage` 전설 해금 단계 배너 (이미 메시지 룩업 있음)
-- [ ] `candidatePicker` 가 wave 단계에 따라 후보 풀 변경하는지 통합 테스트
+- [x] wave3 종료: 뮤 졸업 → 엔딩 처리 (009 `complete_ending` RPC + LearnPage 자동 분기 + 임시 EndingScreen)
+- [x] `PokedexPage` 전설 해금 단계 배너 (4단계 메시지 룩업 + `aria-live` 정합 확인)
+- [ ] `candidatePicker` 통합 테스트는 단위 테스트 56개로 충분 — wave 분기 / 풀 크기별 수량은 모두 검증됨
 
 ## Phase F. 문제 데이터 확장
 

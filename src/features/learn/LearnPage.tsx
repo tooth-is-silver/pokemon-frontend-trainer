@@ -10,6 +10,7 @@ import { PokemonCard } from "@/components/pokemon/PokemonCard";
 import { PokemonStats } from "@/components/pokemon/PokemonStats";
 import { EvolutionModal } from "@/components/pokemon/EvolutionModal";
 import { GraduationModal } from "@/components/pokemon/GraduationModal";
+import { EndingScreen } from "@/components/pokemon/EndingScreen";
 import { QuizCard } from "@/components/quiz/QuizCard";
 import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
 import { pickGraduationCandidates } from "@/core/candidatePicker";
@@ -40,11 +41,13 @@ export default function LearnPage() {
   );
   const unlockedSpeciesIds = useGameStore((s) => s.pokedex.unlockedSpeciesIds);
   const legendaryStage = useGameStore((s) => s.progression.unlockedLegendaryStage);
+  const isEnding = useGameStore((s) => s.progression.isEnding);
   const setCurrentQuestion = useGameStore((s) => s.setCurrentQuestion);
   const submitAnswer = useGameStore((s) => s.submitAnswer);
   const evolve = useGameStore((s) => s.evolve);
   const skipEvolution = useGameStore((s) => s.skipEvolution);
   const startNextPokemon = useGameStore((s) => s.startNextPokemon);
+  const completeEnding = useGameStore((s) => s.completeEnding);
 
   const [submitting, setSubmitting] = useState(false);
   const [wrongQuestion, setWrongQuestion] = useState<Question | null>(null);
@@ -60,11 +63,22 @@ export default function LearnPage() {
     if (next) setCurrentQuestion(next.questionId);
   }, [loaded, starterChosen, currentQuestion, solvedQuestionIds, setCurrentQuestion]);
 
+  // 뮤 졸업 트리거 → 자동 엔딩 처리
+  useEffect(() => {
+    if (!pendingGraduationInstanceId || isEnding) return;
+    const inst = instances.find((i) => i.instanceId === pendingGraduationInstanceId);
+    if (inst?.speciesId !== "mew") return;
+    completeEnding(pendingGraduationInstanceId).catch((err) =>
+      console.error("엔딩 처리 실패:", err),
+    );
+  }, [pendingGraduationInstanceId, isEnding, instances, completeEnding]);
+
   if (authLoading || !loaded) {
     return <div className="flex items-center justify-center min-h-screen">로딩 중...</div>;
   }
   if (!userId) return <Navigate to="/" replace />;
   if (!starterChosen) return <Navigate to="/starter" replace />;
+  if (isEnding) return <EndingScreen />;
 
   const handleAnswer = async (userAnswer: string) => {
     if (!currentQuestion || submitting || wrongQuestion) return;
@@ -122,9 +136,7 @@ export default function LearnPage() {
     pendingGraduationInstanceId !== null
       ? (instances.find((i) => i.instanceId === pendingGraduationInstanceId) ?? null)
       : null;
-  const graduatedSpecies = graduatedInstance
-    ? findSpeciesById(graduatedInstance.speciesId)
-    : null;
+  const graduatedSpecies = graduatedInstance ? findSpeciesById(graduatedInstance.speciesId) : null;
   const graduatedSpeciesIds = instances.filter((i) => i.graduated).map((i) => i.speciesId);
   const graduationCandidates = graduatedInstance
     ? pickGraduationCandidates({
@@ -134,7 +146,11 @@ export default function LearnPage() {
         allSpecies: getAllSpecies(),
       })
     : [];
-  const showGraduationModal = Boolean(graduatedSpecies && graduationCandidates.length > 0);
+  // 뮤 졸업은 GraduationModal 대신 EndingScreen 분기로 처리
+  const isMewGraduating = graduatedSpecies?.speciesId === "mew";
+  const showGraduationModal = Boolean(
+    graduatedSpecies && graduationCandidates.length > 0 && !isMewGraduating,
+  );
 
   const handleGraduationSelect = async (speciesId: string) => {
     await startNextPokemon(speciesId);

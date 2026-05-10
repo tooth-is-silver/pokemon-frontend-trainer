@@ -44,6 +44,9 @@ interface GameStore {
   // 졸업 후 새 인스턴스 시작
   startNextPokemon: (speciesId: string) => Promise<void>;
 
+  // 엔딩 처리 (뮤 졸업 시)
+  completeEnding: (instanceId: string) => Promise<void>;
+
   // 세션 (프론트 전용)
   setCurrentQuestion: (questionId: string) => void;
   addSolvedQuestion: (questionId: string) => void;
@@ -58,6 +61,7 @@ const initialState = {
     pendingEvolutionInstanceId: null,
     pendingGraduationInstanceId: null,
     unlockedLegendaryStage: "none",
+    isEnding: false,
   } as ProgressionState,
   session: {
     currentQuestionId: null,
@@ -141,6 +145,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
             pendingEvolutionInstanceId: progressionRes.data.pending_evolution_instance_id,
             pendingGraduationInstanceId: progressionRes.data.pending_graduation_instance_id,
             unlockedLegendaryStage: progressionRes.data.unlocked_legendary_stage,
+            isEnding: progressionRes.data.is_ending ?? false,
           }
         : initialState.progression,
       session: {
@@ -352,6 +357,30 @@ export const useGameStore = create<GameStore>((set, get) => ({
         ...state.session,
         currentQuestionId: null,
         lastAnswerCorrect: null,
+      },
+    });
+  },
+
+  completeEnding: async (instanceId) => {
+    const { error } = await supabase.rpc("complete_ending", {
+      p_instance_id: instanceId,
+    });
+    if (error) throw error;
+
+    const state = get();
+    set({
+      party: {
+        instances: state.party.instances.map((inst) =>
+          inst.instanceId === instanceId
+            ? { ...inst, graduated: true, evolutionPending: false }
+            : inst,
+        ),
+      },
+      progression: {
+        ...state.progression,
+        isEnding: true,
+        pendingGraduationInstanceId: null,
+        pendingEvolutionInstanceId: null,
       },
     });
   },
