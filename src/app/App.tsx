@@ -10,7 +10,6 @@ const Learn = lazy(() => import("../features/learn/LearnPage"));
 const Pokedex = lazy(() => import("../features/pokedex/PokedexPage"));
 
 export function App() {
-  const initializeAuth = useAuthStore((s) => s.initialize);
   const authLoading = useAuthStore((s) => s.loading);
   const userId = useAuthStore((s) => s.userId);
   const loadFromServer = useGameStore((s) => s.loadFromServer);
@@ -22,10 +21,13 @@ export function App() {
     if (bootstrappedRef.current) return;
     bootstrappedRef.current = true;
 
-    initializeAuth().catch((error) => {
-      console.error("인증 초기화 실패:", error);
-    });
-  }, [initializeAuth]);
+    useAuthStore
+      .getState()
+      .initialize()
+      .catch((error) => {
+        console.error("인증 초기화 실패:", error);
+      });
+  }, []);
 
   useEffect(() => {
     if (authLoading) return;

@@ -18,12 +18,16 @@ export default function StarterPage() {
   const [selecting, setSelecting] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  if (authLoading || !loaded) {
+  if (authLoading) {
     return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
   }
 
   if (!userId) {
     return <Navigate to="/" replace />;
+  }
+
+  if (!loaded) {
+    return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
   }
 
   // 이미 스타터를 선택했으면 학습 화면으로
