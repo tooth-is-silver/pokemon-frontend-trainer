@@ -63,23 +63,6 @@ export default function LearnPage() {
     if (next) setCurrentQuestion(next.questionId);
   }, [loaded, starterChosen, currentQuestion, solvedQuestionIds, setCurrentQuestion]);
 
-  // 뮤 졸업 트리거 → 자동 엔딩 처리
-  useEffect(() => {
-    if (!pendingGraduationInstanceId || isEnding) return;
-    const inst = instances.find((i) => i.instanceId === pendingGraduationInstanceId);
-    if (inst?.speciesId !== "mew") return;
-    completeEnding(pendingGraduationInstanceId).catch((err) =>
-      console.error("엔딩 처리 실패:", err),
-    );
-  }, [pendingGraduationInstanceId, isEnding, instances, completeEnding]);
-
-  if (authLoading || !loaded) {
-    return <div className="flex items-center justify-center min-h-screen">로딩 중...</div>;
-  }
-  if (!userId) return <Navigate to="/" replace />;
-  if (!starterChosen) return <Navigate to="/starter" replace />;
-  if (isEnding) return <EndingScreen />;
-
   const handleAnswer = async (userAnswer: string) => {
     if (!currentQuestion || submitting || wrongQuestion) return;
 
@@ -137,6 +120,7 @@ export default function LearnPage() {
       ? (instances.find((i) => i.instanceId === pendingGraduationInstanceId) ?? null)
       : null;
   const graduatedSpecies = graduatedInstance ? findSpeciesById(graduatedInstance.speciesId) : null;
+  const isMewGraduating = graduatedSpecies?.speciesId === "mew";
   const graduatedSpeciesIds = instances.filter((i) => i.graduated).map((i) => i.speciesId);
   const graduationCandidates = graduatedInstance
     ? pickGraduationCandidates({
@@ -146,11 +130,24 @@ export default function LearnPage() {
         allSpecies: getAllSpecies(),
       })
     : [];
-  // 뮤 졸업은 GraduationModal 대신 EndingScreen 분기로 처리
-  const isMewGraduating = graduatedSpecies?.speciesId === "mew";
   const showGraduationModal = Boolean(
     graduatedSpecies && graduationCandidates.length > 0 && !isMewGraduating,
   );
+
+  // 뮤 졸업 트리거 → 자동 엔딩 처리
+  useEffect(() => {
+    if (!pendingGraduationInstanceId || isEnding || !isMewGraduating) return;
+    completeEnding(pendingGraduationInstanceId).catch((err) =>
+      console.error("엔딩 처리 실패:", err),
+    );
+  }, [pendingGraduationInstanceId, isEnding, isMewGraduating, completeEnding]);
+
+  if (authLoading || !loaded) {
+    return <div className="flex items-center justify-center min-h-screen">로딩 중...</div>;
+  }
+  if (!userId) return <Navigate to="/" replace />;
+  if (!starterChosen) return <Navigate to="/starter" replace />;
+  if (isEnding) return <EndingScreen />;
 
   const handleGraduationSelect = async (speciesId: string) => {
     await startNextPokemon(speciesId);
