@@ -230,11 +230,15 @@ type PokedexState = {
 ```ts
 type ProgressionState = {
   streakCorrectCount: number;
-  pendingPokemonSelection: boolean;
   pendingEvolutionInstanceId: string | null;
+  pendingGraduationInstanceId: string | null;
   unlockedLegendaryStage: "none" | "legendary-birds" | "mewtwo" | "mew";
+  isEnding: boolean;
 };
 ```
+
+- `pendingGraduationInstanceId` 가 세팅되면 학습 화면이 졸업 모달을 띄운다. 뮤 졸업 시점에는 모달 대신 엔딩 화면으로 분기한다.
+- `isEnding` 은 `complete_ending` RPC 가 갱신한다. 한 번 `true` 가 되면 학습 화면이 엔딩 화면을 표시한다.
 
 ### 5.6 Session
 
