@@ -11,10 +11,20 @@ const starterSpecies = getStarters();
 export default function StarterPage() {
   const navigate = useNavigate();
   const chooseStarter = useGameStore((s) => s.chooseStarter);
+  const loaded = useGameStore((s) => s.loaded);
   const starterChosen = useGameStore((s) => s.trainer.starterChosen);
+  const authLoading = useAuthStore((s) => s.loading);
   const userId = useAuthStore((s) => s.userId);
   const [selecting, setSelecting] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  if (authLoading || !loaded) {
+    return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
+  }
+
+  if (!userId) {
+    return <Navigate to="/" replace />;
+  }
 
   // 이미 스타터를 선택했으면 학습 화면으로
   if (starterChosen) {

@@ -67,11 +67,16 @@ const initialState = {
   loaded: false,
 };
 
+const resetState = {
+  ...initialState,
+  loaded: true,
+};
+
 export const useGameStore = create<GameStore>((set, get) => ({
   ...initialState,
 
   reset: () => {
-    set({ ...initialState });
+    set({ ...resetState });
   },
 
   loadFromServer: async (userId) => {
