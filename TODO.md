@@ -66,11 +66,19 @@
 
 - ✅ Phase 1 ~ 8: 완료
 - ✅ Phase 9 (진화 모달): 완료
-- ⚠️ Phase 9 (졸업 + 신규 선택): 단일 보유 정책으로 재설계 필요 → **Phase B**
-- ✅ Phase 10 (도감 그리드): 완료
-- ⚠️ Phase 10 (현재 포켓몬 표시): 미완 → **Phase C**
-- ❌ 잘못된 가정 정리 (`/pokemon`, `MyPokemonPage`) → **Phase A**
-- ❌ Phase D ~ G: 미완
+- ✅ Phase B (졸업 모달 + 신규 선택): 완료
+- ✅ Phase C (도감의 현재 포켓몬 표시): 완료
+- ✅ Phase E (전설 wave + 뮤 엔딩 분기): 구현 완료
+- ⚠️ 앱 초기화 / 세션 로드 연결: 이번 태스크에서 정합화
+- ⚠️ Phase A, D, F, G: 일부 미완
+
+## 공통 앱 부트스트랩
+
+- [x] 앱 진입 시 `useAuthStore.initialize()` 호출
+- [x] 로그인 세션 기준 `useGameStore.loadFromServer()` 호출
+- [x] 로그아웃/비로그인 상태에서 게임 스토어 게스트 상태로 초기화
+- [x] 랜딩에서 로그인 완료 시 `starterChosen` 상태에 따라 `/starter` 또는 `/learn` 으로 분기
+- [x] 스타터 페이지에서 인증/로딩 가드 적용
 
 ---
 

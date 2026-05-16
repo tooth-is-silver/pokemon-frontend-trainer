@@ -71,11 +71,17 @@ const initialState = {
   loaded: false,
 };
 
+const resetState = {
+  ...initialState,
+  // 비로그인 상태는 서버에서 더 불러올 데이터가 없으므로 게스트 기본값을 즉시 사용한다.
+  loaded: true,
+};
+
 export const useGameStore = create<GameStore>((set, get) => ({
   ...initialState,
 
   reset: () => {
-    set({ ...initialState });
+    set({ ...resetState });
   },
 
   loadFromServer: async (userId) => {
