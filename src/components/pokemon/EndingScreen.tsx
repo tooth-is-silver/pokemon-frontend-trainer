@@ -32,20 +32,36 @@ export function EndingScreen() {
     let cancelled = false;
 
     async function loadStats() {
-      const [attemptsRes, correctRes] = await Promise.all([
-        supabase
+      try {
+        const statsRes = await supabase
           .from("solved_questions")
-          .select("*", { count: "exact", head: true })
-          .eq("user_id", userId),
-        supabase
-          .from("solved_questions")
-          .select("*", { count: "exact", head: true })
-          .eq("user_id", userId)
-          .eq("correct", true),
-      ]);
+          .select("correct", { count: "exact" })
+          .eq("user_id", userId);
 
-      if (attemptsRes.error || correctRes.error) {
-        console.error("엔딩 통계 로드 실패:", attemptsRes.error ?? correctRes.error);
+        if (statsRes.error) {
+          console.error("엔딩 통계 로드 실패:", statsRes.error);
+          if (!cancelled) {
+            setStats({
+              totalAttempts: 0,
+              totalCorrect: 0,
+              totalWrong: 0,
+            });
+          }
+          return;
+        }
+
+        const totalAttempts = statsRes.count ?? 0;
+        const totalCorrect = statsRes.data?.filter((row) => row.correct).length ?? 0;
+
+        if (!cancelled) {
+          setStats({
+            totalAttempts,
+            totalCorrect,
+            totalWrong: Math.max(totalAttempts - totalCorrect, 0),
+          });
+        }
+      } catch (error) {
+        console.error("엔딩 통계 로드 실패:", error);
         if (!cancelled) {
           setStats({
             totalAttempts: 0,
@@ -53,31 +69,10 @@ export function EndingScreen() {
             totalWrong: 0,
           });
         }
-        return;
-      }
-
-      const totalAttempts = attemptsRes.count ?? 0;
-      const totalCorrect = correctRes.count ?? 0;
-
-      if (!cancelled) {
-        setStats({
-          totalAttempts,
-          totalCorrect,
-          totalWrong: Math.max(totalAttempts - totalCorrect, 0),
-        });
       }
     }
 
-    loadStats().catch((error) => {
-      console.error("엔딩 통계 로드 실패:", error);
-      if (!cancelled) {
-        setStats({
-          totalAttempts: 0,
-          totalCorrect: 0,
-          totalWrong: 0,
-        });
-      }
-    });
+    loadStats();
 
     return () => {
       cancelled = true;
