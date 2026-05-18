@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { findSpeciesById } from "@/content/pokemon";
+import { getSpriteUrl, TOTAL_DEX } from "@/content/pokemon/types";
 import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useGameStore } from "@/stores/useGameStore";
 
 type EndingStats = {
   totalAttempts: number;
@@ -12,7 +15,16 @@ type EndingStats = {
 // Phase E 임시 엔딩 화면. Phase G 에서 도감 100% + 졸업 명단까지 본격 구성.
 export function EndingScreen() {
   const userId = useAuthStore((s) => s.userId);
+  const unlockedSpeciesIds = useGameStore((s) => s.pokedex.unlockedSpeciesIds);
+  const instances = useGameStore((s) => s.party.instances);
   const [stats, setStats] = useState<EndingStats | null>(null);
+  const pokedexPercent = Math.floor((unlockedSpeciesIds.length / TOTAL_DEX) * 100);
+  const graduatedSpecies = [
+    ...new Set(instances.filter((i) => i.graduated).map((i) => i.speciesId)),
+  ]
+    .map((speciesId) => findSpeciesById(speciesId))
+    .filter((species) => species !== null)
+    .sort((a, b) => a.dexNumber - b.dexNumber);
 
   useEffect(() => {
     if (!userId) return;
@@ -112,6 +124,55 @@ export function EndingScreen() {
             loading={stats === null}
             tone="amber"
           />
+        </section>
+
+        <section className="flex w-full flex-col gap-3 rounded-2xl bg-slate-50 p-5 text-left ring-1 ring-slate-200">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-lg font-semibold text-slate-900">도감 진행</h2>
+            <span className="text-sm font-medium text-slate-600 tabular-nums">
+              {unlockedSpeciesIds.length} / {TOTAL_DEX} · {pokedexPercent}%
+            </span>
+          </div>
+          <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+            <div
+              className="h-full rounded-full bg-blue-500 transition-all duration-500"
+              style={{ width: `${pokedexPercent}%` }}
+            />
+          </div>
+          <p className="text-sm leading-relaxed text-slate-600">
+            지금까지 함께한 포켓몬들이 차곡차곡 도감에 남아 있어요. 완주까지 이어온 흐름이 한눈에
+            보이도록 정리했어요.
+          </p>
+        </section>
+
+        <section className="flex w-full flex-col gap-3 text-left">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-lg font-semibold text-slate-900">졸업한 포켓몬</h2>
+            <span className="text-sm text-slate-500 tabular-nums">
+              {graduatedSpecies.length}마리
+            </span>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {graduatedSpecies.map((species) => (
+              <div
+                key={species.speciesId}
+                className="flex items-center gap-3 rounded-2xl bg-white px-4 py-3 ring-1 ring-slate-200"
+              >
+                <img
+                  src={getSpriteUrl(species.dexNumber)}
+                  alt={species.nameKo}
+                  className="h-14 w-14 [image-rendering:pixelated]"
+                  loading="lazy"
+                />
+                <div className="min-w-0">
+                  <p className="font-semibold text-slate-900">{species.nameKo}</p>
+                  <p className="text-sm text-slate-500">
+                    #{String(species.dexNumber).padStart(3, "0")} · {species.nameEn}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
         <p className="text-sm leading-relaxed text-gray-500">
