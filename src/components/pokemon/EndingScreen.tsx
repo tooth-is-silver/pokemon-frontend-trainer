@@ -18,6 +18,7 @@ export function EndingScreen() {
   const unlockedSpeciesIds = useGameStore((s) => s.pokedex.unlockedSpeciesIds);
   const instances = useGameStore((s) => s.party.instances);
   const [stats, setStats] = useState<EndingStats | null>(null);
+  const [statsError, setStatsError] = useState(false);
   const pokedexPercent = Math.floor((unlockedSpeciesIds.length / TOTAL_DEX) * 100);
   const graduatedSpecies = [
     ...new Set(instances.filter((i) => i.graduated).map((i) => i.speciesId)),
@@ -33,6 +34,10 @@ export function EndingScreen() {
 
     async function loadStats() {
       try {
+        if (!cancelled) {
+          setStatsError(false);
+        }
+
         const statsRes = await supabase
           .from("solved_questions")
           .select("correct", { count: "exact" })
@@ -41,11 +46,8 @@ export function EndingScreen() {
         if (statsRes.error) {
           console.error("엔딩 통계 로드 실패:", statsRes.error);
           if (!cancelled) {
-            setStats({
-              totalAttempts: 0,
-              totalCorrect: 0,
-              totalWrong: 0,
-            });
+            setStats(null);
+            setStatsError(true);
           }
           return;
         }
@@ -63,11 +65,8 @@ export function EndingScreen() {
       } catch (error) {
         console.error("엔딩 통계 로드 실패:", error);
         if (!cancelled) {
-          setStats({
-            totalAttempts: 0,
-            totalCorrect: 0,
-            totalWrong: 0,
-          });
+          setStats(null);
+          setStatsError(true);
         }
       }
     }
@@ -120,6 +119,15 @@ export function EndingScreen() {
             tone="amber"
           />
         </section>
+
+        {statsError && (
+          <p
+            className="w-full rounded-2xl bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800 ring-1 ring-amber-200"
+            role="status"
+          >
+            학습 통계를 불러오지 못했어요. 잠시 후 다시 확인해 주세요.
+          </p>
+        )}
 
         <section className="flex w-full flex-col gap-3 rounded-2xl bg-slate-50 p-5 text-left ring-1 ring-slate-200">
           <div className="flex flex-wrap items-center justify-between gap-2">
