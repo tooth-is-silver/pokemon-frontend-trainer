@@ -1,5 +1,6 @@
 import { comparison } from "./by-page/comparison";
 import { firstSteps } from "./by-page/first-steps";
+import { ifElse } from "./by-page/ifelse";
 import { objectMethods } from "./by-page/object-methods";
 import { operators } from "./by-page/operators";
 import { jsTypes } from "./by-page/types";
@@ -12,6 +13,7 @@ export const questionPages: QuestionPage[] = [
   jsTypes,
   operators,
   comparison,
+  ifElse,
   objectMethods,
 ];
 
