@@ -10,8 +10,8 @@ import { variables } from "./by-page/variables";
 import type { QuestionPage, Question } from "./types";
 
 export const questionPages: QuestionPage[] = [
-  firstSteps,
   variables,
+  firstSteps,
   jsTypes,
   operators,
   comparison,
