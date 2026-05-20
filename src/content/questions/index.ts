@@ -7,6 +7,7 @@ import { objectMethods } from "./by-page/object-methods";
 import { operators } from "./by-page/operators";
 import { jsTypes } from "./by-page/types";
 import { variables } from "./by-page/variables";
+import { whileFor } from "./by-page/while-for";
 import type { QuestionPage, Question } from "./types";
 
 export const questionPages: QuestionPage[] = [
@@ -18,6 +19,7 @@ export const questionPages: QuestionPage[] = [
   ifElse,
   logicalOperators,
   nullishCoalescing,
+  whileFor,
   objectMethods,
 ];
 
