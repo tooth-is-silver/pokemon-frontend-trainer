@@ -4,6 +4,7 @@ export const conceptPools: Record<string, string[]> = {
   "js-comparison": ["==", "===", "문자열 비교", "null", "undefined", "boolean"],
   "js-conditionals": ["if", "else", "truthy", "falsy", "조건 연산자", "분기"],
   "js-logical-operators": ["||", "&&", "!", "short-circuit", "truthy", "falsy"],
+  "js-nullish": ["??", "null", "undefined", "기본값", "falsy", "default value"],
   "js-operators": ["+", "단항 +", "%", "**", "증가 연산자", "문자열 연결"],
   "js-types": ["number", "string", "boolean", "null", "undefined", "typeof"],
   "js-variables": ["let", "const", "var", "상수", "재할당", "하드코딩"],
