@@ -3,6 +3,7 @@ export const conceptPools: Record<string, string[]> = {
   "js-basics": ["script", "let", "const", "strict mode", "camelCase", "변수 선언"],
   "js-comparison": ["==", "===", "문자열 비교", "null", "undefined", "boolean"],
   "js-conditionals": ["if", "else", "truthy", "falsy", "조건 연산자", "분기"],
+  "js-functions": ["함수", "매개변수", "return", "지역 변수", "호출", "parameter"],
   "js-logical-operators": ["||", "&&", "!", "short-circuit", "truthy", "falsy"],
   "js-loops": ["while", "for", "break", "continue", "반복문", "loop"],
   "js-nullish": ["??", "null", "undefined", "기본값", "falsy", "default value"],
