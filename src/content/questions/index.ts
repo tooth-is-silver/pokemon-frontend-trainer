@@ -1,5 +1,6 @@
 import { comparison } from "./by-page/comparison";
 import { firstSteps } from "./by-page/first-steps";
+import { functionBasics } from "./by-page/function-basics";
 import { ifElse } from "./by-page/ifelse";
 import { logicalOperators } from "./by-page/logical-operators";
 import { nullishCoalescing } from "./by-page/nullish-coalescing";
@@ -18,6 +19,7 @@ export const questionPages: QuestionPage[] = [
   operators,
   comparison,
   ifElse,
+  functionBasics,
   logicalOperators,
   nullishCoalescing,
   whileFor,
