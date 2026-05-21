@@ -16,6 +16,7 @@ export const conceptPools: Record<string, string[]> = {
   "js-logical-operators": ["||", "&&", "!", "short-circuit", "truthy", "falsy"],
   "js-loops": ["while", "for", "break", "continue", "반복문", "loop"],
   "js-nullish": ["??", "null", "undefined", "기본값", "falsy", "default value"],
+  "js-objects": ["객체", "프로퍼티", "key", "value", "delete", "점 표기법"],
   "js-operators": ["+", "단항 +", "%", "**", "증가 연산자", "문자열 연결"],
   "js-switch": ["switch", "case", "default", "break", "fall-through", "==="],
   "js-types": ["number", "string", "boolean", "null", "undefined", "typeof"],
