@@ -1,5 +1,13 @@
 export const conceptPools: Record<string, string[]> = {
   "this-core": ["this", "렉시컬 환경", "클로저", "프로토타입", "스코프", "생성자 함수"],
+  "js-arrow-functions": [
+    "=>",
+    "화살표 함수",
+    "암묵적 반환",
+    "매개변수",
+    "implicit return",
+    "arrow function",
+  ],
   "js-basics": ["script", "let", "const", "strict mode", "camelCase", "변수 선언"],
   "js-comparison": ["==", "===", "문자열 비교", "null", "undefined", "boolean"],
   "js-conditionals": ["if", "else", "truthy", "falsy", "조건 연산자", "분기"],
