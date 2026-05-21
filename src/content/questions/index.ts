@@ -19,11 +19,11 @@ export const questionPages: QuestionPage[] = [
   operators,
   comparison,
   ifElse,
+  functionBasics,
   logicalOperators,
   nullishCoalescing,
   whileFor,
   switchStatement,
-  functionBasics,
   objectMethods,
 ];
 
