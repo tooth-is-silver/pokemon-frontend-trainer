@@ -1,3 +1,4 @@
+import { arrowFunctionsBasics } from "./by-page/arrow-functions-basics";
 import { comparison } from "./by-page/comparison";
 import { firstSteps } from "./by-page/first-steps";
 import { functionBasics } from "./by-page/function-basics";
@@ -22,6 +23,7 @@ export const questionPages: QuestionPage[] = [
   ifElse,
   functionBasics,
   functionExpressions,
+  arrowFunctionsBasics,
   logicalOperators,
   nullishCoalescing,
   whileFor,
