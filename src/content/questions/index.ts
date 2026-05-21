@@ -5,6 +5,7 @@ import { logicalOperators } from "./by-page/logical-operators";
 import { nullishCoalescing } from "./by-page/nullish-coalescing";
 import { objectMethods } from "./by-page/object-methods";
 import { operators } from "./by-page/operators";
+import { switchStatement } from "./by-page/switch";
 import { jsTypes } from "./by-page/types";
 import { variables } from "./by-page/variables";
 import { whileFor } from "./by-page/while-for";
@@ -20,6 +21,7 @@ export const questionPages: QuestionPage[] = [
   logicalOperators,
   nullishCoalescing,
   whileFor,
+  switchStatement,
   objectMethods,
 ];
 

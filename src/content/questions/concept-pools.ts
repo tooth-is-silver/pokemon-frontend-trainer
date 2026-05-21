@@ -7,6 +7,7 @@ export const conceptPools: Record<string, string[]> = {
   "js-loops": ["while", "for", "break", "continue", "반복문", "loop"],
   "js-nullish": ["??", "null", "undefined", "기본값", "falsy", "default value"],
   "js-operators": ["+", "단항 +", "%", "**", "증가 연산자", "문자열 연결"],
+  "js-switch": ["switch", "case", "default", "break", "fall-through", "==="],
   "js-types": ["number", "string", "boolean", "null", "undefined", "typeof"],
   "js-variables": ["let", "const", "var", "상수", "재할당", "하드코딩"],
 };
