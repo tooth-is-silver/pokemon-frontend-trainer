@@ -1,5 +1,6 @@
 import { arrowFunctionsBasics } from "./by-page/arrow-functions-basics";
 import { comparison } from "./by-page/comparison";
+import { constructorNew } from "./by-page/constructor-new";
 import { firstSteps } from "./by-page/first-steps";
 import { functionBasics } from "./by-page/function-basics";
 import { functionExpressions } from "./by-page/function-expressions";
@@ -23,6 +24,7 @@ export const questionPages: QuestionPage[] = [
   jsTypes,
   operators,
   comparison,
+  constructorNew,
   ifElse,
   garbageCollection,
   functionBasics,

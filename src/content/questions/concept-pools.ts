@@ -10,6 +10,7 @@ export const conceptPools: Record<string, string[]> = {
   ],
   "js-basics": ["script", "let", "const", "strict mode", "camelCase", "변수 선언"],
   "js-comparison": ["==", "===", "문자열 비교", "null", "undefined", "boolean"],
+  "js-constructor-new": ["new", "생성자 함수", "this", "객체 생성", "return", "uppercase"],
   "js-conditionals": ["if", "else", "truthy", "falsy", "조건 연산자", "분기"],
   "js-garbage-collection": [
     "도달 가능성",
