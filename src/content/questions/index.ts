@@ -7,6 +7,7 @@ import { ifElse } from "./by-page/ifelse";
 import { logicalOperators } from "./by-page/logical-operators";
 import { nullishCoalescing } from "./by-page/nullish-coalescing";
 import { objectBasics } from "./by-page/object-basics";
+import { objectCopy } from "./by-page/object-copy";
 import { objectMethods } from "./by-page/object-methods";
 import { operators } from "./by-page/operators";
 import { switchStatement } from "./by-page/switch";
@@ -30,6 +31,7 @@ export const questionPages: QuestionPage[] = [
   whileFor,
   switchStatement,
   objectBasics,
+  objectCopy,
   objectMethods,
 ];
 
