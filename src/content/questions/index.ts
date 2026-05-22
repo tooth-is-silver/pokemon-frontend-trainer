@@ -11,6 +11,7 @@ import { nullishCoalescing } from "./by-page/nullish-coalescing";
 import { objectBasics } from "./by-page/object-basics";
 import { objectCopy } from "./by-page/object-copy";
 import { objectMethods } from "./by-page/object-methods";
+import { optionalChaining } from "./by-page/optional-chaining";
 import { operators } from "./by-page/operators";
 import { switchStatement } from "./by-page/switch";
 import { jsTypes } from "./by-page/types";
@@ -32,6 +33,7 @@ export const questionPages: QuestionPage[] = [
   arrowFunctionsBasics,
   logicalOperators,
   nullishCoalescing,
+  optionalChaining,
   whileFor,
   switchStatement,
   objectBasics,
