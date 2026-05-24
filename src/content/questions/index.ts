@@ -10,6 +10,7 @@ import { garbageCollection } from "./by-page/garbage-collection";
 import { ifElse } from "./by-page/ifelse";
 import { iterable } from "./by-page/iterable";
 import { logicalOperators } from "./by-page/logical-operators";
+import { mapSet } from "./by-page/map-set";
 import { nullishCoalescing } from "./by-page/nullish-coalescing";
 import { objectBasics } from "./by-page/object-basics";
 import { objectCopy } from "./by-page/object-copy";
@@ -40,6 +41,7 @@ export const questionPages: QuestionPage[] = [
   functionExpressions,
   arrowFunctionsBasics,
   logicalOperators,
+  mapSet,
   nullishCoalescing,
   optionalChaining,
   whileFor,
