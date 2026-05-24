@@ -1,5 +1,6 @@
 import { arrowFunctionsBasics } from "./by-page/arrow-functions-basics";
 import { arrayBasics } from "./by-page/array";
+import { arrayMethods } from "./by-page/array-methods";
 import { comparison } from "./by-page/comparison";
 import { constructorNew } from "./by-page/constructor-new";
 import { firstSteps } from "./by-page/first-steps";
@@ -27,6 +28,7 @@ export const questionPages: QuestionPage[] = [
   firstSteps,
   jsTypes,
   arrayBasics,
+  arrayMethods,
   operators,
   comparison,
   constructorNew,
