@@ -37,6 +37,14 @@ export const conceptPools: Record<string, string[]> = {
     "reference",
     "shallow copy",
   ],
+  "js-object-keys-values-entries": [
+    "Object.keys",
+    "Object.values",
+    "Object.entries",
+    "Object.fromEntries",
+    "key-value",
+    "구조 분해",
+  ],
   "js-objects": ["객체", "프로퍼티", "key", "value", "delete", "점 표기법"],
   "js-object-toprimitive": [
     "Symbol.toPrimitive",

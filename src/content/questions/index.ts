@@ -14,6 +14,7 @@ import { mapSet } from "./by-page/map-set";
 import { nullishCoalescing } from "./by-page/nullish-coalescing";
 import { objectBasics } from "./by-page/object-basics";
 import { objectCopy } from "./by-page/object-copy";
+import { objectKeysValuesEntries } from "./by-page/object-keys-values-entries";
 import { objectMethods } from "./by-page/object-methods";
 import { objectToPrimitive } from "./by-page/object-toprimitive";
 import { optionalChaining } from "./by-page/optional-chaining";
@@ -51,6 +52,7 @@ export const questionPages: QuestionPage[] = [
   symbolType,
   objectBasics,
   objectCopy,
+  objectKeysValuesEntries,
   objectMethods,
   objectToPrimitive,
 ];
