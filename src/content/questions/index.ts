@@ -22,6 +22,7 @@ import { switchStatement } from "./by-page/switch";
 import { symbolType } from "./by-page/symbol-type";
 import { jsTypes } from "./by-page/types";
 import { variables } from "./by-page/variables";
+import { weakMapWeakSet } from "./by-page/weakmap-weakset";
 import { whileFor } from "./by-page/while-for";
 import type { QuestionPage, Question } from "./types";
 
@@ -42,6 +43,7 @@ export const questionPages: QuestionPage[] = [
   arrowFunctionsBasics,
   logicalOperators,
   mapSet,
+  weakMapWeakSet,
   nullishCoalescing,
   optionalChaining,
   whileFor,

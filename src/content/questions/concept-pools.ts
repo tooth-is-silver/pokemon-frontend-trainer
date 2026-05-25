@@ -59,4 +59,5 @@ export const conceptPools: Record<string, string[]> = {
   "js-symbols": ["Symbol", "고유값", "심볼 키", "Symbol.for", "전역 레지스트리", "열거"],
   "js-types": ["number", "string", "boolean", "null", "undefined", "typeof"],
   "js-variables": ["let", "const", "var", "상수", "재할당", "하드코딩"],
+  "js-weakmap-weakset": ["WeakMap", "WeakSet", "약한 참조", "객체 키", "객체 값", "순회 불가"],
 };
