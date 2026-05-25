@@ -14,6 +14,7 @@ export const conceptPools: Record<string, string[]> = {
   "js-comparison": ["==", "===", "문자열 비교", "null", "undefined", "boolean"],
   "js-constructor-new": ["new", "생성자 함수", "this", "객체 생성", "return", "uppercase"],
   "js-conditionals": ["if", "else", "truthy", "falsy", "조건 연산자", "분기"],
+  "js-date": ["Date", "timestamp", "getMonth", "getTime", "Date.now", "UTC"],
   "js-destructuring": ["구조 분해", "배열 구조 분해", "객체 구조 분해", "기본값", "rest", "별칭"],
   "js-garbage-collection": [
     "도달 가능성",

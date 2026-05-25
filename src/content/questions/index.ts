@@ -3,6 +3,7 @@ import { arrayBasics } from "./by-page/array";
 import { arrayMethods } from "./by-page/array-methods";
 import { comparison } from "./by-page/comparison";
 import { constructorNew } from "./by-page/constructor-new";
+import { dateBasics } from "./by-page/date";
 import { destructuringAssignment } from "./by-page/destructuring-assignment";
 import { firstSteps } from "./by-page/first-steps";
 import { functionBasics } from "./by-page/function-basics";
@@ -37,6 +38,7 @@ export const questionPages: QuestionPage[] = [
   operators,
   comparison,
   constructorNew,
+  dateBasics,
   destructuringAssignment,
   ifElse,
   garbageCollection,
