@@ -66,6 +66,7 @@ export const conceptPools: Record<string, string[]> = {
     "optional chaining",
   ],
   "js-operators": ["+", "단항 +", "%", "**", "증가 연산자", "문자열 연결"],
+  "js-property-accessors": ["getter", "setter", "get", "set", "접근자", "설명자"],
   "js-property-descriptors": [
     "descriptor",
     "writable",
