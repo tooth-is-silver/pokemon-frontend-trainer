@@ -23,6 +23,7 @@ import { objectToPrimitive } from "./by-page/object-toprimitive";
 import { optionalChaining } from "./by-page/optional-chaining";
 import { operators } from "./by-page/operators";
 import { propertyDescriptors } from "./by-page/property-descriptors";
+import { restParametersSpread } from "./by-page/rest-parameters-spread";
 import { switchStatement } from "./by-page/switch";
 import { symbolType } from "./by-page/symbol-type";
 import { jsTypes } from "./by-page/types";
@@ -55,6 +56,7 @@ export const questionPages: QuestionPage[] = [
   nullishCoalescing,
   optionalChaining,
   propertyDescriptors,
+  restParametersSpread,
   whileFor,
   switchStatement,
   symbolType,
