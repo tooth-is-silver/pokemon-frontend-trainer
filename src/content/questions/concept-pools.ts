@@ -26,6 +26,7 @@ export const conceptPools: Record<string, string[]> = {
   "js-function-expressions": ["함수 표현식", "콜백", "호이스팅", "함수 값", "callback", "hoisting"],
   "js-functions": ["함수", "매개변수", "return", "지역 변수", "호출", "parameter"],
   "js-iterables": ["Symbol.iterator", "for...of", "iterator", "next", "done", "iterable"],
+  "js-json": ["JSON.stringify", "JSON.parse", "toJSON", "replacer", "reviver", "직렬화"],
   "js-logical-operators": ["||", "&&", "!", "short-circuit", "truthy", "falsy"],
   "js-map-set": ["Map", "Set", "key-value", "size", "set", "has"],
   "js-loops": ["while", "for", "break", "continue", "반복문", "loop"],
