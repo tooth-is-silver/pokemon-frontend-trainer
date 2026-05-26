@@ -21,6 +21,7 @@ import { objectMethods } from "./by-page/object-methods";
 import { objectToPrimitive } from "./by-page/object-toprimitive";
 import { optionalChaining } from "./by-page/optional-chaining";
 import { operators } from "./by-page/operators";
+import { restParametersSpread } from "./by-page/rest-parameters-spread";
 import { switchStatement } from "./by-page/switch";
 import { symbolType } from "./by-page/symbol-type";
 import { jsTypes } from "./by-page/types";
@@ -51,6 +52,7 @@ export const questionPages: QuestionPage[] = [
   weakMapWeakSet,
   nullishCoalescing,
   optionalChaining,
+  restParametersSpread,
   whileFor,
   switchStatement,
   symbolType,
