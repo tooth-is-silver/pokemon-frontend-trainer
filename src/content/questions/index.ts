@@ -11,6 +11,7 @@ import { functionExpressions } from "./by-page/function-expressions";
 import { garbageCollection } from "./by-page/garbage-collection";
 import { ifElse } from "./by-page/ifelse";
 import { iterable } from "./by-page/iterable";
+import { jsonBasics } from "./by-page/json";
 import { logicalOperators } from "./by-page/logical-operators";
 import { mapSet } from "./by-page/map-set";
 import { nullishCoalescing } from "./by-page/nullish-coalescing";
@@ -43,6 +44,7 @@ export const questionPages: QuestionPage[] = [
   ifElse,
   garbageCollection,
   iterable,
+  jsonBasics,
   functionBasics,
   functionExpressions,
   arrowFunctionsBasics,
