@@ -2,6 +2,7 @@ import { arrowFunctionsBasics } from "./by-page/arrow-functions-basics";
 import { arrayBasics } from "./by-page/array";
 import { arrayMethods } from "./by-page/array-methods";
 import { classBasic } from "./by-page/class-basic";
+import { classInheritance } from "./by-page/class-inheritance";
 import { comparison } from "./by-page/comparison";
 import { constructorNew } from "./by-page/constructor-new";
 import { dateBasics } from "./by-page/date";
@@ -43,6 +44,7 @@ export const questionPages: QuestionPage[] = [
   firstSteps,
   jsTypes,
   classBasic,
+  classInheritance,
   arrayBasics,
   arrayMethods,
   operators,
