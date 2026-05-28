@@ -27,6 +27,7 @@ import { operators } from "./by-page/operators";
 import { propertyAccessors } from "./by-page/property-accessors";
 import { propertyDescriptors } from "./by-page/property-descriptors";
 import { prototypeInheritance } from "./by-page/prototype-inheritance";
+import { prototypeMethods } from "./by-page/prototype-methods";
 import { restParametersSpread } from "./by-page/rest-parameters-spread";
 import { switchStatement } from "./by-page/switch";
 import { symbolType } from "./by-page/symbol-type";
@@ -64,6 +65,7 @@ export const questionPages: QuestionPage[] = [
   propertyAccessors,
   propertyDescriptors,
   prototypeInheritance,
+  prototypeMethods,
   restParametersSpread,
   whileFor,
   switchStatement,
