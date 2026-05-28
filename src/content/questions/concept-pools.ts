@@ -18,6 +18,14 @@ export const conceptPools: Record<string, string[]> = {
   "js-conditionals": ["if", "else", "truthy", "falsy", "조건 연산자", "분기"],
   "js-date": ["Date", "timestamp", "getMonth", "getTime", "Date.now", "UTC"],
   "js-destructuring": ["구조 분해", "배열 구조 분해", "객체 구조 분해", "기본값", "rest", "별칭"],
+  "js-extend-natives": [
+    "extends",
+    "Array",
+    "Error",
+    "Symbol.species",
+    "custom error",
+    "내장 클래스",
+  ],
   "js-garbage-collection": [
     "도달 가능성",
     "reachable",
