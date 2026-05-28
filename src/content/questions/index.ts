@@ -31,6 +31,7 @@ import { propertyDescriptors } from "./by-page/property-descriptors";
 import { prototypeInheritance } from "./by-page/prototype-inheritance";
 import { prototypeMethods } from "./by-page/prototype-methods";
 import { restParametersSpread } from "./by-page/rest-parameters-spread";
+import { staticPropertiesMethods } from "./by-page/static-properties-methods";
 import { switchStatement } from "./by-page/switch";
 import { symbolType } from "./by-page/symbol-type";
 import { jsTypes } from "./by-page/types";
@@ -71,6 +72,7 @@ export const questionPages: QuestionPage[] = [
   prototypeInheritance,
   prototypeMethods,
   restParametersSpread,
+  staticPropertiesMethods,
   whileFor,
   switchStatement,
   symbolType,
