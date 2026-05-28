@@ -38,6 +38,7 @@ import { restParametersSpread } from "./by-page/rest-parameters-spread";
 import { staticPropertiesMethods } from "./by-page/static-properties-methods";
 import { switchStatement } from "./by-page/switch";
 import { symbolType } from "./by-page/symbol-type";
+import { tryCatch } from "./by-page/try-catch";
 import { jsTypes } from "./by-page/types";
 import { variables } from "./by-page/variables";
 import { weakMapWeakSet } from "./by-page/weakmap-weakset";
@@ -84,6 +85,7 @@ export const questionPages: QuestionPage[] = [
   whileFor,
   switchStatement,
   symbolType,
+  tryCatch,
   objectBasics,
   objectCopy,
   objectKeysValuesEntries,
