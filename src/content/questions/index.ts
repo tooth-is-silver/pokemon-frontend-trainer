@@ -26,6 +26,7 @@ import { objectMethods } from "./by-page/object-methods";
 import { objectToPrimitive } from "./by-page/object-toprimitive";
 import { optionalChaining } from "./by-page/optional-chaining";
 import { operators } from "./by-page/operators";
+import { privateProtectedPropertiesMethods } from "./by-page/private-protected-properties-methods";
 import { propertyAccessors } from "./by-page/property-accessors";
 import { propertyDescriptors } from "./by-page/property-descriptors";
 import { prototypeInheritance } from "./by-page/prototype-inheritance";
@@ -67,6 +68,7 @@ export const questionPages: QuestionPage[] = [
   weakMapWeakSet,
   nullishCoalescing,
   optionalChaining,
+  privateProtectedPropertiesMethods,
   propertyAccessors,
   propertyDescriptors,
   prototypeInheritance,
