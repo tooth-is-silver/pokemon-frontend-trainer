@@ -56,6 +56,7 @@ export const conceptPools: Record<string, string[]> = {
   "js-json": ["JSON.stringify", "JSON.parse", "toJSON", "replacer", "reviver", "직렬화"],
   "js-logical-operators": ["||", "&&", "!", "short-circuit", "truthy", "falsy"],
   "js-map-set": ["Map", "Set", "key-value", "size", "set", "has"],
+  "js-mixins": ["mixin", "Object.assign", "prototype", "단일 상속", "composition", "재사용"],
   "js-native-prototypes": [
     "Array.prototype",
     "Object.prototype",

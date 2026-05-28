@@ -19,6 +19,7 @@ import { iterable } from "./by-page/iterable";
 import { jsonBasics } from "./by-page/json";
 import { logicalOperators } from "./by-page/logical-operators";
 import { mapSet } from "./by-page/map-set";
+import { mixins } from "./by-page/mixins";
 import { nativePrototypes } from "./by-page/native-prototypes";
 import { nullishCoalescing } from "./by-page/nullish-coalescing";
 import { objectBasics } from "./by-page/object-basics";
@@ -68,6 +69,7 @@ export const questionPages: QuestionPage[] = [
   arrowFunctionsBasics,
   logicalOperators,
   mapSet,
+  mixins,
   nativePrototypes,
   weakMapWeakSet,
   nullishCoalescing,
