@@ -75,6 +75,7 @@ export const conceptPools: Record<string, string[]> = {
     "defineProperty",
     "플래그",
   ],
+  "js-prototype-inheritance": ["prototype", "__proto__", "상속", "체인", "this", "null"],
   "js-rest-spread": ["rest", "spread", "...", "args", "iterable", "전개 문법"],
   "js-switch": ["switch", "case", "default", "break", "fall-through", "==="],
   "js-symbols": ["Symbol", "고유값", "심볼 키", "Symbol.for", "전역 레지스트리", "열거"],
