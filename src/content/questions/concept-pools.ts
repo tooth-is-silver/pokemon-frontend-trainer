@@ -38,6 +38,14 @@ export const conceptPools: Record<string, string[]> = {
   "js-json": ["JSON.stringify", "JSON.parse", "toJSON", "replacer", "reviver", "직렬화"],
   "js-logical-operators": ["||", "&&", "!", "short-circuit", "truthy", "falsy"],
   "js-map-set": ["Map", "Set", "key-value", "size", "set", "has"],
+  "js-native-prototypes": [
+    "Array.prototype",
+    "Object.prototype",
+    "String.prototype",
+    "polyfill",
+    "래퍼 객체",
+    "내장 프로토타입",
+  ],
   "js-loops": ["while", "for", "break", "continue", "반복문", "loop"],
   "js-nullish": ["??", "null", "undefined", "기본값", "falsy", "default value"],
   "js-object-copy": [
