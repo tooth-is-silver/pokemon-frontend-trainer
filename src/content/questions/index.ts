@@ -8,6 +8,7 @@ import { destructuringAssignment } from "./by-page/destructuring-assignment";
 import { firstSteps } from "./by-page/first-steps";
 import { functionBasics } from "./by-page/function-basics";
 import { functionExpressions } from "./by-page/function-expressions";
+import { functionPrototype } from "./by-page/function-prototype";
 import { garbageCollection } from "./by-page/garbage-collection";
 import { ifElse } from "./by-page/ifelse";
 import { iterable } from "./by-page/iterable";
@@ -51,6 +52,7 @@ export const questionPages: QuestionPage[] = [
   jsonBasics,
   functionBasics,
   functionExpressions,
+  functionPrototype,
   arrowFunctionsBasics,
   logicalOperators,
   mapSet,
