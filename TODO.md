@@ -229,6 +229,7 @@
   - [ ] 모듈
     - [x] 모듈 소개 (`modules-intro`)
     - [x] 모듈 가져오기와 내보내기 (`import-export`)
+    - [x] 동적으로 모듈 가져오기 (`modules-dynamic-imports`)
 - [ ] concept pool 확장 (`this-core` 외)
 - [ ] 검증 스크립트 (`scripts/validate-questions.mjs`)
   - [ ] `questionId` 중복 없음
