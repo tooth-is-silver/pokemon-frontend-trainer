@@ -228,6 +228,7 @@
     - [x] async 이터레이터와 제너레이터 (`async-iterators-generators`)
   - [ ] 모듈
     - [x] 모듈 소개 (`modules-intro`)
+    - [x] 모듈 가져오기와 내보내기 (`import-export`)
 - [ ] concept pool 확장 (`this-core` 외)
 - [ ] 검증 스크립트 (`scripts/validate-questions.mjs`)
   - [ ] `questionId` 중복 없음
