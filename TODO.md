@@ -217,6 +217,7 @@
   - [x] 에러 핸들링
   - [ ] 프라미스와 async/await
     - [x] 프라미스 기본 (`promise-basics`)
+    - [x] 프라미스 체이닝 (`promise-chaining`)
   - [ ] 제너레이터와 이터러블
   - [ ] 모듈
 - [ ] concept pool 확장 (`this-core` 외)
