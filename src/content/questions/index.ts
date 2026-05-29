@@ -30,6 +30,7 @@ import { objectToPrimitive } from "./by-page/object-toprimitive";
 import { optionalChaining } from "./by-page/optional-chaining";
 import { operators } from "./by-page/operators";
 import { privateProtectedPropertiesMethods } from "./by-page/private-protected-properties-methods";
+import { promiseBasics } from "./by-page/promise-basics";
 import { propertyAccessors } from "./by-page/property-accessors";
 import { propertyDescriptors } from "./by-page/property-descriptors";
 import { prototypeInheritance } from "./by-page/prototype-inheritance";
@@ -76,6 +77,7 @@ export const questionPages: QuestionPage[] = [
   nullishCoalescing,
   optionalChaining,
   privateProtectedPropertiesMethods,
+  promiseBasics,
   propertyAccessors,
   propertyDescriptors,
   prototypeInheritance,
