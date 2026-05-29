@@ -1,5 +1,6 @@
 export const conceptPools: Record<string, string[]> = {
   "this-core": ["this", "렉시컬 환경", "클로저", "프로토타입", "스코프", "생성자 함수"],
+  "js-async-await": ["async", "await", "Promise", "try...catch", "thenable", "Promise.all"],
   "js-arrays": ["배열", "index", "push", "pop", "shift", "unshift"],
   "js-array-methods": ["map", "filter", "find", "slice", "splice", "배열 메서드"],
   "js-arrow-functions": [
