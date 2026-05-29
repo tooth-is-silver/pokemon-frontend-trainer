@@ -14,6 +14,7 @@ import { functionBasics } from "./by-page/function-basics";
 import { functionExpressions } from "./by-page/function-expressions";
 import { functionPrototype } from "./by-page/function-prototype";
 import { garbageCollection } from "./by-page/garbage-collection";
+import { generators } from "./by-page/generators";
 import { ifElse } from "./by-page/ifelse";
 import { instanceOf } from "./by-page/instanceof";
 import { iterable } from "./by-page/iterable";
@@ -70,6 +71,7 @@ export const questionPages: QuestionPage[] = [
   ifElse,
   instanceOf,
   garbageCollection,
+  generators,
   iterable,
   jsonBasics,
   functionBasics,

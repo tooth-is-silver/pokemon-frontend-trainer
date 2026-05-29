@@ -36,6 +36,7 @@ export const conceptPools: Record<string, string[]> = {
     "참조",
     "가비지 컬렉션",
   ],
+  "js-generators": ["function*", "yield", "next", "done", "yield*", "generator.throw"],
   "js-function-expressions": ["함수 표현식", "콜백", "호이스팅", "함수 값", "callback", "hoisting"],
   "js-function-prototype": [
     "F.prototype",
