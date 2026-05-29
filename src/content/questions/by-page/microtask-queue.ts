@@ -1,0 +1,117 @@
+import type { QuestionPage } from "../types";
+
+export const microtaskQueue: QuestionPage = {
+  sourceId: "microtask-queue",
+  title: "마이크로태스크",
+  url: "https://ko.javascript.info/microtask-queue",
+  questions: [
+    {
+      questionId: "microtask-queue-yn-001",
+      type: "yes_no",
+      prompt: "Promise 핸들러는 현재 코드 실행이 끝난 뒤 마이크로태스크 큐에서 실행된다.",
+      answer: true,
+      acceptedAnswers: ["예", "true"],
+      conceptGroup: "js-microtasks",
+      explanation: "then, catch, finally 핸들러는 즉시 실행되지 않고 마이크로태스크 큐에 들어간다.",
+      sourceExcerptId: "microtask-queue-001",
+    },
+    {
+      questionId: "microtask-queue-yn-002",
+      type: "yes_no",
+      prompt: "이미 이행된 Promise에 then을 붙이면 핸들러가 동기적으로 즉시 실행된다.",
+      answer: false,
+      acceptedAnswers: ["아니오", "false"],
+      conceptGroup: "js-microtasks",
+      explanation: "Promise가 이미 처리된 상태여도 then 핸들러는 마이크로태스크로 예약된다.",
+      sourceExcerptId: "microtask-queue-002",
+    },
+    {
+      questionId: "microtask-queue-yn-003",
+      type: "yes_no",
+      prompt:
+        "unhandledrejection 이벤트는 마이크로태스크 큐 처리가 끝난 뒤에도 rejection이 처리되지 않았을 때 발생할 수 있다.",
+      answer: true,
+      acceptedAnswers: ["예", "true"],
+      conceptGroup: "js-microtasks",
+      explanation:
+        "엔진은 마이크로태스크 큐가 비워진 뒤 처리되지 않은 Promise rejection을 확인한다.",
+      sourceExcerptId: "microtask-queue-004",
+    },
+    {
+      questionId: "microtask-queue-mc-001",
+      type: "multiple_choice",
+      prompt: "Promise 핸들러가 대기하는 큐의 이름은?",
+      answer: "마이크로태스크 큐",
+      choices: ["마이크로태스크 큐", "콜 스택", "렌더 큐", "이벤트 캡처 큐", "모듈 캐시"],
+      conceptGroup: "js-microtasks",
+      explanation:
+        "Promise 핸들러는 ECMAScript job queue, 즉 마이크로태스크 큐에서 순서대로 실행된다.",
+      sourceExcerptId: "microtask-queue-001",
+    },
+    {
+      questionId: "microtask-queue-mc-002",
+      type: "multiple_choice",
+      prompt:
+        "현재 스크립트 실행 중 Promise.then 핸들러와 일반 console.log가 함께 있으면 먼저 실행되는 것은?",
+      answer: "현재 동기 코드",
+      choices: [
+        "현재 동기 코드",
+        "Promise.then 핸들러",
+        "unhandledrejection",
+        "finally 핸들러만",
+        "어느 것도 실행되지 않음",
+      ],
+      conceptGroup: "js-microtasks",
+      explanation: "마이크로태스크는 현재 동기 코드 실행이 끝난 뒤 처리된다.",
+      sourceExcerptId: "microtask-queue-002",
+    },
+    {
+      questionId: "microtask-queue-mc-003",
+      type: "multiple_choice",
+      prompt: "처리되지 않은 Promise rejection을 브라우저에서 감지하는 이벤트는?",
+      answer: "unhandledrejection",
+      choices: [
+        "unhandledrejection",
+        "microtaskerror",
+        "promisehandled",
+        "queueerror",
+        "jobrejection",
+      ],
+      conceptGroup: "js-microtasks",
+      explanation:
+        "마이크로태스크 큐 처리 후에도 거부가 처리되지 않으면 unhandledrejection 이벤트가 발생할 수 있다.",
+      sourceExcerptId: "microtask-queue-004",
+    },
+    {
+      questionId: "microtask-queue-fb-001",
+      type: "fill_blank",
+      prompt: "Promise 핸들러는 ____ 큐에 들어간 뒤 실행된다.",
+      answer: "마이크로태스크",
+      acceptedAnswers: ["마이크로태스크", "microtask", "microtask queue", "마이크로태스크 큐"],
+      conceptGroup: "js-microtasks",
+      explanation: "then, catch, finally 핸들러는 마이크로태스크 큐에서 순서대로 실행된다.",
+      sourceExcerptId: "microtask-queue-001",
+    },
+    {
+      questionId: "microtask-queue-fb-002",
+      type: "fill_blank",
+      prompt: "Promise 핸들러는 현재 ____ 코드 실행이 끝난 뒤 처리된다.",
+      answer: "동기",
+      acceptedAnswers: ["동기", "synchronous"],
+      conceptGroup: "js-microtasks",
+      explanation: "마이크로태스크는 현재 동기 실행 흐름이 끝난 뒤 실행된다.",
+      sourceExcerptId: "microtask-queue-002",
+    },
+    {
+      questionId: "microtask-queue-fb-003",
+      type: "fill_blank",
+      prompt: "처리되지 않은 Promise rejection 이벤트 이름은 ____ 이다.",
+      answer: "unhandledrejection",
+      acceptedAnswers: ["unhandledrejection"],
+      conceptGroup: "js-microtasks",
+      explanation:
+        "브라우저는 처리되지 않은 Promise rejection을 unhandledrejection 이벤트로 알릴 수 있다.",
+      sourceExcerptId: "microtask-queue-004",
+    },
+  ],
+};

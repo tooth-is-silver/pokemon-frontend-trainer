@@ -221,6 +221,7 @@
     - [x] 프라미스 에러 핸들링 (`promise-error-handling`)
     - [x] 프라미스 API (`promise-api`)
     - [x] 프라미스화 (`promisify`)
+    - [x] 마이크로태스크 (`microtask-queue`)
   - [ ] 제너레이터와 이터러블
   - [ ] 모듈
 - [ ] concept pool 확장 (`this-core` 외)
