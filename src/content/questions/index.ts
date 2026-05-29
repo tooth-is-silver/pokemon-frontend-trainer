@@ -34,6 +34,7 @@ import { promiseApi } from "./by-page/promise-api";
 import { promiseBasics } from "./by-page/promise-basics";
 import { promiseChaining } from "./by-page/promise-chaining";
 import { promiseErrorHandling } from "./by-page/promise-error-handling";
+import { promisify } from "./by-page/promisify";
 import { propertyAccessors } from "./by-page/property-accessors";
 import { propertyDescriptors } from "./by-page/property-descriptors";
 import { prototypeInheritance } from "./by-page/prototype-inheritance";
@@ -84,6 +85,7 @@ export const questionPages: QuestionPage[] = [
   promiseBasics,
   promiseChaining,
   promiseErrorHandling,
+  promisify,
   propertyAccessors,
   propertyDescriptors,
   prototypeInheritance,
