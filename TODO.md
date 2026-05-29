@@ -224,6 +224,7 @@
     - [x] 마이크로태스크 (`microtask-queue`)
     - [x] async와 await (`async-await`)
   - [ ] 제너레이터와 이터러블
+    - [x] 제너레이터 (`generators`)
   - [ ] 모듈
 - [ ] concept pool 확장 (`this-core` 외)
 - [ ] 검증 스크립트 (`scripts/validate-questions.mjs`)
