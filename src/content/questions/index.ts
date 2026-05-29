@@ -25,6 +25,7 @@ import { logicalOperators } from "./by-page/logical-operators";
 import { mapSet } from "./by-page/map-set";
 import { microtaskQueue } from "./by-page/microtask-queue";
 import { mixins } from "./by-page/mixins";
+import { modulesDynamicImports } from "./by-page/modules-dynamic-imports";
 import { modulesIntro } from "./by-page/modules-intro";
 import { nativePrototypes } from "./by-page/native-prototypes";
 import { nullishCoalescing } from "./by-page/nullish-coalescing";
@@ -87,6 +88,7 @@ export const questionPages: QuestionPage[] = [
   mapSet,
   microtaskQueue,
   mixins,
+  modulesDynamicImports,
   modulesIntro,
   nativePrototypes,
   weakMapWeakSet,
