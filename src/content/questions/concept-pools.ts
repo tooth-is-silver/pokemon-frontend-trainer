@@ -69,6 +69,7 @@ export const conceptPools: Record<string, string[]> = {
   "js-map-set": ["Map", "Set", "key-value", "size", "set", "has"],
   "js-microtasks": ["microtask", "queue", "then", "catch", "finally", "unhandledrejection"],
   "js-mixins": ["mixin", "Object.assign", "prototype", "단일 상속", "composition", "재사용"],
+  "js-modules": ["module", "export", "import", 'type="module"', "strict mode", "import.meta"],
   "js-native-prototypes": [
     "Array.prototype",
     "Object.prototype",
