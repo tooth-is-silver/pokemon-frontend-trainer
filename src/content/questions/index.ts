@@ -17,6 +17,7 @@ import { functionPrototype } from "./by-page/function-prototype";
 import { garbageCollection } from "./by-page/garbage-collection";
 import { generators } from "./by-page/generators";
 import { ifElse } from "./by-page/ifelse";
+import { importExport } from "./by-page/import-export";
 import { instanceOf } from "./by-page/instanceof";
 import { iterable } from "./by-page/iterable";
 import { jsonBasics } from "./by-page/json";
@@ -72,6 +73,7 @@ export const questionPages: QuestionPage[] = [
   destructuringAssignment,
   extendNatives,
   ifElse,
+  importExport,
   instanceOf,
   garbageCollection,
   generators,

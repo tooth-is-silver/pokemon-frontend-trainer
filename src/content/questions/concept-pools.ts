@@ -55,6 +55,7 @@ export const conceptPools: Record<string, string[]> = {
     "생성자",
   ],
   "js-functions": ["함수", "매개변수", "return", "지역 변수", "호출", "parameter"],
+  "js-import-export": ["export", "import", "as", "default", "named export", "import * as"],
   "js-iterables": ["Symbol.iterator", "for...of", "iterator", "next", "done", "iterable"],
   "js-instanceof": [
     "instanceof",
