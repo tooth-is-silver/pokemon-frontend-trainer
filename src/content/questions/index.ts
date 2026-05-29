@@ -1,4 +1,5 @@
 import { arrowFunctionsBasics } from "./by-page/arrow-functions-basics";
+import { asyncAwait } from "./by-page/async-await";
 import { arrayBasics } from "./by-page/array";
 import { arrayMethods } from "./by-page/array-methods";
 import { classBasic } from "./by-page/class-basic";
@@ -55,6 +56,7 @@ export const questionPages: QuestionPage[] = [
   variables,
   firstSteps,
   jsTypes,
+  asyncAwait,
   classBasic,
   classInheritance,
   arrayBasics,
