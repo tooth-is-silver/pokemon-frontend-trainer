@@ -110,7 +110,7 @@ export const conceptPools: Record<string, string[]> = {
     "encapsulation",
     "접근 제한",
   ],
-  "js-promises": ["Promise", "resolve", "reject", "pending", "fulfilled", "rejected"],
+  "js-promises": ["Promise", "resolve", "reject", "pending", "fulfilled", "thenable"],
   "js-property-accessors": ["getter", "setter", "get", "set", "접근자", "설명자"],
   "js-property-descriptors": [
     "descriptor",
