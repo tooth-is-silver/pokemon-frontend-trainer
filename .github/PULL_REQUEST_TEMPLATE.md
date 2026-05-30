@@ -18,6 +18,7 @@
 
 - [ ] `npm run build`
 - [ ] `npm run lint`
+- [ ] `npm run validate:questions`
 - [ ] `npm test`
 - [ ] Additional relevant tests passed (if applicable)
 
