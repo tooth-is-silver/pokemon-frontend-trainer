@@ -231,11 +231,11 @@
     - [x] 모듈 가져오기와 내보내기 (`import-export`)
     - [x] 동적으로 모듈 가져오기 (`modules-dynamic-imports`)
 - [ ] concept pool 확장 (`this-core` 외)
-- [ ] 검증 스크립트 (`scripts/validate-questions.mjs`)
-  - [ ] `questionId` 중복 없음
-  - [ ] `multiple_choice` 보기 5개 + 정답 포함
-  - [ ] `fill_blank` `acceptedAnswers.length >= 1`
-  - [ ] `sourceExcerptId` 일관성
+- [x] 검증 스크립트 (`scripts/validate-questions.mjs`)
+  - [x] `questionId` 중복 없음
+  - [x] `multiple_choice` 보기 5개 + 정답 포함
+  - [x] `fill_blank` `acceptedAnswers.length >= 1`
+  - [x] `sourceExcerptId` 일관성
 
 ## Phase G. 마무리
 
