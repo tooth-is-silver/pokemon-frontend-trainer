@@ -86,24 +86,24 @@
 
 > 잘못된 다중 보유 가정에서 만든 코드/문서를 제거한다.
 
-- [ ] `App.tsx` 에서 `/pokemon` 라우트 + `MyPokemonPage` lazy import 제거
-- [ ] `src/features/pokemon/MyPokemonPage.tsx` 삭제 (현재 더미만 있음)
-- [ ] `AGENTS.md` 라우트 화이트리스트에서 `/pokemon` 제거 (모달 정책이라 신규 라우트 추가 없음)
-- [ ] `docs/specs/screen-flow.md` 정정
-  - [ ] 1번 Screen List 에서 `내 포켓몬 화면` 제거, `신규 포켓몬 선택 모달 또는 페이지` → `졸업 모달`
-  - [ ] 6번 `New Pokemon Selection Flow` → `Graduation Flow` 로 재구성, 후보 3마리, 모달 단일화
-  - [ ] 7번 Legendary Flow 후보 풀 명시 (wave1: 3 → 2 → 1, wave2: 1, wave3: 1)
-  - [ ] 9번 Recommended Navigation 에서 `/pokemon` 제거
-  - [ ] 10번 컴포넌트 구조에서 `PokemonSelectionModal` → `GraduationModal`
-- [ ] `docs/specs/game-rules.md` 5번 `Pokemon Selection`
-  - [ ] 후보 수 2 → 3 으로 갱신
-  - [ ] "단일 보유 / 중간 교체 불가" 명시
-  - [ ] "신규 포켓몬 선택 UI" → "졸업 모달" 명시
-  - [ ] "후보 부족 시 중복 허용" 조항 삭제 (정상 진행 시 발생 불가)
-  - [ ] 이브이 동일 종 복수 보유 / 분기 진화 항목 유지
-- [ ] `docs/implementation-roadmap.md` 의 신규 선택 모달 언급 정정
-- [ ] `README.md` 의 "다음 우선순위" 정정 (`내 포켓몬 화면` 제거)
-- [ ] `docs/INDEX.md` 정합화 검토
+- [x] `App.tsx` 에서 `/pokemon` 라우트 + `MyPokemonPage` lazy import 제거
+- [x] `src/features/pokemon/MyPokemonPage.tsx` 삭제 (현재 더미만 있음)
+- [x] `AGENTS.md` 라우트 화이트리스트에서 `/pokemon` 제거 (모달 정책이라 신규 라우트 추가 없음)
+- [x] `docs/specs/screen-flow.md` 정정
+  - [x] 1번 Screen List 에서 `내 포켓몬 화면` 제거, `신규 포켓몬 선택 모달 또는 페이지` → `졸업 모달`
+  - [x] 6번 `New Pokemon Selection Flow` → `Graduation Flow` 로 재구성, 후보 3마리, 모달 단일화
+  - [x] 7번 Legendary Flow 후보 풀 명시 (wave1: 3 → 2 → 1, wave2: 1, wave3: 1)
+  - [x] 9번 Recommended Navigation 에서 `/pokemon` 제거
+  - [x] 10번 컴포넌트 구조에서 `PokemonSelectionModal` → `GraduationModal`
+- [x] `docs/specs/game-rules.md` 5번 `Pokemon Selection`
+  - [x] 후보 수 2 → 3 으로 갱신
+  - [x] "단일 보유 / 중간 교체 불가" 명시
+  - [x] "신규 포켓몬 선택 UI" → "졸업 모달" 명시
+  - [x] "후보 부족 시 중복 허용" 조항 삭제 (정상 진행 시 발생 불가)
+  - [x] 이브이 동일 종 복수 보유 / 분기 진화 항목 유지
+- [x] `docs/implementation-roadmap.md` 의 신규 선택 모달 언급 정정
+- [x] `README.md` 의 "다음 우선순위" 정정 (`내 포켓몬 화면` 제거)
+- [x] `docs/INDEX.md` 정합화 검토
 
 ## Phase B. 졸업 모달 + 후보 선택
 

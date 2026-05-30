@@ -23,6 +23,7 @@ VITE_SUPABASE_ANON_KEY
 npm run dev
 npm run build
 npm run lint
+npm run validate:questions
 npm test
 ```
 
@@ -39,15 +40,15 @@ npm test
 ## 현재 구현 범위
 
 - 프로젝트 셋업, 라우팅, 개발 도구 세팅
-- Supabase 마이그레이션과 RPC 초안
-- Zustand 스토어와 순수 로직 일부
-- 스타터 선택 / 학습 / 진화 / 도감 화면
-- 순수 로직 테스트 통과 기준 유지
+- Supabase 마이그레이션과 RPC 기반 게임 상태 동기화
+- Zustand 스토어와 순수 로직
+- 스타터 선택 / 학습 / 진화 / 졸업 / 도감 / 엔딩 화면
+- 문제 데이터 검증 스크립트와 순수 로직 테스트 통과 기준 유지
 
 실제 진행 상태는 `TODO.md`를 기준으로 본다.
 
 ## 다음 우선순위
 
-- 졸업 모달 + 신규 인스턴스 시작 RPC
-- 도감에 현재 포켓몬 카드 표시
-- 1세대 포켓몬 데이터 확장 + 전설 wave 진행
+- Phase A 문서 정합화 완료 후 잔여 TODO 기준으로 Phase D/G 마무리
+- 1세대 포켓몬 데이터 검증 스크립트
+- 엔딩 화면 / 모바일 반응형 / Lighthouse 점검
