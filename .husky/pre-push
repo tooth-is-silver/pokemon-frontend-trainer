@@ -3,4 +3,5 @@
 echo "Running pre-push checks..."
 npm run build || exit 1
 npm run lint || exit 1
+npm run validate:questions || exit 1
 npm test || exit 1
