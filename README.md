@@ -49,6 +49,6 @@ npm test
 
 ## 다음 우선순위
 
-- Phase A 문서 정합화 완료 후 잔여 TODO 기준으로 Phase D/G 마무리
-- 1세대 포켓몬 데이터 검증 스크립트
-- 엔딩 화면 / 모바일 반응형 / Lighthouse 점검
+- Phase D: 1세대 포켓몬 데이터 검증 스크립트 추가
+- Phase G: 엔딩 화면 정식화 및 모바일 반응형 검수
+- Phase G: Lighthouse 성능 점검과 빌드 결과물 크기 점검

@@ -85,6 +85,7 @@
 ## Phase A. 단일 포켓몬 정책 정합화 (정리 작업)
 
 > 잘못된 다중 보유 가정에서 만든 코드/문서를 제거한다.
+> 현재 체크된 항목은 기존 코드와 문서 상태를 재확인해 TODO 상태만 동기화한 것이다.
 
 - [x] `App.tsx` 에서 `/pokemon` 라우트 + `MyPokemonPage` lazy import 제거
 - [x] `src/features/pokemon/MyPokemonPage.tsx` 삭제 (현재 더미만 있음)
