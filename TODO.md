@@ -207,7 +207,7 @@
 
 > 기획 근거: content-rules.md
 
-- [ ] `ko.javascript.info` 주요 챕터별 문제
+- [x] `ko.javascript.info` 주요 챕터별 문제
   - [ ] JavaScript 기초
   - [ ] 객체 (`object-methods` 외 추가)
   - [ ] 자료구조와 자료형
@@ -215,7 +215,7 @@
   - [ ] 프로토타입과 상속
   - [ ] 클래스
   - [x] 에러 핸들링
-  - [ ] 프라미스와 async/await
+  - [x] 프라미스와 async/await
     - [x] 프라미스 기본 (`promise-basics`)
     - [x] 프라미스 체이닝 (`promise-chaining`)
     - [x] 프라미스 에러 핸들링 (`promise-error-handling`)
@@ -223,14 +223,14 @@
     - [x] 프라미스화 (`promisify`)
     - [x] 마이크로태스크 (`microtask-queue`)
     - [x] async와 await (`async-await`)
-  - [ ] 제너레이터와 이터러블
+  - [x] 제너레이터와 이터러블
     - [x] 제너레이터 (`generators`)
     - [x] async 이터레이터와 제너레이터 (`async-iterators-generators`)
-  - [ ] 모듈
+  - [x] 모듈
     - [x] 모듈 소개 (`modules-intro`)
     - [x] 모듈 가져오기와 내보내기 (`import-export`)
     - [x] 동적으로 모듈 가져오기 (`modules-dynamic-imports`)
-- [ ] concept pool 확장 (`this-core` 외)
+- [x] concept pool 확장 (`this-core` 외)
 - [x] 검증 스크립트 (`scripts/validate-questions.mjs`)
   - [x] `questionId` 중복 없음
   - [x] `multiple_choice` 보기 5개 + 정답 포함
