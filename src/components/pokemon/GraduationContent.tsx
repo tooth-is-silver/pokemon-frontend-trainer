@@ -25,7 +25,10 @@ export function GraduationContent({
     speciesId,
     species: findSpeciesById(speciesId),
   }));
-  const hasInvalidEvolutionLine = evolutionLine.some(({ species }) => species === null);
+  const missingEvolutionSpeciesIds = evolutionLine
+    .filter(({ species }) => species === null)
+    .map(({ speciesId }) => speciesId);
+  const validEvolutionLine = evolutionLine.flatMap(({ species }) => (species ? [species] : []));
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -55,12 +58,16 @@ export function GraduationContent({
 
         <div
           className="flex flex-wrap items-center justify-center gap-2"
-          aria-label={hasInvalidEvolutionLine ? "진화 라인 데이터 오류" : "진화 라인"}
+          aria-label={missingEvolutionSpeciesIds.length > 0 ? "진화 라인 데이터 오류" : "진화 라인"}
         >
-          {evolutionLine.map(({ speciesId, species }, index) => (
-            <div key={speciesId} className="flex items-center gap-2">
-              {index > 0 && <span className="text-gray-300">→</span>}
-              {species ? (
+          {missingEvolutionSpeciesIds.length > 0 ? (
+            <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-center text-xs font-semibold text-red-700">
+              진화 라인 데이터가 누락됐어요: {missingEvolutionSpeciesIds.join(", ")}
+            </p>
+          ) : (
+            validEvolutionLine.map((species, index) => (
+              <div key={`${species.speciesId}-${index}`} className="flex items-center gap-2">
+                {index > 0 && <span className="text-gray-300">→</span>}
                 <div
                   className={`flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-semibold ${
                     species.speciesId === graduatedSpecies.speciesId
@@ -76,13 +83,9 @@ export function GraduationContent({
                   />
                   {species.nameKo}
                 </div>
-              ) : (
-                <span className="rounded-full border border-red-200 bg-red-50 px-2 py-1 text-xs font-semibold text-red-700">
-                  누락된 종: {speciesId}
-                </span>
-              )}
-            </div>
-          ))}
+              </div>
+            ))
+          )}
         </div>
 
         <div className="flex flex-col items-center gap-2">
