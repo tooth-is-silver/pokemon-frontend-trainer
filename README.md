@@ -23,6 +23,7 @@ VITE_SUPABASE_ANON_KEY
 npm run dev
 npm run build
 npm run lint
+npm run validate:pokemon
 npm run validate:questions
 npm test
 ```
@@ -43,12 +44,14 @@ npm test
 - Supabase 마이그레이션과 RPC 기반 게임 상태 동기화
 - Zustand 스토어와 순수 로직
 - 스타터 선택 / 학습 / 진화 / 졸업 / 도감 / 엔딩 화면
-- 문제 데이터 검증 스크립트와 순수 로직 테스트 통과 기준 유지
+- 1세대 포켓몬 151종 데이터와 전설 wave 진행
+- `ko.javascript.info` 주요 챕터 기반 문제 데이터 57개 페이지 / 513문항
+- 포켓몬/문제 데이터 검증 스크립트와 순수 로직 테스트 통과 기준 유지
 
 실제 진행 상태는 `TODO.md`를 기준으로 본다.
 
 ## 다음 우선순위
 
-- Phase D: 1세대 포켓몬 데이터 검증 스크립트 추가
-- Phase G: 엔딩 화면 정식화 및 모바일 반응형 검수
-- Phase G: Lighthouse 성능 점검과 빌드 결과물 크기 점검
+- 현재 1차 MVP 기준 필수 구현 태스크는 완료
+- README / TODO / 스펙 문서 기준으로 후속 개선은 MVP 이후 범위에서 별도 태스크화
+- MVP 이후 후보: 주관식 자유 서술형 판정, 자동 문제 생성, 도감 상세 뷰, 친구 공유 / 멀티플레이
