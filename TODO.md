@@ -186,10 +186,10 @@
   - [ ] 전설 5종 (프리저/썬더/파이어/뮤츠/뮤)
   - [ ] 이브이 분기 진화 (쥬피썬더/샤미드/부스터)
 - [ ] `pokemon-index.ts` 매니페스트 또는 `getAllSpecies()` 헬퍼
-- [ ] 검증 스크립트 (`scripts/validate-pokemon.mjs`)
-  - [ ] dexNumber 1~151 빠짐 없음, 중복 없음
-  - [ ] 진화 라인 연결 정합 (양방향)
-  - [ ] 분기 진화 데이터 (`branchEvolutionSpeciesIds`) 검증
+- [x] 검증 스크립트 (`scripts/validate-pokemon.mjs`)
+  - [x] dexNumber 1~151 빠짐 없음, 중복 없음
+  - [x] 진화 라인 연결 정합 (양방향)
+  - [x] 분기 진화 데이터 (`branchEvolutionSpeciesIds`) 검증
 
 ## Phase E. 전설 wave 진행
 
