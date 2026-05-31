@@ -66,11 +66,12 @@
 
 - ✅ Phase 1 ~ 8: 완료
 - ✅ Phase 9 (진화 모달): 완료
-- ✅ Phase B (졸업 모달 + 신규 선택): 완료
-- ✅ Phase C (도감의 현재 포켓몬 표시): 완료
+- ⚠️ Phase B (졸업 모달 + 신규 선택): 핵심 흐름 완료, 모달 상세 회고 일부 남음
+- ⚠️ Phase C (도감의 현재 포켓몬 표시): 졸업 대기 안내만 남음
 - ✅ Phase E (전설 wave + 뮤 엔딩 분기): 구현 완료
-- ⚠️ 앱 초기화 / 세션 로드 연결: 이번 태스크에서 정합화
-- ⚠️ Phase A, D, F, G: 일부 미완
+- ✅ 앱 초기화 / 세션 로드 연결: 완료
+- ✅ Phase A, D, F: 완료
+- ⚠️ Phase B, C, G: 일부 미완
 
 ## 공통 앱 부트스트랩
 
@@ -112,80 +113,83 @@
 
 ### B.1 후보 생성 로직 (순수)
 
-- [ ] `src/core/candidatePicker.ts` 신설
-  - [ ] `pickGraduationCandidates({ unlockedSpeciesIds, graduatedSpeciesIds, legendaryStage, allSpecies })` 시그니처
-  - [ ] wave 분기
+- [x] `src/core/candidatePicker.ts` 신설
+  - [x] `pickGraduationCandidates({ unlockedSpeciesIds, graduatedSpeciesIds, legendaryStage, allSpecies })` 시그니처
+  - [x] wave 분기
     - 일반 (`legendaryStage === "none"`): 미등록 일반 1세대 1차 진화체 + 무진화 종 중 랜덤 3마리
     - 전설 wave1 (`legendary-birds`): 미졸업 전설 새 (최대 3, 줄어들수록 풀 그대로 노출)
     - 전설 wave2 (`mewtwo`): 뮤츠 단독
     - 전설 wave3 (`mew`): 뮤 단독
-  - [ ] 풀 크기보다 후보 수가 작으면 풀 그대로 반환 (중복 생성 금지)
-  - [ ] 풀이 비면 `[]` 반환 (호출자가 wave 트랜지션 트리거)
-- [ ] `src/core/__tests__/candidatePicker.test.ts`
-  - [ ] 일반 wave: 미등록 우선, 졸업 라인 시작점만 후보
-  - [ ] 일반 wave 풀이 0 → 빈 배열 (호출자 책임)
-  - [ ] 전설 wave1 풀 크기에 따라 1~3장
-  - [ ] 전설 wave2/3 단독
-  - [ ] 전설은 일반 wave 후보에서 제외
+  - [x] 풀 크기보다 후보 수가 작으면 풀 그대로 반환 (중복 생성 금지)
+  - [x] 풀이 비면 `[]` 반환 (호출자가 wave 트랜지션 트리거)
+- [x] `src/core/__tests__/candidatePicker.test.ts`
+  - [x] 일반 wave: 미등록 우선, 졸업 라인 시작점만 후보
+  - [x] 일반 wave 풀이 0 → 빈 배열 (호출자 책임)
+  - [x] 전설 wave1 풀 크기에 따라 1~3장
+  - [x] 전설 wave2/3 단독
+  - [x] 전설은 일반 wave 후보에서 제외
 
 ### B.2 졸업 트리거 로직
 
-- [ ] `process_answer` rpc 결과에 `graduated_now: boolean` 추가
+- [x] 정답 반영 후 클라이언트에서 졸업 가능 여부 판정
   - 4스탯 모두 100 도달 + 최종 진화 단계 + 미졸업
-- [ ] 마이그레이션 `supabase/migrations/007_graduation_trigger.sql`
-- [ ] `useGameStore.submitAnswer` 결과 반영
-  - [ ] `progression.pendingGraduationInstanceId` 세팅
-  - [ ] `pokemon_instances.graduated = true` 동기화
-- [ ] `data-structures.md` `ProgressionState` 갱신
-  - [ ] `pendingPokemonSelection` 제거
-  - [ ] `pendingGraduationInstanceId: string | null` 추가
-- [ ] `stores/types.ts` 정합화
+- [x] 마이그레이션 `supabase/migrations/007_graduation_flow.sql`
+- [x] `useGameStore.submitAnswer` 결과 반영
+  - [x] `progression.pendingGraduationInstanceId` 세팅
+  - [x] 졸업 완료 마킹은 `start_next_pokemon` RPC에서 트랜잭션 처리
+- [x] `data-structures.md` `ProgressionState` 갱신
+  - [x] `pendingPokemonSelection` 제거
+  - [x] `pendingGraduationInstanceId: string | null` 추가
+- [x] `stores/types.ts` 정합화
 
 ### B.3 졸업 모달 (UI)
 
-- [ ] `src/components/pokemon/GraduationModal.tsx` (Radix Dialog 기반)
-- [ ] 졸업 정보 영역
-  - [ ] 졸업 축하 메시지
-  - [ ] 졸업한 포켓몬 일러스트 + 진화 라인 (1차 → 2차 → 최종)
+- [x] `src/components/pokemon/GraduationModal.tsx` (Radix Dialog 기반)
+- [x] 졸업 정보 영역
+  - [x] 졸업 축하 메시지
+  - [x] 졸업한 포켓몬 일러스트
+  - [ ] 진화 라인 (1차 → 2차 → 최종)
   - [ ] 최종 스탯 4종
-- [ ] 후보 선택 영역
-  - [ ] 후보 카드 (이미지 + 이름만)
-  - [ ] 1마리 선택 → `start_next_pokemon` rpc 호출 → 모달 닫고 학습 재개
-- [ ] 학습 화면(`LearnPage`) 에서 `pendingGraduationInstanceId` 감지 시 모달 자동 오픈
-- [ ] 모달 외부 클릭/ESC 비활성화 (선택은 필수)
+- [x] 후보 선택 영역
+  - [x] 후보 카드 (이미지 + 이름만)
+  - [x] 1마리 선택 → `start_next_pokemon` rpc 호출 → 모달 닫고 학습 재개
+- [x] 학습 화면(`LearnPage`) 에서 `pendingGraduationInstanceId` 감지 시 모달 자동 오픈
+- [x] 모달 외부 클릭/ESC 비활성화 (선택은 필수)
 
 ### B.4 신규 인스턴스 시작 RPC
 
-- [ ] `supabase/migrations/008_start_next_pokemon.sql`
+- [x] `supabase/migrations/007_graduation_flow.sql` + `008_legendary_wave_transition.sql`
   - 입력: `p_species_id`
   - 동작: 후보 검증 → 새 `pokemon_instances` 행 생성 → `trainers.active_pokemon_instance_id` 갱신 → 도감 등록 → `pendingGraduationInstanceId` 해제 → 세션 리셋
-- [ ] `useGameStore.startNextPokemon(speciesId)` 액션
-  - [ ] rpc 호출 + 클라이언트 상태 동기화
-  - [ ] 일반 도감 완성 시 `unlockedLegendaryStage` 트랜지션도 같은 트랜잭션에서 처리
+- [x] `useGameStore.startNextPokemon(speciesId)` 액션
+  - [x] rpc 호출 + 클라이언트 상태 동기화
+  - [x] 일반 도감 완성 시 `unlockedLegendaryStage` 트랜지션도 같은 트랜잭션에서 처리
 
 ## Phase C. 도감에 현재 포켓몬 표시
 
 > 기획 근거: 사용자 지시 ("도감에 현재 포켓몬 표시가 되어있어야 함")
 
-- [ ] `PokedexPage` 헤더 하단에 현재 포켓몬 카드
-  - [ ] 스프라이트 이미지 + 이름
-  - [ ] 진화 단계 표기 (예: 2 / 3)
-  - [ ] 4스탯 진행도 (`PokemonStats` 재사용)
-  - [ ] 진화 대기 / 졸업 대기 뱃지
-- [ ] 진화 대기 시 `<Link to="/learn">` 안내
+- [x] `PokedexPage` 헤더 하단에 현재 포켓몬 카드
+  - [x] 스프라이트 이미지 + 이름
+  - [x] 진화 단계 표기 (예: 2 / 3)
+  - [x] 4스탯 진행도 (`PokemonStats` 재사용)
+  - [x] 진화 대기 뱃지
+  - [ ] 졸업 대기 뱃지
+- [x] 진화 대기 시 `<Link to="/learn">` 안내
 - [ ] 졸업 대기 시 안내 문구 (학습 화면에서 모달 자동 오픈됨을 알림)
-- [ ] 프리뷰 페이지 갱신 + 스크린샷 재생성
+- [x] 프리뷰 페이지 갱신
+- [ ] 스크린샷 재생성
 
 ## Phase D. 1세대 포켓몬 데이터 확장
 
 > 기획 근거: game-rules.md 6 / 7, data-structures.md 4
 
-- [ ] 1세대 species 데이터 작성 (단일 `starters.ts` → `species/` 분리 또는 단일 ts 매니페스트 결정)
-  - [ ] 일반 1차 진화체부터 라인 단위 정리
-  - [ ] 무진화 종 데이터 (예: 잠만보, 라프라스 등)
-  - [ ] 전설 5종 (프리저/썬더/파이어/뮤츠/뮤)
-  - [ ] 이브이 분기 진화 (쥬피썬더/샤미드/부스터)
-- [ ] `pokemon-index.ts` 매니페스트 또는 `getAllSpecies()` 헬퍼
+- [x] 1세대 species 데이터 작성 (단일 `starters.ts` → `species/` 분리 또는 단일 ts 매니페스트 결정)
+  - [x] 일반 1차 진화체부터 라인 단위 정리
+  - [x] 무진화 종 데이터 (예: 잠만보, 라프라스 등)
+  - [x] 전설 5종 (프리저/썬더/파이어/뮤츠/뮤)
+  - [x] 이브이 분기 진화 (쥬피썬더/샤미드/부스터)
+- [x] `src/content/pokemon/index.ts` 매니페스트 + 헬퍼
 - [x] 검증 스크립트 (`scripts/validate-pokemon.mjs`)
   - [x] dexNumber 1~151 빠짐 없음, 중복 없음
   - [x] 진화 라인 연결 정합 (양방향)
@@ -202,19 +206,19 @@
 - [x] wave2 → wave3: 뮤츠 졸업 → `mew`
 - [x] wave3 종료: 뮤 졸업 → 엔딩 처리 (009 `complete_ending` RPC + LearnPage 자동 분기 + 임시 EndingScreen)
 - [x] `PokedexPage` 전설 해금 단계 배너 (4단계 메시지 룩업 + `aria-live` 정합 확인)
-- [ ] `candidatePicker` 통합 테스트는 단위 테스트 56개로 충분 — wave 분기 / 풀 크기별 수량은 모두 검증됨
+- [x] `candidatePicker` 통합 테스트는 단위 테스트 56개로 충분 — wave 분기 / 풀 크기별 수량은 모두 검증됨
 
 ## Phase F. 문제 데이터 확장
 
 > 기획 근거: content-rules.md
 
 - [x] `ko.javascript.info` 주요 챕터별 문제
-  - [ ] JavaScript 기초
-  - [ ] 객체 (`object-methods` 외 추가)
-  - [ ] 자료구조와 자료형
-  - [ ] 함수 심화
-  - [ ] 프로토타입과 상속
-  - [ ] 클래스
+  - [x] JavaScript 기초
+  - [x] 객체 (`object-methods` 외 추가)
+  - [x] 자료구조와 자료형
+  - [x] 함수 심화
+  - [x] 프로토타입과 상속
+  - [x] 클래스
   - [x] 에러 핸들링
   - [x] 프라미스와 async/await
     - [x] 프라미스 기본 (`promise-basics`)
@@ -268,9 +272,9 @@
 - [x] Playwright 기반 UI 프리뷰 스크린샷 (`scripts/capture-preview.mjs`)
   - [x] 학습 / 진화 / 도감 / 오답 패널 섹션 캡처
 - [x] Husky pre-commit (`lint-staged` 로 staged 파일 prettier + eslint --fix)
-- [x] Husky pre-push (`build` + `lint` + `test`)
+- [x] Husky pre-push (`build` + `lint` + `validate:pokemon` + `validate:questions` + `test`)
 
-## 부록 B. 정합화 필요 (이번 PR 이후)
+## 부록 B. 정합화 필요 (완료)
 
-- [ ] 위 Phase A 항목 모두 (스펙 + 코드)
-- [ ] `MyPokemonPage` / `PartyMemberCard` 코드 자체는 main 에 없음 (PR #18 close 됨) — 추가 정리 불필요
+- [x] 위 Phase A 항목 모두 (스펙 + 코드)
+- [x] `MyPokemonPage` / `PartyMemberCard` 코드 자체는 main 에 없음 (PR #18 close 됨) — 추가 정리 불필요
