@@ -2,6 +2,7 @@ import { getSpriteUrl } from "@/content/pokemon/types";
 import { findSpeciesById } from "@/content/pokemon";
 import type { PokemonSpecies } from "@/content/pokemon/types";
 import type { PokemonStats as Stats } from "@/stores/types";
+import { resolveGraduationEvolutionLine } from "./graduationEvolutionLine";
 import { PokemonStats } from "./PokemonStats";
 
 interface Props {
@@ -21,14 +22,12 @@ export function GraduationContent({
   selectedSpeciesId,
   onSelect,
 }: Props) {
-  const evolutionLine = graduatedSpecies.evolutionLine.map((speciesId) => ({
-    speciesId,
-    species: findSpeciesById(speciesId),
-  }));
-  const missingEvolutionSpeciesIds = evolutionLine
-    .filter(({ species }) => species === null)
-    .map(({ speciesId }) => speciesId);
-  const validEvolutionLine = evolutionLine.flatMap(({ species }) => (species ? [species] : []));
+  const { missingSpeciesIds, validSpecies } = resolveGraduationEvolutionLine(
+    graduatedSpecies.evolutionLine,
+    findSpeciesById,
+  );
+  const missingEvolutionSpeciesIds = missingSpeciesIds;
+  const validEvolutionLine = validSpecies;
   const canSelectNextPokemon = missingEvolutionSpeciesIds.length === 0;
 
   return (
@@ -67,7 +66,7 @@ export function GraduationContent({
             </p>
           ) : (
             validEvolutionLine.map((species, index) => (
-              <div key={`${species.speciesId}-${index}`} className="flex items-center gap-2">
+              <div key={species.speciesId} className="flex items-center gap-2">
                 {index > 0 && <span className="text-gray-300">→</span>}
                 <div
                   className={`flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-semibold ${
