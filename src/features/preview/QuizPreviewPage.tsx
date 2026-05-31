@@ -148,6 +148,7 @@ export default function QuizPreviewPage() {
         <div className="rounded-2xl bg-white shadow-xl border border-gray-200">
           <GraduationContent
             graduatedSpecies={graduatedSample}
+            graduatedStats={{ hp: 100, attack: 100, defense: 100, speed: 100 }}
             candidates={graduationCandidates}
             submitting={false}
             selectedSpeciesId={null}
