@@ -120,6 +120,7 @@ export default function LearnPage() {
       ? (instances.find((i) => i.instanceId === pendingGraduationInstanceId) ?? null)
       : null;
   const graduatedSpecies = graduatedInstance ? findSpeciesById(graduatedInstance.speciesId) : null;
+  const graduatedStats = graduatedInstance?.stats ?? null;
   const isMewGraduating = graduatedSpecies?.speciesId === "mew";
   const graduatedSpeciesIds = instances.filter((i) => i.graduated).map((i) => i.speciesId);
   const graduationCandidates = graduatedInstance
@@ -197,11 +198,11 @@ export default function LearnPage() {
         />
       )}
 
-      {showGraduationModal && graduatedInstance && graduatedSpecies && (
+      {showGraduationModal && graduatedSpecies && graduatedStats && (
         <GraduationModal
           open={true}
           graduatedSpecies={graduatedSpecies}
-          graduatedStats={graduatedInstance.stats}
+          graduatedStats={graduatedStats}
           candidates={graduationCandidates}
           onSelect={handleGraduationSelect}
         />

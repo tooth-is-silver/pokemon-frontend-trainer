@@ -22,12 +22,8 @@ export function GraduationContent({
   selectedSpeciesId,
   onSelect,
 }: Props) {
-  const { missingSpeciesIds, validSpecies } = resolveGraduationEvolutionLine(
-    graduatedSpecies.evolutionLine,
-    findSpeciesById,
-  );
-  const missingEvolutionSpeciesIds = missingSpeciesIds;
-  const validEvolutionLine = validSpecies;
+  const { missingSpeciesIds: missingEvolutionSpeciesIds, validSpecies: validEvolutionLine } =
+    resolveGraduationEvolutionLine(graduatedSpecies.evolutionLine, findSpeciesById);
   const canSelectNextPokemon = missingEvolutionSpeciesIds.length === 0;
 
   return (
