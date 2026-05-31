@@ -197,7 +197,7 @@ export default function LearnPage() {
         />
       )}
 
-      {graduatedInstance && graduatedSpecies && showGraduationModal && (
+      {showGraduationModal && graduatedInstance && graduatedSpecies && (
         <GraduationModal
           open={true}
           graduatedSpecies={graduatedSpecies}

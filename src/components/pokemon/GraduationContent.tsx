@@ -29,6 +29,7 @@ export function GraduationContent({
     .filter(({ species }) => species === null)
     .map(({ speciesId }) => speciesId);
   const validEvolutionLine = evolutionLine.flatMap(({ species }) => (species ? [species] : []));
+  const canSelectNextPokemon = missingEvolutionSpeciesIds.length === 0;
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -94,7 +95,11 @@ export function GraduationContent({
         </div>
       </section>
 
-      {candidates.length === 0 ? (
+      {!canSelectNextPokemon ? (
+        <p className="p-4 text-center text-sm font-semibold text-red-700">
+          진화 라인 데이터를 먼저 수정해야 다음 포켓몬을 선택할 수 있어요.
+        </p>
+      ) : candidates.length === 0 ? (
         <p className="p-4 text-center text-gray-500">선택 가능한 후보가 없어요.</p>
       ) : (
         <ul className="grid grid-cols-3 gap-3">
