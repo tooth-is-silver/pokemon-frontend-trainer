@@ -20,13 +20,20 @@ const allSpecies = getAllSpecies();
 const sampleSpecies = findSpeciesById("charmander") ?? allSpecies[0];
 const evolutionNext = findSpeciesById("charmeleon") ?? allSpecies[0];
 const graduatedSample = findSpeciesById("charizard") ?? allSpecies[0];
+
+function createStablePreviewRandom() {
+  const values = [0.13, 0.47, 0.83];
+  let index = 0;
+  return () => values[index++ % values.length];
+}
+
 // 실제 candidatePicker 호출로 정합 보장 (1차 진화체만 + 도감 미등록만 + 전설 제외)
 const graduationCandidates = pickGraduationCandidates({
   unlockedSpeciesIds: ["charmander", "charmeleon", "charizard"],
   graduatedSpeciesIds: ["charizard"],
   legendaryStage: "none",
   allSpecies,
-  random: () => 0,
+  random: createStablePreviewRandom(),
 });
 const sampleStats = { hp: 42, attack: 57, defense: 33, speed: 61 };
 
