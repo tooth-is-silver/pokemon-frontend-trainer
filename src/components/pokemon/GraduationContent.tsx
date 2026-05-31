@@ -1,8 +1,13 @@
 import { getSpriteUrl } from "@/content/pokemon/types";
+import { findSpeciesById } from "@/content/pokemon";
 import type { PokemonSpecies } from "@/content/pokemon/types";
+import type { PokemonStats as Stats } from "@/stores/types";
+import { resolveGraduationEvolutionLine } from "./graduationEvolutionLine";
+import { PokemonStats } from "./PokemonStats";
 
 interface Props {
   graduatedSpecies: PokemonSpecies;
+  graduatedStats: Stats;
   candidates: PokemonSpecies[];
   submitting: boolean;
   selectedSpeciesId: string | null;
@@ -11,11 +16,16 @@ interface Props {
 
 export function GraduationContent({
   graduatedSpecies,
+  graduatedStats,
   candidates,
   submitting,
   selectedSpeciesId,
   onSelect,
 }: Props) {
+  const { missingSpeciesIds: missingEvolutionSpeciesIds, validSpecies: validEvolutionLine } =
+    resolveGraduationEvolutionLine(graduatedSpecies.evolutionLine, findSpeciesById);
+  const canSelectNextPokemon = missingEvolutionSpeciesIds.length === 0;
+
   return (
     <div className="flex flex-col gap-6 p-6">
       <header className="flex flex-col items-center gap-2 text-center">
@@ -28,7 +38,63 @@ export function GraduationContent({
         </p>
       </header>
 
-      {candidates.length === 0 ? (
+      <section className="grid gap-4 rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
+        <div className="flex flex-col items-center gap-3">
+          <img
+            src={getSpriteUrl(graduatedSpecies.dexNumber)}
+            alt={graduatedSpecies.nameKo}
+            className="w-20 h-20 [image-rendering:pixelated]"
+            loading="lazy"
+          />
+          <div className="text-center">
+            <p className="text-xs font-semibold text-amber-700">졸업 포켓몬</p>
+            <p className="font-bold text-gray-900">{graduatedSpecies.nameKo}</p>
+          </div>
+        </div>
+
+        <div
+          className="flex flex-wrap items-center justify-center gap-2"
+          aria-label={missingEvolutionSpeciesIds.length > 0 ? "진화 라인 데이터 오류" : "진화 라인"}
+        >
+          {missingEvolutionSpeciesIds.length > 0 ? (
+            <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-center text-xs font-semibold text-red-700">
+              진화 라인 데이터가 누락됐어요: {missingEvolutionSpeciesIds.join(", ")}
+            </p>
+          ) : (
+            validEvolutionLine.map((species, index) => (
+              <div key={species.speciesId} className="flex items-center gap-2">
+                {index > 0 && <span className="text-gray-300">→</span>}
+                <div
+                  className={`flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-semibold ${
+                    species.speciesId === graduatedSpecies.speciesId
+                      ? "border-amber-400 bg-white text-amber-800"
+                      : "border-gray-200 bg-white/70 text-gray-600"
+                  }`}
+                >
+                  <img
+                    src={getSpriteUrl(species.dexNumber)}
+                    alt=""
+                    className="w-6 h-6 [image-rendering:pixelated]"
+                    loading="lazy"
+                  />
+                  {species.nameKo}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="flex flex-col items-center gap-2">
+          <p className="text-xs font-semibold text-gray-500">최종 스탯</p>
+          <PokemonStats stats={graduatedStats} />
+        </div>
+      </section>
+
+      {!canSelectNextPokemon ? (
+        <p className="p-4 text-center text-sm font-semibold text-red-700">
+          진화 라인 데이터를 먼저 수정해야 다음 포켓몬을 선택할 수 있어요.
+        </p>
+      ) : candidates.length === 0 ? (
         <p className="p-4 text-center text-gray-500">선택 가능한 후보가 없어요.</p>
       ) : (
         <ul className="grid grid-cols-3 gap-3">

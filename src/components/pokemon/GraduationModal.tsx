@@ -1,16 +1,24 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useRef, useState } from "react";
 import type { PokemonSpecies } from "@/content/pokemon/types";
+import type { PokemonStats } from "@/stores/types";
 import { GraduationContent } from "./GraduationContent";
 
 interface Props {
   open: boolean;
   graduatedSpecies: PokemonSpecies;
+  graduatedStats: PokemonStats;
   candidates: PokemonSpecies[];
   onSelect: (speciesId: string) => Promise<void>;
 }
 
-export function GraduationModal({ open, graduatedSpecies, candidates, onSelect }: Props) {
+export function GraduationModal({
+  open,
+  graduatedSpecies,
+  graduatedStats,
+  candidates,
+  onSelect,
+}: Props) {
   const submittingRef = useRef(false);
   const [submitting, setSubmitting] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -46,6 +54,7 @@ export function GraduationModal({ open, graduatedSpecies, candidates, onSelect }
           </Dialog.Description>
           <GraduationContent
             graduatedSpecies={graduatedSpecies}
+            graduatedStats={graduatedStats}
             candidates={candidates}
             submitting={submitting}
             selectedSpeciesId={selectedId}
