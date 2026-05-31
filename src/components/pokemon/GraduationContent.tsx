@@ -21,9 +21,11 @@ export function GraduationContent({
   selectedSpeciesId,
   onSelect,
 }: Props) {
-  const evolutionLine = graduatedSpecies.evolutionLine
-    .map((speciesId) => findSpeciesById(speciesId))
-    .filter((species): species is PokemonSpecies => species !== null);
+  const evolutionLine = graduatedSpecies.evolutionLine.map((speciesId) => ({
+    speciesId,
+    species: findSpeciesById(speciesId),
+  }));
+  const hasInvalidEvolutionLine = evolutionLine.some(({ species }) => species === null);
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -51,25 +53,34 @@ export function GraduationContent({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2" aria-label="진화 라인">
-          {evolutionLine.map((species, index) => (
-            <div key={species.speciesId} className="flex items-center gap-2">
+        <div
+          className="flex flex-wrap items-center justify-center gap-2"
+          aria-label={hasInvalidEvolutionLine ? "진화 라인 데이터 오류" : "진화 라인"}
+        >
+          {evolutionLine.map(({ speciesId, species }, index) => (
+            <div key={speciesId} className="flex items-center gap-2">
               {index > 0 && <span className="text-gray-300">→</span>}
-              <div
-                className={`flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-semibold ${
-                  species.speciesId === graduatedSpecies.speciesId
-                    ? "border-amber-400 bg-white text-amber-800"
-                    : "border-gray-200 bg-white/70 text-gray-600"
-                }`}
-              >
-                <img
-                  src={getSpriteUrl(species.dexNumber)}
-                  alt=""
-                  className="w-6 h-6 [image-rendering:pixelated]"
-                  loading="lazy"
-                />
-                {species.nameKo}
-              </div>
+              {species ? (
+                <div
+                  className={`flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-semibold ${
+                    species.speciesId === graduatedSpecies.speciesId
+                      ? "border-amber-400 bg-white text-amber-800"
+                      : "border-gray-200 bg-white/70 text-gray-600"
+                  }`}
+                >
+                  <img
+                    src={getSpriteUrl(species.dexNumber)}
+                    alt=""
+                    className="w-6 h-6 [image-rendering:pixelated]"
+                    loading="lazy"
+                  />
+                  {species.nameKo}
+                </div>
+              ) : (
+                <span className="rounded-full border border-red-200 bg-red-50 px-2 py-1 text-xs font-semibold text-red-700">
+                  누락된 종: {speciesId}
+                </span>
+              )}
             </div>
           ))}
         </div>
