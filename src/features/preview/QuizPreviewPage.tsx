@@ -26,6 +26,7 @@ const graduationCandidates = pickGraduationCandidates({
   graduatedSpeciesIds: ["charizard"],
   legendaryStage: "none",
   allSpecies,
+  random: () => 0,
 });
 const sampleStats = { hp: 42, attack: 57, defense: 33, speed: 61 };
 
@@ -167,7 +168,11 @@ export default function QuizPreviewPage() {
           <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
             <div className="h-full bg-blue-400" style={{ width: "3%" }} />
           </div>
-          <CurrentPokemonCard instance={currentInstanceMock} species={currentSpeciesMock} />
+          <CurrentPokemonCard
+            instance={currentInstanceMock}
+            species={currentSpeciesMock}
+            graduationPending={true}
+          />
           <div className="max-h-[320px] overflow-hidden">
             <PokedexGrid
               unlockedSpeciesIds={["bulbasaur", "ivysaur", "venusaur", "charmander", "charmeleon"]}

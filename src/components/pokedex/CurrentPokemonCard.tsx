@@ -7,9 +7,10 @@ import { PokemonStats } from "@/components/pokemon/PokemonStats";
 interface Props {
   instance: PokemonInstance;
   species: PokemonSpecies;
+  graduationPending?: boolean;
 }
 
-export function CurrentPokemonCard({ instance, species }: Props) {
+export function CurrentPokemonCard({ instance, species, graduationPending = false }: Props) {
   const maxStage = species.evolutionLine.length;
 
   return (
@@ -47,7 +48,20 @@ export function CurrentPokemonCard({ instance, species }: Props) {
               🎓 졸업 완료
             </span>
           )}
+          {graduationPending && (
+            <Link
+              to="/learn"
+              className="font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full hover:bg-amber-200 transition-colors"
+            >
+              🎓 졸업 대기 (학습에서 선택)
+            </Link>
+          )}
         </div>
+        {graduationPending && (
+          <p className="text-xs text-amber-700" aria-live="polite">
+            학습 화면으로 이동하면 졸업 모달이 자동으로 열려 다음 포켓몬을 선택할 수 있어요.
+          </p>
+        )}
         <PokemonStats stats={instance.stats} />
       </div>
     </article>

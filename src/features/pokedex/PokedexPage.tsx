@@ -20,6 +20,9 @@ export default function PokedexPage() {
   const starterChosen = useGameStore((s) => s.trainer.starterChosen);
   const unlockedSpeciesIds = useGameStore((s) => s.pokedex.unlockedSpeciesIds);
   const legendaryStage = useGameStore((s) => s.progression.unlockedLegendaryStage);
+  const pendingGraduationInstanceId = useGameStore(
+    (s) => s.progression.pendingGraduationInstanceId,
+  );
   const activeInstanceId = useGameStore((s) => s.trainer.activePokemonInstanceId);
   const instances = useGameStore((s) => s.party.instances);
 
@@ -62,7 +65,11 @@ export default function PokedexPage() {
 
       {activeInstance && activeSpecies && (
         <section className="w-full max-w-4xl">
-          <CurrentPokemonCard instance={activeInstance} species={activeSpecies} />
+          <CurrentPokemonCard
+            instance={activeInstance}
+            species={activeSpecies}
+            graduationPending={activeInstance.instanceId === pendingGraduationInstanceId}
+          />
         </section>
       )}
 
