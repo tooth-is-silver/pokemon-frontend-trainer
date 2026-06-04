@@ -147,7 +147,6 @@ export default function QuizPreviewPage() {
             nextSpecies={evolutionNext}
             submitting={false}
             onEvolve={noop}
-            onSkip={noop}
           />
         </div>
       </Section>

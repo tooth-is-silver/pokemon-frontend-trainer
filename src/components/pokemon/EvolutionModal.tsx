@@ -8,10 +8,9 @@ interface Props {
   currentSpecies: PokemonSpecies;
   nextSpecies: PokemonSpecies;
   onEvolve: () => Promise<void>;
-  onSkip: () => Promise<void>;
 }
 
-export function EvolutionModal({ open, currentSpecies, nextSpecies, onEvolve, onSkip }: Props) {
+export function EvolutionModal({ open, currentSpecies, nextSpecies, onEvolve }: Props) {
   const submittingRef = useRef(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -41,14 +40,13 @@ export function EvolutionModal({ open, currentSpecies, nextSpecies, onEvolve, on
         >
           <Dialog.Title className="sr-only">진화 확인</Dialog.Title>
           <Dialog.Description className="sr-only">
-            포켓몬이 진화할 수 있어요. 진화할지 보류할지 선택하세요.
+            포켓몬이 진화할 수 있어요. 진화하면 새 포켓몬이 도감에 등록됩니다.
           </Dialog.Description>
           <EvolutionContent
             currentSpecies={currentSpecies}
             nextSpecies={nextSpecies}
             submitting={submitting}
             onEvolve={() => run(onEvolve)}
-            onSkip={() => run(onSkip)}
           />
         </Dialog.Content>
       </Dialog.Portal>

@@ -45,7 +45,6 @@ export default function LearnPage() {
   const setCurrentQuestion = useGameStore((s) => s.setCurrentQuestion);
   const submitAnswer = useGameStore((s) => s.submitAnswer);
   const evolve = useGameStore((s) => s.evolve);
-  const skipEvolution = useGameStore((s) => s.skipEvolution);
   const startNextPokemon = useGameStore((s) => s.startNextPokemon);
   const completeEnding = useGameStore((s) => s.completeEnding);
 
@@ -108,11 +107,6 @@ export default function LearnPage() {
   const handleEvolve = async () => {
     if (!activeInstance || !nextEvolutionSpecies) return;
     await evolve(activeInstance.instanceId, nextEvolutionSpecies.speciesId);
-  };
-
-  const handleSkipEvolution = async () => {
-    if (!activeInstance) return;
-    await skipEvolution(activeInstance.instanceId);
   };
 
   const graduatedInstance =
@@ -194,7 +188,6 @@ export default function LearnPage() {
           currentSpecies={activeSpecies}
           nextSpecies={nextEvolutionSpecies}
           onEvolve={handleEvolve}
-          onSkip={handleSkipEvolution}
         />
       )}
 

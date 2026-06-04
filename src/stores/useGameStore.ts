@@ -39,7 +39,6 @@ interface GameStore {
 
   // 진화 처리
   evolve: (instanceId: string, nextSpeciesId: string) => Promise<void>;
-  skipEvolution: (instanceId: string) => Promise<void>;
 
   // 졸업 후 새 인스턴스 시작
   startNextPokemon: (speciesId: string) => Promise<void>;
@@ -283,27 +282,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
       pokedex: {
         ...state.pokedex,
         unlockedSpeciesIds: [...new Set([...state.pokedex.unlockedSpeciesIds, nextSpeciesId])],
-      },
-      progression: {
-        ...state.progression,
-        pendingEvolutionInstanceId: null,
-      },
-    });
-  },
-
-  skipEvolution: async (instanceId) => {
-    const { error } = await supabase.rpc("skip_evolution", {
-      p_instance_id: instanceId,
-    });
-
-    if (error) throw error;
-
-    const state = get();
-    set({
-      party: {
-        instances: state.party.instances.map((inst) =>
-          inst.instanceId === instanceId ? { ...inst, evolutionPending: false } : inst,
-        ),
       },
       progression: {
         ...state.progression,
