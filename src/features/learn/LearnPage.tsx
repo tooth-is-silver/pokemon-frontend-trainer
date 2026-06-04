@@ -51,6 +51,7 @@ export default function LearnPage() {
   const [submitting, setSubmitting] = useState(false);
   const [wrongQuestion, setWrongQuestion] = useState<Question | null>(null);
   const [autoGraduationError, setAutoGraduationError] = useState<string | null>(null);
+  const [autoGraduationRetrying, setAutoGraduationRetrying] = useState(false);
   const autoStartAttemptedGraduationIdsRef = useRef<Set<string>>(new Set());
 
   const activeInstance = instances.find((i) => i.instanceId === activeInstanceId) ?? null;
@@ -154,9 +155,24 @@ export default function LearnPage() {
     setAutoGraduationError(null);
     startNextPokemon(autoGraduationSpeciesId).catch((err) => {
       console.error("단일 후보 자동 해금 실패:", err);
-      setAutoGraduationError("자동 해금에 실패했어요. 새로고침 후 다시 시도해주세요.");
+      setAutoGraduationError("자동 해금에 실패했어요. 잠시 후 다시 시도해주세요.");
     });
   }, [pendingGraduationInstanceId, autoGraduationSpeciesId, startNextPokemon]);
+
+  const handleRetryAutoGraduation = async () => {
+    if (!pendingGraduationInstanceId || !autoGraduationSpeciesId || autoGraduationRetrying) return;
+
+    setAutoGraduationRetrying(true);
+    setAutoGraduationError(null);
+    try {
+      await startNextPokemon(autoGraduationSpeciesId);
+    } catch (err) {
+      console.error("단일 후보 자동 해금 재시도 실패:", err);
+      setAutoGraduationError("자동 해금에 실패했어요. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setAutoGraduationRetrying(false);
+    }
+  };
 
   if (authLoading || !loaded) {
     return <div className="flex items-center justify-center min-h-screen">로딩 중...</div>;
@@ -192,10 +208,23 @@ export default function LearnPage() {
           />
         ) : (
           <div className="p-6 text-center text-gray-500">
-            {autoGraduationError ??
-              (autoGraduationCandidate
-                ? `${autoGraduationCandidate.nameKo}가 자동으로 해금되고 있어요.`
-                : "출제할 문제가 없습니다.")}
+            {autoGraduationError ? (
+              <div className="flex flex-col items-center gap-3">
+                <p>{autoGraduationError}</p>
+                <button
+                  type="button"
+                  onClick={handleRetryAutoGraduation}
+                  disabled={autoGraduationRetrying}
+                  className="rounded-xl bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {autoGraduationRetrying ? "다시 시도 중..." : "다시 시도"}
+                </button>
+              </div>
+            ) : autoGraduationCandidate ? (
+              `${autoGraduationCandidate.nameKo}가 자동으로 해금되고 있어요.`
+            ) : (
+              "출제할 문제가 없습니다."
+            )}
           </div>
         )}
 
