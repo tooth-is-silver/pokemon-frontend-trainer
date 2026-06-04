@@ -129,6 +129,18 @@ describe("pickGraduationCandidates - 일반 wave", () => {
     });
     expect(result).toEqual([]);
   });
+
+  it("일반 도감이 완성되면 전설 새 후보로 전환", () => {
+    const result = pickGraduationCandidates({
+      unlockedSpeciesIds: ["bulbasaur", "ivysaur", "charmander", "squirtle", "pidgey", "rattata"],
+      graduatedSpeciesIds: [],
+      legendaryStage: "none",
+      allSpecies,
+      random: det,
+    });
+    const ids = result.map((s) => s.speciesId);
+    expect(ids.sort()).toEqual(["articuno", "moltres", "zapdos"]);
+  });
 });
 
 describe("pickGraduationCandidates - 전설 wave 1 (legendary-birds)", () => {
@@ -154,14 +166,39 @@ describe("pickGraduationCandidates - 전설 wave 1 (legendary-birds)", () => {
     expect(result.map((s) => s.speciesId)).not.toContain("articuno");
   });
 
-  it("3마리 모두 졸업 시 빈 배열 반환 (호출자가 wave 트랜지션)", () => {
+  it("현재 졸업 중인 전설 새는 다음 후보에서 제외", () => {
+    const result = pickGraduationCandidates({
+      unlockedSpeciesIds: [],
+      graduatedSpeciesIds: ["articuno"],
+      graduatingSpeciesId: "zapdos",
+      legendaryStage: "legendary-birds",
+      allSpecies,
+    });
+    expect(result).toHaveLength(1);
+    expect(result[0].speciesId).toBe("moltres");
+  });
+
+  it("마지막 전설 새 졸업 시 뮤츠 단독 후보로 전환", () => {
+    const result = pickGraduationCandidates({
+      unlockedSpeciesIds: [],
+      graduatedSpeciesIds: ["articuno", "zapdos"],
+      graduatingSpeciesId: "moltres",
+      legendaryStage: "legendary-birds",
+      allSpecies,
+    });
+    expect(result).toHaveLength(1);
+    expect(result[0].speciesId).toBe("mewtwo");
+  });
+
+  it("3마리 모두 졸업 시 뮤츠 단독 후보로 전환", () => {
     const result = pickGraduationCandidates({
       unlockedSpeciesIds: [],
       graduatedSpeciesIds: ["articuno", "zapdos", "moltres"],
       legendaryStage: "legendary-birds",
       allSpecies,
     });
-    expect(result).toEqual([]);
+    expect(result).toHaveLength(1);
+    expect(result[0].speciesId).toBe("mewtwo");
   });
 });
 
@@ -177,14 +214,27 @@ describe("pickGraduationCandidates - 전설 wave 2 (mewtwo)", () => {
     expect(result[0].speciesId).toBe("mewtwo");
   });
 
-  it("뮤츠 졸업 후 빈 배열 반환", () => {
+  it("뮤츠 졸업 후 뮤 단독 후보로 전환", () => {
     const result = pickGraduationCandidates({
       unlockedSpeciesIds: [],
       graduatedSpeciesIds: ["mewtwo"],
       legendaryStage: "mewtwo",
       allSpecies,
     });
-    expect(result).toEqual([]);
+    expect(result).toHaveLength(1);
+    expect(result[0].speciesId).toBe("mew");
+  });
+
+  it("현재 뮤츠가 졸업 중이면 뮤 단독 후보로 전환", () => {
+    const result = pickGraduationCandidates({
+      unlockedSpeciesIds: [],
+      graduatedSpeciesIds: [],
+      graduatingSpeciesId: "mewtwo",
+      legendaryStage: "mewtwo",
+      allSpecies,
+    });
+    expect(result).toHaveLength(1);
+    expect(result[0].speciesId).toBe("mew");
   });
 });
 

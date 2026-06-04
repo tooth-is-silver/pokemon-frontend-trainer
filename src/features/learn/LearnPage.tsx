@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
@@ -50,6 +50,9 @@ export default function LearnPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [wrongQuestion, setWrongQuestion] = useState<Question | null>(null);
+  const [autoGraduationError, setAutoGraduationError] = useState<string | null>(null);
+  const [autoGraduationRetrying, setAutoGraduationRetrying] = useState(false);
+  const autoStartAttemptedGraduationIdsRef = useRef<Set<string>>(new Set());
 
   const activeInstance = instances.find((i) => i.instanceId === activeInstanceId) ?? null;
   const activeSpecies = activeInstance ? findSpeciesById(activeInstance.speciesId) : null;
@@ -121,12 +124,18 @@ export default function LearnPage() {
     ? pickGraduationCandidates({
         unlockedSpeciesIds,
         graduatedSpeciesIds,
+        graduatingSpeciesId: graduatedSpecies?.speciesId,
         legendaryStage,
         allSpecies: getAllSpecies(),
       })
     : [];
+  const autoGraduationCandidate =
+    graduatedSpecies && !isMewGraduating && graduationCandidates.length === 1
+      ? graduationCandidates[0]
+      : null;
+  const autoGraduationSpeciesId = autoGraduationCandidate?.speciesId ?? null;
   const showGraduationModal = Boolean(
-    graduatedSpecies && graduationCandidates.length > 0 && !isMewGraduating,
+    graduatedSpecies && graduationCandidates.length > 1 && !isMewGraduating,
   );
 
   // 뮤 졸업 트리거 → 자동 엔딩 처리
@@ -136,6 +145,34 @@ export default function LearnPage() {
       console.error("엔딩 처리 실패:", err),
     );
   }, [pendingGraduationInstanceId, isEnding, isMewGraduating, completeEnding]);
+
+  // 후보가 1마리뿐이면 정책상 선택 모달 없이 바로 다음 포켓몬을 시작한다.
+  useEffect(() => {
+    if (!pendingGraduationInstanceId || !autoGraduationSpeciesId) return;
+    if (autoStartAttemptedGraduationIdsRef.current.has(pendingGraduationInstanceId)) return;
+
+    autoStartAttemptedGraduationIdsRef.current.add(pendingGraduationInstanceId);
+    setAutoGraduationError(null);
+    startNextPokemon(autoGraduationSpeciesId).catch((err) => {
+      console.error("단일 후보 자동 해금 실패:", err);
+      setAutoGraduationError("자동 해금에 실패했어요. 잠시 후 다시 시도해주세요.");
+    });
+  }, [pendingGraduationInstanceId, autoGraduationSpeciesId, startNextPokemon]);
+
+  const handleRetryAutoGraduation = async () => {
+    if (!pendingGraduationInstanceId || !autoGraduationSpeciesId || autoGraduationRetrying) return;
+
+    setAutoGraduationRetrying(true);
+    setAutoGraduationError(null);
+    try {
+      await startNextPokemon(autoGraduationSpeciesId);
+    } catch (err) {
+      console.error("단일 후보 자동 해금 재시도 실패:", err);
+      setAutoGraduationError("자동 해금에 실패했어요. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setAutoGraduationRetrying(false);
+    }
+  };
 
   if (authLoading || !loaded) {
     return <div className="flex items-center justify-center min-h-screen">로딩 중...</div>;
@@ -170,7 +207,25 @@ export default function LearnPage() {
             disabled={submitting || wrongQuestion !== null}
           />
         ) : (
-          <div className="p-6 text-center text-gray-500">출제할 문제가 없습니다.</div>
+          <div className="p-6 text-center text-gray-500">
+            {autoGraduationError ? (
+              <div className="flex flex-col items-center gap-3">
+                <p>{autoGraduationError}</p>
+                <button
+                  type="button"
+                  onClick={handleRetryAutoGraduation}
+                  disabled={autoGraduationRetrying}
+                  className="rounded-xl bg-blue-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {autoGraduationRetrying ? "다시 시도 중..." : "다시 시도"}
+                </button>
+              </div>
+            ) : autoGraduationCandidate ? (
+              `${autoGraduationCandidate.nameKo}가 자동으로 해금되고 있어요.`
+            ) : (
+              "출제할 문제가 없습니다."
+            )}
+          </div>
         )}
 
         {wrongQuestion && (

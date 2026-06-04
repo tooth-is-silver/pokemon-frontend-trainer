@@ -115,6 +115,16 @@ describe("isGraduationReady", () => {
     expect(isGraduationReady(inst, finalStageSpecies)).toBe(false);
   });
 
+  it("무진화 포켓몬 + 4스탯 50 → true", () => {
+    const inst = makeInstance({ stats: { hp: 50, attack: 50, defense: 50, speed: 50 } });
+    expect(isGraduationReady(inst, singleStageSpecies)).toBe(true);
+  });
+
+  it("무진화 포켓몬 + 4스탯 49 → false", () => {
+    const inst = makeInstance({ stats: { hp: 49, attack: 50, defense: 50, speed: 50 } });
+    expect(isGraduationReady(inst, singleStageSpecies)).toBe(false);
+  });
+
   it("이미 졸업 → false", () => {
     const inst = makeInstance({
       graduated: true,
