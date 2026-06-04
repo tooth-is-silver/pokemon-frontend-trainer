@@ -132,6 +132,7 @@ export default function LearnPage() {
     graduatedSpecies && !isMewGraduating && graduationCandidates.length === 1
       ? graduationCandidates[0]
       : null;
+  const autoGraduationSpeciesId = autoGraduationCandidate?.speciesId ?? null;
   const showGraduationModal = Boolean(
     graduatedSpecies && graduationCandidates.length > 1 && !isMewGraduating,
   );
@@ -151,20 +152,20 @@ export default function LearnPage() {
 
   // 후보가 1마리뿐이면 정책상 선택 모달 없이 바로 다음 포켓몬을 시작한다.
   useEffect(() => {
-    if (!pendingGraduationInstanceId || !autoGraduationCandidate) return;
+    if (!pendingGraduationInstanceId || !autoGraduationSpeciesId) return;
 
-    const autoStartKey = `${pendingGraduationInstanceId}:${autoGraduationCandidate.speciesId}`;
+    const autoStartKey = `${pendingGraduationInstanceId}:${autoGraduationSpeciesId}`;
     if (autoStartGraduationKeyRef.current === autoStartKey) return;
     if (autoStartGraduationInFlightRef.current) return;
 
     autoStartGraduationKeyRef.current = autoStartKey;
     autoStartGraduationInFlightRef.current = true;
-    startNextPokemon(autoGraduationCandidate.speciesId).catch((err) => {
+    startNextPokemon(autoGraduationSpeciesId).catch((err) => {
       console.error("단일 후보 자동 해금 실패:", err);
       autoStartGraduationKeyRef.current = null;
       autoStartGraduationInFlightRef.current = false;
     });
-  }, [pendingGraduationInstanceId, autoGraduationCandidate, startNextPokemon]);
+  }, [pendingGraduationInstanceId, autoGraduationSpeciesId, startNextPokemon]);
 
   if (authLoading || !loaded) {
     return <div className="flex items-center justify-center min-h-screen">로딩 중...</div>;
