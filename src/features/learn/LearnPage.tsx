@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
@@ -50,6 +50,7 @@ export default function LearnPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [wrongQuestion, setWrongQuestion] = useState<Question | null>(null);
+  const autoStartGraduationKeyRef = useRef<string | null>(null);
 
   const activeInstance = instances.find((i) => i.instanceId === activeInstanceId) ?? null;
   const activeSpecies = activeInstance ? findSpeciesById(activeInstance.speciesId) : null;
@@ -121,12 +122,17 @@ export default function LearnPage() {
     ? pickGraduationCandidates({
         unlockedSpeciesIds,
         graduatedSpeciesIds,
+        graduatingSpeciesId: graduatedSpecies?.speciesId,
         legendaryStage,
         allSpecies: getAllSpecies(),
       })
     : [];
+  const autoGraduationCandidate =
+    graduatedSpecies && !isMewGraduating && graduationCandidates.length === 1
+      ? graduationCandidates[0]
+      : null;
   const showGraduationModal = Boolean(
-    graduatedSpecies && graduationCandidates.length > 0 && !isMewGraduating,
+    graduatedSpecies && graduationCandidates.length > 1 && !isMewGraduating,
   );
 
   // 뮤 졸업 트리거 → 자동 엔딩 처리
@@ -136,6 +142,20 @@ export default function LearnPage() {
       console.error("엔딩 처리 실패:", err),
     );
   }, [pendingGraduationInstanceId, isEnding, isMewGraduating, completeEnding]);
+
+  // 후보가 1마리뿐이면 정책상 선택 모달 없이 바로 다음 포켓몬을 시작한다.
+  useEffect(() => {
+    if (!pendingGraduationInstanceId || !autoGraduationCandidate) return;
+
+    const autoStartKey = `${pendingGraduationInstanceId}:${autoGraduationCandidate.speciesId}`;
+    if (autoStartGraduationKeyRef.current === autoStartKey) return;
+
+    autoStartGraduationKeyRef.current = autoStartKey;
+    startNextPokemon(autoGraduationCandidate.speciesId).catch((err) => {
+      console.error("단일 후보 자동 해금 실패:", err);
+      autoStartGraduationKeyRef.current = null;
+    });
+  }, [pendingGraduationInstanceId, autoGraduationCandidate, startNextPokemon]);
 
   if (authLoading || !loaded) {
     return <div className="flex items-center justify-center min-h-screen">로딩 중...</div>;
@@ -170,7 +190,11 @@ export default function LearnPage() {
             disabled={submitting || wrongQuestion !== null}
           />
         ) : (
-          <div className="p-6 text-center text-gray-500">출제할 문제가 없습니다.</div>
+          <div className="p-6 text-center text-gray-500">
+            {autoGraduationCandidate
+              ? `${autoGraduationCandidate.nameKo}와 함께할 준비를 하고 있어요.`
+              : "출제할 문제가 없습니다."}
+          </div>
         )}
 
         {wrongQuestion && (

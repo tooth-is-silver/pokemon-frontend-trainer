@@ -36,14 +36,17 @@ export function isEvolutionReady(instance: PokemonInstance, species: PokemonSpec
   return false;
 }
 
-// 졸업 가능 여부 판정 (최종 진화체에서 4스탯 모두 100)
+// 졸업 가능 여부 판정
+// - 다단 진화: 최종 진화체에서 4스탯 모두 100
+// - 무진화: 4스탯 모두 50
 export function isGraduationReady(instance: PokemonInstance, species: PokemonSpecies): boolean {
   if (instance.graduated) return false;
 
   const isLastStage = !species.nextEvolutionSpeciesId;
   if (!isLastStage) return false;
 
-  return hasMinStats(instance.stats, GRADUATION);
+  const threshold = species.evolutionLine.length === 1 ? SINGLE_STAGE_THRESHOLD : GRADUATION;
+  return hasMinStats(instance.stats, threshold);
 }
 
 // 신규 포켓몬 선택 가능 여부

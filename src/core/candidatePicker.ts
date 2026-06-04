@@ -10,6 +10,7 @@ const LEGENDARY_BIRD_IDS = ["articuno", "zapdos", "moltres"];
 interface PickArgs {
   unlockedSpeciesIds: string[];
   graduatedSpeciesIds: string[];
+  graduatingSpeciesId?: string;
   legendaryStage: LegendaryStage;
   allSpecies: PokemonSpecies[];
   random?: () => number;
@@ -22,6 +23,7 @@ interface PickArgs {
 export function pickGraduationCandidates({
   unlockedSpeciesIds,
   graduatedSpeciesIds,
+  graduatingSpeciesId,
   legendaryStage,
   allSpecies,
   random = Math.random,
@@ -29,6 +31,7 @@ export function pickGraduationCandidates({
   const pool = buildPool({
     unlockedSpeciesIds,
     graduatedSpeciesIds,
+    graduatingSpeciesId,
     legendaryStage,
     allSpecies,
   });
@@ -45,29 +48,62 @@ export function pickGraduationCandidates({
 function buildPool({
   unlockedSpeciesIds,
   graduatedSpeciesIds,
+  graduatingSpeciesId,
   legendaryStage,
   allSpecies,
 }: Omit<PickArgs, "random">): PokemonSpecies[] {
   const unlocked = new Set(unlockedSpeciesIds);
-  const graduated = new Set(graduatedSpeciesIds);
+  const graduated = new Set([
+    ...graduatedSpeciesIds,
+    ...(graduatingSpeciesId ? [graduatingSpeciesId] : []),
+  ]);
 
   if (legendaryStage === "none") {
-    return allSpecies.filter(
+    const normalPool = allSpecies.filter(
       (s) => s.category === "normal" && s.evolutionStage === 1 && !unlocked.has(s.speciesId),
     );
+
+    if (normalPool.length > 0) return normalPool;
+    if (isNormalPokedexCompleted(unlocked, allSpecies)) {
+      return pickLegendaryBirdPool(allSpecies, graduated);
+    }
+
+    return [];
   }
 
   if (legendaryStage === "legendary-birds") {
-    return allSpecies.filter(
-      (s) => LEGENDARY_BIRD_IDS.includes(s.speciesId) && !graduated.has(s.speciesId),
-    );
+    const birdPool = pickLegendaryBirdPool(allSpecies, graduated);
+    if (birdPool.length > 0) return birdPool;
+    return pickSingleLegendary(allSpecies, graduated, "mewtwo");
   }
 
   if (legendaryStage === "mewtwo") {
-    return allSpecies.filter((s) => s.speciesId === "mewtwo" && !graduated.has(s.speciesId));
+    if (graduated.has("mewtwo")) return pickSingleLegendary(allSpecies, graduated, "mew");
+    return pickSingleLegendary(allSpecies, graduated, "mewtwo");
   }
 
-  return allSpecies.filter((s) => s.speciesId === "mew" && !graduated.has(s.speciesId));
+  return pickSingleLegendary(allSpecies, graduated, "mew");
+}
+
+function isNormalPokedexCompleted(unlocked: Set<string>, allSpecies: PokemonSpecies[]): boolean {
+  return allSpecies.filter((s) => s.category === "normal").every((s) => unlocked.has(s.speciesId));
+}
+
+function pickLegendaryBirdPool(
+  allSpecies: PokemonSpecies[],
+  graduated: Set<string>,
+): PokemonSpecies[] {
+  return allSpecies.filter(
+    (s) => LEGENDARY_BIRD_IDS.includes(s.speciesId) && !graduated.has(s.speciesId),
+  );
+}
+
+function pickSingleLegendary(
+  allSpecies: PokemonSpecies[],
+  graduated: Set<string>,
+  speciesId: string,
+): PokemonSpecies[] {
+  return allSpecies.filter((s) => s.speciesId === speciesId && !graduated.has(s.speciesId));
 }
 
 function shuffleSlice<T>(arr: T[], n: number, random: () => number): T[] {
