@@ -10,6 +10,7 @@ const LEGENDARY_BIRD_IDS = ["articuno", "zapdos", "moltres"];
 interface PickArgs {
   unlockedSpeciesIds: string[];
   graduatedSpeciesIds: string[];
+  // 졸업 모달을 띄운 현재 포켓몬은 아직 서버상 graduated가 아니므로 후보 계산에서 함께 제외한다.
   graduatingSpeciesId?: string;
   legendaryStage: LegendaryStage;
   allSpecies: PokemonSpecies[];
