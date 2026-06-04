@@ -50,8 +50,8 @@ export default function LearnPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [wrongQuestion, setWrongQuestion] = useState<Question | null>(null);
-  const autoStartGraduationKeyRef = useRef<string | null>(null);
-  const autoStartGraduationInFlightRef = useRef(false);
+  const [autoGraduationError, setAutoGraduationError] = useState<string | null>(null);
+  const autoStartAttemptedGraduationIdsRef = useRef<Set<string>>(new Set());
 
   const activeInstance = instances.find((i) => i.instanceId === activeInstanceId) ?? null;
   const activeSpecies = activeInstance ? findSpeciesById(activeInstance.speciesId) : null;
@@ -145,25 +145,16 @@ export default function LearnPage() {
     );
   }, [pendingGraduationInstanceId, isEnding, isMewGraduating, completeEnding]);
 
-  useEffect(() => {
-    autoStartGraduationKeyRef.current = null;
-    autoStartGraduationInFlightRef.current = false;
-  }, [pendingGraduationInstanceId]);
-
   // 후보가 1마리뿐이면 정책상 선택 모달 없이 바로 다음 포켓몬을 시작한다.
   useEffect(() => {
     if (!pendingGraduationInstanceId || !autoGraduationSpeciesId) return;
+    if (autoStartAttemptedGraduationIdsRef.current.has(pendingGraduationInstanceId)) return;
 
-    const autoStartKey = `${pendingGraduationInstanceId}:${autoGraduationSpeciesId}`;
-    if (autoStartGraduationKeyRef.current === autoStartKey) return;
-    if (autoStartGraduationInFlightRef.current) return;
-
-    autoStartGraduationKeyRef.current = autoStartKey;
-    autoStartGraduationInFlightRef.current = true;
+    autoStartAttemptedGraduationIdsRef.current.add(pendingGraduationInstanceId);
+    setAutoGraduationError(null);
     startNextPokemon(autoGraduationSpeciesId).catch((err) => {
       console.error("단일 후보 자동 해금 실패:", err);
-      autoStartGraduationKeyRef.current = null;
-      autoStartGraduationInFlightRef.current = false;
+      setAutoGraduationError("자동 해금에 실패했어요. 새로고침 후 다시 시도해주세요.");
     });
   }, [pendingGraduationInstanceId, autoGraduationSpeciesId, startNextPokemon]);
 
@@ -201,9 +192,10 @@ export default function LearnPage() {
           />
         ) : (
           <div className="p-6 text-center text-gray-500">
-            {autoGraduationCandidate
-              ? `${autoGraduationCandidate.nameKo}가 자동으로 해금되고 있어요.`
-              : "출제할 문제가 없습니다."}
+            {autoGraduationError ??
+              (autoGraduationCandidate
+                ? `${autoGraduationCandidate.nameKo}가 자동으로 해금되고 있어요.`
+                : "출제할 문제가 없습니다.")}
           </div>
         )}
 
