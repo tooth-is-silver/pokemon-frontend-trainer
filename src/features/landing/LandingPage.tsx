@@ -72,6 +72,9 @@ export default function LandingPage() {
           <p className="text-xs leading-5 text-gray-500">
             비밀번호 없이 로그인 링크를 보내드려요. 모바일에서는 같은 브라우저로 링크를 열어주세요.
           </p>
+          <p className="text-xs leading-5 text-gray-400">
+            이미 로그인한 브라우저라면 자동으로 이어서 시작돼요.
+          </p>
         </div>
 
         <div className="flex flex-col gap-2">
