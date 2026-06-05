@@ -133,26 +133,38 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }));
 
     const solvedIds = [...new Set((solvedRes.data ?? []).map((r) => r.question_id))];
+    const activeInstanceId = trainerRes.data.active_pokemon_instance_id;
+    const activeInstance = instances.find((inst) => inst.instanceId === activeInstanceId);
+    const activeSpecies = activeInstance ? findSpeciesById(activeInstance.speciesId) : null;
+    const restoredGraduationInstanceId =
+      activeInstance && activeSpecies && isGraduationReady(activeInstance, activeSpecies)
+        ? activeInstance.instanceId
+        : null;
+    const serverProgression = progressionRes.data;
 
     set({
       trainer: {
         starterChosen: trainerRes.data.starter_chosen,
-        activePokemonInstanceId: trainerRes.data.active_pokemon_instance_id,
+        activePokemonInstanceId: activeInstanceId,
       },
       party: { instances },
       pokedex: {
         unlockedSpeciesIds: (pokedexRes.data ?? []).map((r) => r.species_id),
         normalPokedexCompleted: false,
       },
-      progression: progressionRes.data
+      progression: serverProgression
         ? {
-            streakCorrectCount: progressionRes.data.streak_correct_count,
-            pendingEvolutionInstanceId: progressionRes.data.pending_evolution_instance_id,
-            pendingGraduationInstanceId: progressionRes.data.pending_graduation_instance_id,
-            unlockedLegendaryStage: progressionRes.data.unlocked_legendary_stage,
-            isEnding: progressionRes.data.is_ending ?? false,
+            streakCorrectCount: serverProgression.streak_correct_count,
+            pendingEvolutionInstanceId: serverProgression.pending_evolution_instance_id,
+            pendingGraduationInstanceId:
+              serverProgression.pending_graduation_instance_id ?? restoredGraduationInstanceId,
+            unlockedLegendaryStage: serverProgression.unlocked_legendary_stage,
+            isEnding: serverProgression.is_ending ?? false,
           }
-        : initialState.progression,
+        : {
+            ...initialState.progression,
+            pendingGraduationInstanceId: restoredGraduationInstanceId,
+          },
       session: {
         currentQuestionId: null,
         solvedQuestionIds: solvedIds,
