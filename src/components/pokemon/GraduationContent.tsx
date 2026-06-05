@@ -27,7 +27,7 @@ export function GraduationContent({
   const canSelectNextPokemon = missingEvolutionSpeciesIds.length === 0;
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-col gap-6 p-5 sm:p-6">
       <header className="flex flex-col items-center gap-2 text-center">
         <span className="text-3xl" aria-hidden="true">
           🎓
@@ -97,7 +97,7 @@ export function GraduationContent({
       ) : candidates.length === 0 ? (
         <p className="p-4 text-center text-gray-500">선택 가능한 후보가 없어요.</p>
       ) : (
-        <ul className="grid grid-cols-3 gap-3">
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {candidates.map((species) => {
             const selected = selectedSpeciesId === species.speciesId;
             return (
