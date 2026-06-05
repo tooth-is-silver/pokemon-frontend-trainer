@@ -10,6 +10,7 @@ export default function LandingPage() {
   const loaded = useGameStore((s) => s.loaded);
   const starterChosen = useGameStore((s) => s.trainer.starterChosen);
   const [signingIn, setSigningIn] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   if (authLoading || (userId && !loaded)) {
     return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
@@ -21,11 +22,13 @@ export default function LandingPage() {
   const handleSignIn = async () => {
     if (signingIn) return;
     setSigningIn(true);
+    setLoginError(null);
 
     try {
       await signInWithGoogle();
     } catch (error) {
       console.error("로그인 시작 실패:", error);
+      setLoginError("Google 로그인을 시작하지 못했어요. 잠시 후 다시 시도해주세요.");
       setSigningIn(false);
     }
   };
@@ -45,6 +48,11 @@ export default function LandingPage() {
       >
         {signingIn ? "로그인으로 이동하는 중..." : "Google로 시작하기"}
       </button>
+      {loginError && (
+        <p className="max-w-xs text-sm font-medium text-red-600" role="alert">
+          {loginError}
+        </p>
+      )}
     </div>
   );
 }

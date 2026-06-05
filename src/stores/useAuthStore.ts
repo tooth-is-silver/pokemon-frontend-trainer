@@ -32,10 +32,18 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
 
   signInWithGoogle: async () => {
-    await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: window.location.origin },
+      options: {
+        redirectTo: window.location.origin,
+        skipBrowserRedirect: true,
+      },
     });
+
+    if (error) throw error;
+    if (!data.url) throw new Error("Google 로그인 URL을 생성하지 못했습니다.");
+
+    window.location.assign(data.url);
   },
 
   signOut: async () => {
