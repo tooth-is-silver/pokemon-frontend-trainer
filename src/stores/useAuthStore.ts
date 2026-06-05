@@ -5,7 +5,7 @@ import type { AuthState } from "./types";
 
 interface AuthStore extends AuthState {
   initialize: () => Promise<void>;
-  signInWithGoogle: () => Promise<string>;
+  signInWithEmail: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -31,19 +31,15 @@ export const useAuthStore = create<AuthStore>((set) => ({
     authSubscription = listener.subscription;
   },
 
-  signInWithGoogle: async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
+  signInWithEmail: async (email) => {
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
       options: {
-        redirectTo: window.location.origin,
-        skipBrowserRedirect: true,
+        emailRedirectTo: window.location.origin,
       },
     });
 
     if (error) throw error;
-    if (!data.url) throw new Error("Google 로그인 URL을 생성하지 못했습니다.");
-
-    return data.url;
   },
 
   signOut: async () => {
