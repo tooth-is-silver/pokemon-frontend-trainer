@@ -11,6 +11,7 @@ export default function LandingPage() {
   const starterChosen = useGameStore((s) => s.trainer.starterChosen);
   const [signingIn, setSigningIn] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [oauthUrl, setOauthUrl] = useState<string | null>(null);
 
   if (authLoading || (userId && !loaded)) {
     return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
@@ -23,9 +24,12 @@ export default function LandingPage() {
     if (signingIn) return;
     setSigningIn(true);
     setLoginError(null);
+    setOauthUrl(null);
 
     try {
-      await signInWithGoogle();
+      const url = await signInWithGoogle();
+      setOauthUrl(url);
+      window.location.href = url;
     } catch (error) {
       console.error("로그인 시작 실패:", error);
       setLoginError("Google 로그인을 시작하지 못했어요. 잠시 후 다시 시도해주세요.");
@@ -52,6 +56,14 @@ export default function LandingPage() {
         <p className="max-w-xs text-sm font-medium text-red-600" role="alert">
           {loginError}
         </p>
+      )}
+      {oauthUrl && signingIn && (
+        <a
+          href={oauthUrl}
+          className="text-sm font-semibold text-blue-700 underline underline-offset-4"
+        >
+          이동하지 않으면 Google 로그인 페이지 직접 열기
+        </a>
       )}
     </div>
   );
