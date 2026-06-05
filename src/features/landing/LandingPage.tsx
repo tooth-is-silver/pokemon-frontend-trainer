@@ -1,7 +1,110 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
+
+function getErrorText(error: unknown) {
+  return error instanceof Error ? error.message : "";
+}
+
+function getErrorCode(error: unknown) {
+  if (typeof error !== "object" || error === null || !("code" in error)) return "";
+
+  const code = (error as { code?: unknown }).code;
+  return typeof code === "string" ? code.toLowerCase() : "";
+}
+
+function getLoginErrorMessage(error: unknown) {
+  const code = getErrorCode(error);
+  const message = getErrorText(error);
+  const normalized = message.toLowerCase();
+
+  if (
+    code === "email_address_invalid" ||
+    (normalized.includes("email address") && normalized.includes("invalid"))
+  ) {
+    return "이메일 주소를 확인해주세요. 실제로 메일을 받을 수 있는 주소로 다시 시도해주세요.";
+  }
+
+  if (code.includes("rate") || normalized.includes("rate") || normalized.includes("too many")) {
+    return "짧은 시간에 로그인 메일 요청이 많았어요. 잠시 후 다시 시도해주세요.";
+  }
+
+  if (normalized.includes("redirect")) {
+    return "로그인 리다이렉트 설정이 맞지 않아요. Supabase Redirect URL에 배포 주소가 등록되어 있는지 확인해주세요.";
+  }
+
+  if (normalized.includes("provider") || normalized.includes("disabled")) {
+    return "Supabase 이메일 로그인이 꺼져 있어요. Email provider 설정을 확인해주세요.";
+  }
+
+  return message
+    ? `로그인 메일을 보내지 못했어요. ${message}`
+    : "로그인 메일을 보내지 못했어요. 잠시 후 다시 시도해주세요.";
+}
+
+function readAuthCallbackError() {
+  if (typeof window === "undefined") return null;
+
+  const params = new URLSearchParams(window.location.search);
+  const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const errorCode = params.get("error_code") ?? hashParams.get("error_code");
+  const errorDescription = params.get("error_description") ?? hashParams.get("error_description");
+
+  if (!errorCode && !errorDescription) return null;
+
+  const normalizedCode = errorCode?.toLowerCase() ?? "";
+  const normalizedDescription = errorDescription?.toLowerCase() ?? "";
+
+  if (
+    normalizedCode.includes("otp") ||
+    normalizedDescription.includes("expired") ||
+    normalizedDescription.includes("invalid")
+  ) {
+    return "로그인 링크가 만료됐거나 이미 사용됐어요. 새 로그인 링크를 다시 받아주세요.";
+  }
+
+  if (normalizedDescription.includes("redirect")) {
+    return "로그인 리다이렉트 설정이 맞지 않아요. Supabase Redirect URL과 이메일 템플릿을 확인해주세요.";
+  }
+
+  return errorDescription
+    ? `로그인을 완료하지 못했어요. ${errorDescription}`
+    : "로그인을 완료하지 못했어요. 새 로그인 링크를 다시 받아주세요.";
+}
+
+function clearAuthCallbackErrorParams() {
+  if (typeof window === "undefined") return;
+
+  const url = new URL(window.location.href);
+  const errorParams = ["error", "error_code", "error_description"];
+  let hasErrorParams = false;
+
+  errorParams.forEach((param) => {
+    if (!url.searchParams.has(param)) return;
+    url.searchParams.delete(param);
+    hasErrorParams = true;
+  });
+
+  if (url.hash.includes("error")) {
+    const hashParams = new URLSearchParams(url.hash.replace(/^#/, ""));
+
+    errorParams.forEach((param) => {
+      if (!hashParams.has(param)) return;
+      hashParams.delete(param);
+      hasErrorParams = true;
+    });
+
+    if (hasErrorParams) {
+      const nextHash = hashParams.toString();
+      url.hash = nextHash ? `#${nextHash}` : "";
+    }
+  }
+
+  if (hasErrorParams) {
+    window.history.replaceState(window.history.state, "", url.toString());
+  }
+}
 
 export default function LandingPage() {
   const authLoading = useAuthStore((s) => s.loading);
@@ -13,6 +116,15 @@ export default function LandingPage() {
   const [email, setEmail] = useState("");
   const [loginError, setLoginError] = useState<string | null>(null);
   const [sentEmail, setSentEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const authCallbackError = readAuthCallbackError();
+
+    if (!authCallbackError) return;
+
+    setLoginError(authCallbackError);
+    clearAuthCallbackErrorParams();
+  }, []);
 
   if (authLoading || (userId && !loaded)) {
     return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
@@ -40,7 +152,7 @@ export default function LandingPage() {
       setSentEmail(normalizedEmail);
     } catch (error) {
       console.error("로그인 시작 실패:", error);
-      setLoginError("로그인 메일을 보내지 못했어요. 잠시 후 다시 시도해주세요.");
+      setLoginError(getLoginErrorMessage(error));
     } finally {
       setSigningIn(false);
     }
