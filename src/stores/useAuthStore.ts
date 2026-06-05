@@ -5,7 +5,7 @@ import type { AuthState } from "./types";
 
 interface AuthStore extends AuthState {
   initialize: () => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: () => Promise<string>;
   signOut: () => Promise<void>;
 }
 
@@ -43,7 +43,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
     if (error) throw error;
     if (!data.url) throw new Error("Google 로그인 URL을 생성하지 못했습니다.");
 
-    window.location.assign(data.url);
+    return data.url;
   },
 
   signOut: async () => {
