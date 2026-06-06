@@ -11,6 +11,7 @@ interface Props {
   candidates: PokemonSpecies[];
   submitting: boolean;
   selectedSpeciesId: string | null;
+  errorMessage?: string | null;
   onSelect: (speciesId: string) => void;
 }
 
@@ -20,6 +21,7 @@ export function GraduationContent({
   candidates,
   submitting,
   selectedSpeciesId,
+  errorMessage,
   onSelect,
 }: Props) {
   const { missingSpeciesIds: missingEvolutionSpeciesIds, validSpecies: validEvolutionLine } =
@@ -90,41 +92,55 @@ export function GraduationContent({
         </div>
       </section>
 
-      {!canSelectNextPokemon ? (
-        <p className="p-4 text-center text-sm font-semibold text-red-700">
-          진화 라인 데이터를 먼저 수정해야 다음 포켓몬을 선택할 수 있어요.
-        </p>
-      ) : candidates.length === 0 ? (
-        <p className="p-4 text-center text-gray-500">선택 가능한 후보가 없어요.</p>
-      ) : (
-        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {candidates.map((species) => {
-            const selected = selectedSpeciesId === species.speciesId;
-            return (
-              <li key={species.speciesId}>
-                <button
-                  type="button"
-                  onClick={() => onSelect(species.speciesId)}
-                  disabled={submitting}
-                  className={`w-full flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 disabled:cursor-not-allowed ${
-                    selected
-                      ? "border-blue-500 bg-blue-50 scale-105"
-                      : "border-gray-200 hover:border-gray-400 hover:scale-105"
-                  } ${submitting && !selected ? "opacity-40" : ""}`}
-                >
-                  <img
-                    src={getSpriteUrl(species.dexNumber)}
-                    alt={species.nameKo}
-                    className="w-16 h-16 [image-rendering:pixelated]"
-                    loading="lazy"
-                  />
-                  <span className="text-sm font-semibold">{species.nameKo}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      <section className="flex flex-col gap-3">
+        {errorMessage && (
+          <p
+            className="rounded-2xl bg-red-50 px-4 py-3 text-center text-sm font-semibold text-red-700"
+            role="alert"
+          >
+            {errorMessage}
+          </p>
+        )}
+
+        {!canSelectNextPokemon ? (
+          <p className="p-4 text-center text-sm font-semibold text-red-700">
+            진화 라인 데이터를 먼저 수정해야 다음 포켓몬을 선택할 수 있어요.
+          </p>
+        ) : candidates.length === 0 ? (
+          <p className="p-4 text-center text-gray-500">선택 가능한 후보가 없어요.</p>
+        ) : (
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {candidates.map((species) => {
+              const selected = selectedSpeciesId === species.speciesId;
+              return (
+                <li key={species.speciesId}>
+                  <button
+                    type="button"
+                    onClick={() => onSelect(species.speciesId)}
+                    disabled={submitting}
+                    aria-busy={selected && submitting}
+                    className={`w-full flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 disabled:cursor-not-allowed ${
+                      selected
+                        ? "border-blue-500 bg-blue-50 scale-105"
+                        : "border-gray-200 hover:border-gray-400 hover:scale-105"
+                    } ${submitting && !selected ? "opacity-40" : ""}`}
+                  >
+                    <img
+                      src={getSpriteUrl(species.dexNumber)}
+                      alt={species.nameKo}
+                      className="w-16 h-16 [image-rendering:pixelated]"
+                      loading="lazy"
+                    />
+                    <span className="text-sm font-semibold">
+                      {selected && submitting ? "시작 중..." : species.nameKo}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
