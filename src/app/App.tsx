@@ -3,6 +3,7 @@ import { Suspense, lazy, useEffect, useRef } from "react";
 import { devRoutes } from "@/features/preview/routes";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
+import { AccountBar } from "@/components/layout/AccountBar";
 
 const Landing = lazy(() => import("../features/landing/LandingPage"));
 const Starter = lazy(() => import("../features/starter/StarterPage"));
@@ -51,6 +52,7 @@ export function App() {
 
   return (
     <BrowserRouter>
+      <AccountBar />
       <Suspense
         fallback={<div className="flex items-center justify-center h-screen">로딩 중...</div>}
       >

@@ -52,6 +52,7 @@ export interface SessionState {
 // 인증
 export interface AuthState {
   userId: string | null;
+  email: string | null;
   loading: boolean;
 }
 
