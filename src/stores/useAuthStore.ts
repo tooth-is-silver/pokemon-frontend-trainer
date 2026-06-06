@@ -3,7 +3,10 @@ import { supabase } from "../lib/supabase";
 import { useGameStore } from "./useGameStore";
 import type { AuthState } from "./types";
 
-interface AuthStore extends AuthState {
+interface AuthStore {
+  userId: AuthState["userId"];
+  email: AuthState["email"];
+  loading: AuthState["loading"];
   initialize: () => Promise<void>;
   signInWithEmail: (email: string) => Promise<void>;
   signOut: () => Promise<void>;

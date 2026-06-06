@@ -26,6 +26,7 @@ export function AccountBar() {
     } catch (error) {
       console.error("로그아웃 실패:", error);
       setSignOutError("로그아웃하지 못했어요. 잠시 후 다시 시도해주세요.");
+    } finally {
       setSigningOut(false);
     }
   };
@@ -64,9 +65,20 @@ export function AccountBar() {
         </nav>
 
         {signOutError && (
-          <p className="text-sm font-semibold text-red-600 sm:basis-full" role="alert">
-            {signOutError}
-          </p>
+          <div
+            className="flex flex-wrap items-center gap-2 text-sm font-semibold text-red-600 sm:basis-full"
+            role="alert"
+          >
+            <span>{signOutError}</span>
+            <button
+              type="button"
+              onClick={handleSignOut}
+              disabled={signingOut}
+              className="rounded-full border border-red-200 px-3 py-1 text-xs transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              다시 시도
+            </button>
+          </div>
         )}
       </div>
     </header>
