@@ -9,17 +9,23 @@ export function AccountBar() {
   const email = useAuthStore((s) => s.email);
   const signOut = useAuthStore((s) => s.signOut);
   const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
 
   if (authLoading || !userId) return null;
+
+  const learnActive = location.pathname.startsWith("/learn");
+  const pokedexActive = location.pathname.startsWith("/pokedex");
 
   const handleSignOut = async () => {
     if (signingOut) return;
 
     setSigningOut(true);
+    setSignOutError(null);
     try {
       await signOut();
     } catch (error) {
       console.error("로그아웃 실패:", error);
+      setSignOutError("로그아웃하지 못했어요. 잠시 후 다시 시도해주세요.");
       setSigningOut(false);
     }
   };
@@ -35,14 +41,14 @@ export function AccountBar() {
         <nav className="flex flex-wrap items-center gap-2 text-sm font-semibold">
           <Link
             to="/learn"
-            aria-current={location.pathname === "/learn" ? "page" : undefined}
+            aria-current={learnActive ? "page" : undefined}
             className="rounded-full border border-gray-200 px-3 py-2 text-gray-700 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 aria-[current=page]:border-blue-200 aria-[current=page]:bg-blue-50 aria-[current=page]:text-blue-700"
           >
             학습
           </Link>
           <Link
             to="/pokedex"
-            aria-current={location.pathname === "/pokedex" ? "page" : undefined}
+            aria-current={pokedexActive ? "page" : undefined}
             className="rounded-full border border-gray-200 px-3 py-2 text-gray-700 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 aria-[current=page]:border-blue-200 aria-[current=page]:bg-blue-50 aria-[current=page]:text-blue-700"
           >
             도감
@@ -56,6 +62,12 @@ export function AccountBar() {
             {signingOut ? "로그아웃 중..." : "로그아웃"}
           </button>
         </nav>
+
+        {signOutError && (
+          <p className="text-sm font-semibold text-red-600 sm:basis-full" role="alert">
+            {signOutError}
+          </p>
+        )}
       </div>
     </header>
   );
