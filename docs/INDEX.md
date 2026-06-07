@@ -11,6 +11,7 @@
 
 - 제품 전체 개요와 초기 기획 배경: `docs/planning-draft.md`
 - 구현 순서와 단계 구분: `docs/implementation-roadmap.md`
+- 운영 DB 마이그레이션 반영 절차: `docs/operations/supabase-migrations.md`
 
 ## Task Routing
 
@@ -26,6 +27,9 @@
 - 화면, 라우트, 모달 흐름, UI 컴포넌트 구조를 구현할 때
   - `docs/specs/screen-flow.md`
 
+- Supabase RPC, 컬럼, RLS 변경을 운영 DB에 반영할 때
+  - `docs/operations/supabase-migrations.md`
+
 ## Recommended Reading Order
 
 1. `AGENTS.md`
@@ -33,6 +37,7 @@
 3. `docs/specs/game-rules.md`
 4. `docs/specs/content-rules.md`
 5. `docs/specs/screen-flow.md`
-6. `TODO.md`
-7. `docs/implementation-roadmap.md`
-8. `docs/planning-draft.md`
+6. `docs/operations/supabase-migrations.md`
+7. `TODO.md`
+8. `docs/implementation-roadmap.md`
+9. `docs/planning-draft.md`

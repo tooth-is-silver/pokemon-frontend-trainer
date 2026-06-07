@@ -32,6 +32,7 @@ npm test
 
 - 프로젝트 규칙: `AGENTS.md`
 - 도메인 스펙: `docs/specs/*`
+- 운영 DB 마이그레이션 절차: `docs/operations/supabase-migrations.md`
 - 진행 관리: `TODO.md`
 - 구현 순서 참고: `docs/implementation-roadmap.md`
 - 초기 기획 배경: `docs/planning-draft.md`
