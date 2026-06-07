@@ -48,7 +48,7 @@ export const dateBasics: QuestionPage = {
     {
       questionId: "date-mc-002",
       type: "multiple_choice",
-      prompt: "월 값을 숫자로 얻을 때 주의해야 하는 점은?",
+      prompt: "Date 객체에서 getMonth()로 월을 얻을 때 주의해야 하는 점은?",
       answer: "0부터 시작한다",
       choices: [
         "1부터 시작한다",
@@ -58,7 +58,7 @@ export const dateBasics: QuestionPage = {
         "UTC만 지원한다",
       ],
       conceptGroup: "js-date",
-      explanation: "getMonth()는 0부터 11까지의 값을 반환한다.",
+      explanation: "getMonth()는 1월을 0, 12월을 11로 반환한다.",
       sourceExcerptId: "date-002",
     },
     {

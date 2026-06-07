@@ -76,7 +76,7 @@ export const garbageCollection: QuestionPage = {
     {
       questionId: "garbage-collection-fb-001",
       type: "fill_blank",
-      prompt: "가비지 컬렉션에서 더 이상 닿을 수 없는 값 상태를 ____ 라고 한다.",
+      prompt: "가비지 컬렉션에서 더 이상 도달할 수 없는 값은 ____ 상태라고 한다.",
       answer: "unreachable",
       acceptedAnswers: ["unreachable"],
       conceptGroup: "js-garbage-collection",

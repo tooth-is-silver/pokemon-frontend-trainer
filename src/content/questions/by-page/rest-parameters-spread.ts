@@ -54,7 +54,7 @@ export const restParametersSpread: QuestionPage = {
     {
       questionId: "rest-parameters-spread-mc-002",
       type: "multiple_choice",
-      prompt: "Math.max에 배열 값을 그대로 넘기려면 주로 무엇을 쓰는가?",
+      prompt: "Math.max에 배열 요소를 개별 인수로 넘기려면 무엇을 쓰는가?",
       answer: "spread syntax",
       choices: ["rest parameter", "spread syntax", "JSON.parse", "Object.keys", "Array.from"],
       conceptGroup: "js-rest-spread",
