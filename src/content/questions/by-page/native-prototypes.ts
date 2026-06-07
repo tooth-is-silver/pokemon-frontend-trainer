@@ -56,7 +56,7 @@ export const nativePrototypes: QuestionPage = {
     {
       questionId: "native-prototypes-mc-002",
       type: "multiple_choice",
-      prompt: "모든 객체의 공통 조상에 가까운 내장 프로토타입은?",
+      prompt: "대부분 객체의 프로토타입 체인 위쪽에서 만나는 내장 프로토타입은?",
       answer: "Object.prototype",
       choices: [
         "Array.prototype",
@@ -72,7 +72,7 @@ export const nativePrototypes: QuestionPage = {
     {
       questionId: "native-prototypes-mc-003",
       type: "multiple_choice",
-      prompt: "내장 프로토타입 확장이 예외적으로 허용되기 쉬운 경우는?",
+      prompt: "내장 프로토타입 수정이 제한적으로 허용될 수 있는 대표 상황은?",
       answer: "폴리필 추가",
       choices: [
         "취향에 맞는 별칭 추가",

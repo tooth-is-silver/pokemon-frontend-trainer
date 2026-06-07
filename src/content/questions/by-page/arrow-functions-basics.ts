@@ -48,7 +48,7 @@ export const arrowFunctionsBasics: QuestionPage = {
     {
       questionId: "arrow-functions-basics-mc-002",
       type: "multiple_choice",
-      prompt: "본문이 여러 줄이면 무엇이 필요할 수 있는가?",
+      prompt: "화살표 함수 본문을 여러 줄 블록으로 쓸 때 무엇이 필요할 수 있는가?",
       answer: "중괄호와 return",
       choices: ["세미콜론만", "중괄호와 return", "break", "class", "case"],
       conceptGroup: "js-arrow-functions",

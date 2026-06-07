@@ -49,7 +49,7 @@ export const variables: QuestionPage = {
     {
       questionId: "variables-mc-002",
       type: "multiple_choice",
-      prompt: "상수 이름으로 적절한 예시는?",
+      prompt: "하드코딩된 고정값 상수 이름으로 적절한 예시는?",
       answer: "BIRTHDAY",
       choices: ["birthdayValue", "changeMe", "BIRTHDAY", "currentUserName", "mutableValue"],
       conceptGroup: "js-variables",

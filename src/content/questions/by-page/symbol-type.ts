@@ -58,7 +58,7 @@ export const symbolType: QuestionPage = {
     {
       questionId: "symbol-mc-003",
       type: "multiple_choice",
-      prompt: "심볼 프로퍼티가 기본 열거에서 숨겨지는 이유로 가장 가까운 것은?",
+      prompt: "심볼을 객체 프로퍼티 키로 쓰는 대표적인 이유는?",
       answer: "내부 구현용 고유 키를 만들기 위해",
       choices: [
         "문자열보다 느리기 때문에",

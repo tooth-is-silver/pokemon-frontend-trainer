@@ -49,7 +49,7 @@ export const functionExpressions: QuestionPage = {
     {
       questionId: "function-expressions-mc-002",
       type: "multiple_choice",
-      prompt: "변수에 저장된 함수는 무엇의 예시인가?",
+      prompt: "함수를 값처럼 변수에 저장한 형태는 무엇인가?",
       answer: "함수 표현식",
       choices: ["함수 선언문", "함수 표현식", "반복문", "객체 리터럴", "조건문"],
       conceptGroup: "js-function-expressions",
