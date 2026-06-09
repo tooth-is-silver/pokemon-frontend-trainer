@@ -8,7 +8,9 @@
 충분히 성장한 포켓몬은 진화하고, 마지막까지 함께한 포켓몬은 졸업 기록으로
 남아요.
 
-![포켓몬 JS 트레이너 소개 이미지](public/og-image.png)
+<p align="center">
+  <img src="public/og-image.png" alt="포켓몬 JS 트레이너 소개 이미지" height="400" />
+</p>
 
 ## 자바스크립트 공부, 혼자 하면 쉽게 지루해져요
 
@@ -17,28 +19,36 @@
 
 ## 문제를 풀면 포켓몬이 자라요
 
-![문제 풀이 화면](docs/screenshots/learn/learn-layout.png)
+<p align="center">
+  <img src="docs/screenshots/learn/learn-layout.png" alt="문제 풀이 화면" height="400" />
+</p>
 
 정답을 맞히면 포켓몬의 능력치가 오르고, 포켓몬은 조금씩 더 강해집니다.
 문제를 풀고 결과를 확인하는 짧은 흐름 안에서 학습 리듬을 이어갈 수 있어요.
 
 ## 충분히 성장하면 진화해요
 
-![진화 화면](docs/screenshots/learn/evolution-modal.png)
+<p align="center">
+  <img src="docs/screenshots/learn/evolution-modal.png" alt="진화 화면" height="400" />
+</p>
 
 학습을 이어가다 보면 포켓몬은 다음 모습으로 진화합니다. 공부한 시간이 화면
 안에서도 눈에 보이게 쌓여요.
 
 ## 끝까지 함께하면 졸업해요
 
-![졸업 화면](docs/screenshots/learn/graduation-modal.png)
+<p align="center">
+  <img src="docs/screenshots/learn/graduation-modal.png" alt="졸업 화면" height="400" />
+</p>
 
 한 마리의 포켓몬과 학습 여정을 끝내면 졸업 기록이 남습니다. 그리고 다시
 새로운 포켓몬을 선택해 공부를 이어갈 수 있어요.
 
 ## 도감을 채워가며 계속 공부해요
 
-![도감 화면](docs/screenshots/learn/pokedex-page.png)
+<p align="center">
+  <img src="docs/screenshots/learn/pokedex-page.png" alt="도감 화면" height="400" />
+</p>
 
 졸업한 포켓몬은 도감에 기록됩니다. 공부를 이어갈수록 나만의 포켓몬 도감도
 함께 채워져요.
