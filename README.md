@@ -1,58 +1,67 @@
-# pokemon-js-trainer
+# 포켓몬 JS 트레이너
 
-포켓몬을 키우며 자바스크립트 코어 공부하기
+자바스크립트 코어를 공부하고 싶은데, 막상 시작하면 조금 재미없죠?
 
-## 개요
+그래서 포켓몬이 도와주러 왔어요.
 
-- `ko.javascript.info` 기반 문제를 풀며 포켓몬을 육성하는 학습용 웹앱
-- 프론트는 React + TypeScript + Zustand
-- 백엔드는 Supabase Auth + PostgreSQL + RLS
+문제를 하나씩 풀 때마다 포켓몬이 자라고, 정답을 맞히면 능력치가 오릅니다.
+충분히 성장한 포켓몬은 진화하고, 마지막까지 함께한 포켓몬은 졸업 기록으로
+남아요.
 
-## 실행
+![포켓몬 JS 트레이너 소개 이미지](public/og-image.png)
 
-필수 환경변수:
+## 자바스크립트 공부, 혼자 하면 쉽게 지루해져요
 
-```bash
-VITE_SUPABASE_URL
-VITE_SUPABASE_ANON_KEY
-```
+개념은 중요하지만 반복해서 읽고 문제를 푸는 과정은 금방 지칠 수 있어요.
+포켓몬 JS 트레이너는 그 반복에 작은 목표와 보상을 더합니다.
 
-주요 명령어:
+## 문제를 풀면 포켓몬이 자라요
 
-```bash
-npm run dev
-npm run build
-npm run lint
-npm run validate:pokemon
-npm run validate:questions
-npm test
-```
+![문제 풀이 화면](docs/screenshots/learn/learn-layout.png)
 
-## 문서 기준
+정답을 맞히면 포켓몬의 능력치가 오르고, 포켓몬은 조금씩 더 강해집니다.
+문제를 풀고 결과를 확인하는 짧은 흐름 안에서 학습 리듬을 이어갈 수 있어요.
 
-- 프로젝트 규칙: `AGENTS.md`
-- 도메인 스펙: `docs/specs/*`
-- 운영 DB 마이그레이션 절차: `docs/operations/supabase-migrations.md`
-- 진행 관리: `TODO.md`
-- 구현 순서 참고: `docs/implementation-roadmap.md`
-- 초기 기획 배경: `docs/planning-draft.md`
+## 충분히 성장하면 진화해요
 
-자세한 문서 진입점은 `docs/INDEX.md`를 따른다.
+![진화 화면](docs/screenshots/learn/evolution-modal.png)
 
-## 현재 구현 범위
+학습을 이어가다 보면 포켓몬은 다음 모습으로 진화합니다. 공부한 시간이 화면
+안에서도 눈에 보이게 쌓여요.
 
-- 프로젝트 셋업, 라우팅, 개발 도구 세팅
-- Supabase 마이그레이션과 RPC 기반 게임 상태 동기화
-- Zustand 스토어와 순수 로직
-- 스타터 선택 / 학습 / 진화 / 졸업 / 도감 / 엔딩 화면
-- 1세대 포켓몬 151종 데이터와 전설 wave 진행
-- `ko.javascript.info` 주요 챕터 기반 문제 데이터 57개 페이지 / 513문항
-- 포켓몬/문제 데이터 검증 스크립트와 순수 로직 테스트 통과 기준 유지
+## 끝까지 함께하면 졸업해요
 
-실제 진행 상태는 `TODO.md`를 기준으로 본다.
+![졸업 화면](docs/screenshots/learn/graduation-modal.png)
 
-## 다음 우선순위
+한 마리의 포켓몬과 학습 여정을 끝내면 졸업 기록이 남습니다. 그리고 다시
+새로운 포켓몬을 선택해 공부를 이어갈 수 있어요.
 
-- 현재 1차 MVP 기준 필수 구현 태스크는 완료
-- README / TODO / 스펙 문서 기준으로 후속 개선은 MVP 이후 범위에서 별도 태스크화
-- MVP 이후 후보: 주관식 자유 서술형 판정, 자동 문제 생성, 도감 상세 뷰, 친구 공유 / 멀티플레이
+## 도감을 채워가며 계속 공부해요
+
+![도감 화면](docs/screenshots/learn/pokedex-page.png)
+
+졸업한 포켓몬은 도감에 기록됩니다. 공부를 이어갈수록 나만의 포켓몬 도감도
+함께 채워져요.
+
+## 지금은 MVP 버전이에요
+
+포켓몬 JS 트레이너는 현재 자바스크립트 코어 학습과 포켓몬 성장 흐름을 먼저
+담은 MVP 버전입니다.
+
+지금 할 수 있는 것:
+
+- 이메일로 시작하기
+- 자바스크립트 문제 풀기
+- 포켓몬 성장시키기
+- 진화와 졸업 경험하기
+- 졸업한 포켓몬을 도감에서 확인하기
+
+앞으로 더 다듬고 싶은 것:
+
+- 다른 언어 / 주제로 학습 확장하기
+- 포켓몬 도감 더 넓히기
+- 랭킹?
+
+## 바로 시작하기
+
+[포켓몬 JS 트레이너 시작하기](https://pokemon-frontend-trainer.vercel.app)
