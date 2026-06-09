@@ -93,12 +93,14 @@ export const symbolType: QuestionPage = {
     },
     {
       questionId: "symbol-fb-003",
-      type: "fill_blank",
-      prompt: "심볼 키 프로퍼티는 일반적인 ____ 에서 자동으로 제외될 수 있다.",
-      answer: "열거",
-      acceptedAnswers: ["열거", "enumeration"],
+      type: "multiple_choice",
+      prompt:
+        '다음 코드에서 Object.keys(user)의 결과는?\n\nconst id = Symbol("id");\nconst user = { name: "피카츄", [id]: 25 };\nObject.keys(user);',
+      answer: '["name"]',
+      choices: ['["name", "id"]', '["id"]', '["name"]', '["Symbol(id)"]', '["name", "Symbol(id)"]'],
       conceptGroup: "js-symbols",
-      explanation: "심볼 프로퍼티는 기본적인 열거 흐름에서 감춰진다.",
+      explanation:
+        "Object.keys()는 문자열 키만 반환하므로 심볼 키 프로퍼티는 결과에 포함되지 않는다.",
       sourceExcerptId: "symbol-003",
     },
   ],
