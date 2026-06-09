@@ -92,11 +92,12 @@ export const importExport: QuestionPage = {
     {
       questionId: "import-export-fb-002",
       type: "fill_blank",
-      prompt: "이름을 바꿔 가져오거나 내보낼 때 사용하는 키워드는 ____ 이다.",
+      prompt: "ES 모듈에서 import/export 대상에 별칭을 붙일 때 사용하는 키워드는 ____ 이다.",
       answer: "as",
       acceptedAnswers: ["as"],
       conceptGroup: "js-import-export",
-      explanation: "as는 import와 export에서 별칭을 지정할 때 사용한다.",
+      explanation:
+        "as는 import { old as new } 또는 export { old as new }처럼 모듈 import/export에서 별칭을 지정할 때 사용한다.",
       sourceExcerptId: "import-export-003",
     },
     {
