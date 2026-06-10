@@ -92,14 +92,91 @@ interface SectionProps {
 
 function Section({ id, title, children, wide }: SectionProps) {
   return (
-    <section
-      id={id}
-      data-screenshot
-      className={`w-full ${wide ? "max-w-3xl" : "max-w-lg"} flex flex-col gap-3`}
-    >
+    <section className={`flex w-full flex-col gap-3 ${wide ? "max-w-4xl" : "max-w-lg"}`}>
       <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">{title}</h2>
-      {children}
+      <div id={id} data-screenshot className="w-full">
+        {children}
+      </div>
     </section>
+  );
+}
+
+interface PreviewAccountBarProps {
+  active: "learn" | "pokedex";
+}
+
+function PreviewAccountBar({ active }: PreviewAccountBarProps) {
+  return (
+    <header className="border-b border-gray-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur">
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold text-gray-500">로그인 중</p>
+          <p className="truncate text-sm font-bold text-gray-950">trainer@example.com</p>
+        </div>
+
+        <nav className="flex flex-wrap items-center gap-2 text-sm font-semibold">
+          <span
+            className={`rounded-full border px-3 py-2 ${
+              active === "learn"
+                ? "border-blue-200 bg-blue-50 text-blue-700"
+                : "border-gray-200 text-gray-700"
+            }`}
+          >
+            학습
+          </span>
+          <span
+            className={`rounded-full border px-3 py-2 ${
+              active === "pokedex"
+                ? "border-blue-200 bg-blue-50 text-blue-700"
+                : "border-gray-200 text-gray-700"
+            }`}
+          >
+            도감
+          </span>
+          <span className="rounded-full border border-red-100 px-3 py-2 text-red-600">
+            로그아웃
+          </span>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+interface PagePreviewShellProps {
+  active: "learn" | "pokedex";
+  children: React.ReactNode;
+}
+
+function PagePreviewShell({ active, children }: PagePreviewShellProps) {
+  return (
+    <div className="overflow-hidden rounded-3xl border border-gray-200 bg-gray-50 shadow-sm">
+      <PreviewAccountBar active={active} />
+      {children}
+    </div>
+  );
+}
+
+interface ModalPreviewShellProps {
+  children: React.ReactNode;
+}
+
+function ModalPreviewShell({ children }: ModalPreviewShellProps) {
+  return (
+    <div className="relative overflow-hidden rounded-3xl border border-gray-200 bg-gray-50 shadow-sm">
+      <PreviewAccountBar active="learn" />
+      <div className="relative min-h-[760px]">
+        <div className="absolute inset-0 flex flex-col items-center gap-4 p-6 opacity-80">
+          <PokemonCard species={sampleSpecies} />
+          <PokemonStats stats={sampleStats} />
+          <div className="w-full max-w-lg">
+            <QuizCard question={mcSample as Question} onSubmit={noop} disabled={false} />
+          </div>
+        </div>
+        <div className="relative z-10 flex min-h-[760px] items-center justify-center bg-black/50 p-6">
+          <div className="w-[90vw] max-w-md rounded-2xl bg-white shadow-xl">{children}</div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -109,16 +186,21 @@ export default function QuizPreviewPage() {
       <h1 className="text-2xl font-bold">학습 화면 UI 프리뷰</h1>
 
       <Section id="preview-layout" title="학습 화면 전체 레이아웃">
-        <div className="flex flex-col items-center gap-4 p-6 rounded-2xl bg-white border border-gray-200">
-          <PokemonCard species={sampleSpecies} />
-          <PokemonStats stats={sampleStats} />
-          <p className="text-sm text-gray-500">
-            연속 정답 <span className="font-bold text-blue-600">3</span>개
-          </p>
-          <div className="w-full">
-            <QuizCard question={mcSample as Question} onSubmit={noop} disabled={false} />
+        <PagePreviewShell active="learn">
+          <div className="flex flex-col items-center gap-6 p-6">
+            <section className="flex w-full max-w-lg flex-col items-center gap-4">
+              <PokemonCard species={sampleSpecies} />
+              <PokemonStats stats={sampleStats} />
+              <p className="text-sm text-gray-500">
+                연속 정답 <span className="font-bold text-blue-600">3</span>개
+              </p>
+            </section>
+
+            <section className="flex w-full max-w-lg flex-col gap-4">
+              <QuizCard question={mcSample as Question} onSubmit={noop} disabled={false} />
+            </section>
           </div>
-        </div>
+        </PagePreviewShell>
       </Section>
 
       <Section id="preview-yesno" title="예/아니오 문제">
@@ -141,18 +223,18 @@ export default function QuizPreviewPage() {
       </Section>
 
       <Section id="preview-evolution" title="진화 모달">
-        <div className="rounded-2xl bg-white shadow-xl border border-gray-200">
+        <ModalPreviewShell>
           <EvolutionContent
             currentSpecies={sampleSpecies}
             nextSpecies={evolutionNext}
             submitting={false}
             onEvolve={noop}
           />
-        </div>
+        </ModalPreviewShell>
       </Section>
 
       <Section id="preview-graduation" title="졸업 모달">
-        <div className="rounded-2xl bg-white shadow-xl border border-gray-200">
+        <ModalPreviewShell>
           <GraduationContent
             graduatedSpecies={graduatedSample}
             graduatedStats={{ hp: 95, attack: 100, defense: 87, speed: 92 }}
@@ -161,30 +243,44 @@ export default function QuizPreviewPage() {
             selectedSpeciesId={null}
             onSelect={noop}
           />
-        </div>
+        </ModalPreviewShell>
       </Section>
 
       <Section id="preview-pokedex" title="도감 화면" wide>
-        <div className="flex flex-col gap-3 p-6 bg-white rounded-2xl border border-gray-200">
-          <h3 className="text-xl font-bold">포켓몬 도감</h3>
-          <div className="flex flex-wrap justify-between items-center gap-2 text-sm text-gray-600">
-            <span className="tabular-nums">5 / 151 · 3%</span>
-            <span>일반 도감을 완성하면 전설이 해금돼요.</span>
+        <PagePreviewShell active="pokedex">
+          <div className="flex flex-col items-center gap-6 p-6">
+            <header className="flex w-full max-w-4xl flex-col gap-3">
+              <h3 className="text-2xl font-bold">포켓몬 도감</h3>
+              <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-gray-600">
+                <span className="tabular-nums">5 / 151 · 3%</span>
+                <span>일반 도감을 완성하면 전설이 해금돼요.</span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-gray-200">
+                <div className="h-full bg-blue-400" style={{ width: "3%" }} />
+              </div>
+            </header>
+
+            <section className="w-full max-w-4xl">
+              <CurrentPokemonCard
+                instance={currentInstanceMock}
+                species={currentSpeciesMock}
+                graduationPending={true}
+              />
+            </section>
+
+            <main className="max-h-[620px] w-full max-w-4xl overflow-hidden">
+              <PokedexGrid
+                unlockedSpeciesIds={[
+                  "bulbasaur",
+                  "ivysaur",
+                  "venusaur",
+                  "charmander",
+                  "charmeleon",
+                ]}
+              />
+            </main>
           </div>
-          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div className="h-full bg-blue-400" style={{ width: "3%" }} />
-          </div>
-          <CurrentPokemonCard
-            instance={currentInstanceMock}
-            species={currentSpeciesMock}
-            graduationPending={true}
-          />
-          <div className="max-h-[320px] overflow-hidden">
-            <PokedexGrid
-              unlockedSpeciesIds={["bulbasaur", "ivysaur", "venusaur", "charmander", "charmeleon"]}
-            />
-          </div>
-        </div>
+        </PagePreviewShell>
       </Section>
     </div>
   );
