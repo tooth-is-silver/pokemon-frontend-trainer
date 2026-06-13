@@ -102,10 +102,10 @@ export const privateProtectedPropertiesMethods: QuestionPage = {
     },
     {
       questionId: "private-protected-properties-methods-fb-003",
-      type: "fill_blank",
-      prompt: "외부에서 직접 쓰지 말라는 관례로 필드 이름 앞에 ____ 를 붙이기도 한다.",
+      type: "multiple_choice",
+      prompt: "_value처럼 내부용 필드라는 관례를 나타낼 때 이름 앞에 붙는 기호는?",
       answer: "_",
-      acceptedAnswers: ["_", "underscore", "밑줄"],
+      choices: ["#", "_", "@", "private", "protected"],
       conceptGroup: "js-private-protected",
       explanation: "밑줄 접두사는 내부용이라는 관례지만 실제 접근 제한은 아니다.",
       sourceExcerptId: "private-protected-properties-methods-002",
