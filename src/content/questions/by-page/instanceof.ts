@@ -89,7 +89,7 @@ export const instanceOf: QuestionPage = {
     {
       questionId: "instanceof-fb-001",
       type: "fill_blank",
-      prompt: "객체가 특정 클래스의 인스턴스인지 확인하는 연산자는 ____ 이다.",
+      prompt: "객체가 특정 클래스의 인스턴스인지 확인하는 키워드는 ____ 이다.",
       answer: "instanceof",
       acceptedAnswers: ["instanceof"],
       conceptGroup: "js-instanceof",
