@@ -103,11 +103,11 @@ export const promiseApi: QuestionPage = {
     {
       questionId: "promise-api-fb-003",
       type: "fill_blank",
-      prompt: "Promise.____ 는 이미 이행된 Promise를 만들 때 사용할 수 있다.",
+      prompt: "비동기 작업 없이 바로 성공하는 Promise를 만들 때 Promise.____ 를 사용한다.",
       answer: "resolve",
       acceptedAnswers: ["resolve", "Promise.resolve"],
       conceptGroup: "js-promise-api",
-      explanation: "Promise.resolve(value)는 주어진 값으로 이행된 Promise를 만든다.",
+      explanation: "Promise.resolve(value)는 value를 성공 결과로 가진 Promise를 만든다.",
       sourceExcerptId: "promise-api-005",
     },
   ],
