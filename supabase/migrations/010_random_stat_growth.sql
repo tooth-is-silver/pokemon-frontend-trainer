@@ -1,6 +1,6 @@
 -- 정답 보상 스탯 성장 규칙 변경
 -- - 정답 1회마다 4스탯 중 1개만 랜덤 성장
--- - 현재 성장 경계(50 → 85 → 100)에 도달한 스탯은 후보에서 제외
+-- - 현재 성장 경계(50 → 85 → 100)보다 작은 스탯만 후보에 포함
 
 create or replace function process_answer(
   p_question_id text,
@@ -72,7 +72,7 @@ begin
 
     if array_length(v_growth_candidates, 1) is not null then
       v_growth_stat := v_growth_candidates[
-        floor(random() * array_length(v_growth_candidates, 1) + 1)::int
+        floor(random() * array_length(v_growth_candidates, 1))::int + 1
       ];
     end if;
 
