@@ -71,6 +71,7 @@ begin
     order by random()
     limit 1;
 
+    -- v_growth_stat 은 현재 성장 경계보다 작은 스탯 중에서만 선택된다.
     update pokemon_instances set
       hp = case
         when v_growth_stat = 'hp' then least(hp + v_stat_delta, v_growth_target)
@@ -101,13 +102,16 @@ begin
     -- 4. 열매 지급 (연속 10개마다)
     if v_progression.streak_correct_count % 10 = 0 then
       -- 랜덤 열매 선택
-      v_berry_stat := (array['hp', 'attack', 'defense', 'speed'])[floor(random() * 4 + 1)::int];
-      v_berry_given := case v_berry_stat
-        when 'hp' then '오랭열매'
-        when 'attack' then '무화열매'
-        when 'defense' then '나나열매'
-        when 'speed' then '배리열매'
-      end;
+      select berry_stat, berry_name into v_berry_stat, v_berry_given
+      from (
+        values
+          ('hp'::text, '오랭열매'::text),
+          ('attack'::text, '무화열매'::text),
+          ('defense'::text, '나나열매'::text),
+          ('speed'::text, '배리열매'::text)
+      ) as berries(berry_stat, berry_name)
+      order by random()
+      limit 1;
 
       -- 열매 효과 적용
       update pokemon_instances set
