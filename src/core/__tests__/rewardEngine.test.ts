@@ -20,6 +20,11 @@ describe("applyCorrectAnswerReward", () => {
     expect(result).toEqual({ hp: 0, attack: 0, defense: 0, speed: 1 });
   });
 
+  it("주입된 random 값이 1이어도 마지막 후보를 선택한다", () => {
+    const result = applyCorrectAnswerReward(baseStats, true, () => 1);
+    expect(result).toEqual({ hp: 0, attack: 0, defense: 0, speed: 5 });
+  });
+
   it("현재 성장 경계에 도달한 스탯은 후보에서 제외", () => {
     const stats: PokemonStats = { hp: 50, attack: 45, defense: 50, speed: 45 };
     const result = applyCorrectAnswerReward(stats, true, () => 0);

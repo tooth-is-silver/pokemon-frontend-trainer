@@ -71,27 +71,34 @@ begin
     order by random()
     limit 1;
 
-    -- v_growth_stat 은 현재 성장 경계보다 작은 스탯 중에서만 선택된다.
-    update pokemon_instances set
-      hp = case
-        when v_growth_stat = 'hp' then least(hp + v_stat_delta, v_growth_target)
-        else hp
-      end,
-      attack = case
-        when v_growth_stat = 'attack' then least(attack + v_stat_delta, v_growth_target)
-        else attack
-      end,
-      defense = case
-        when v_growth_stat = 'defense' then least(defense + v_stat_delta, v_growth_target)
-        else defense
-      end,
-      speed = case
-        when v_growth_stat = 'speed' then least(speed + v_stat_delta, v_growth_target)
-        else speed
-      end,
-      total_correct_count = total_correct_count + 1
-    where id = v_instance.id
-    returning * into v_instance;
+    if v_growth_stat is null then
+      update pokemon_instances set
+        total_correct_count = total_correct_count + 1
+      where id = v_instance.id
+      returning * into v_instance;
+    else
+      -- v_growth_stat 은 현재 성장 경계보다 작은 스탯 중에서만 선택된다.
+      update pokemon_instances set
+        hp = case
+          when v_growth_stat = 'hp' then least(hp + v_stat_delta, v_growth_target)
+          else hp
+        end,
+        attack = case
+          when v_growth_stat = 'attack' then least(attack + v_stat_delta, v_growth_target)
+          else attack
+        end,
+        defense = case
+          when v_growth_stat = 'defense' then least(defense + v_stat_delta, v_growth_target)
+          else defense
+        end,
+        speed = case
+          when v_growth_stat = 'speed' then least(speed + v_stat_delta, v_growth_target)
+          else speed
+        end,
+        total_correct_count = total_correct_count + 1
+      where id = v_instance.id
+      returning * into v_instance;
+    end if;
 
     -- 3. 연속 정답 수 갱신
     update progression set
