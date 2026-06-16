@@ -1,10 +1,14 @@
 import type { PokemonStats } from "@/stores/types";
 
 const MAX_STAT = 100;
+const STAT_THRESHOLDS = [50, 85, 100] as const;
+const STAT_KEYS = ["hp", "attack", "defense", "speed"] as const;
+
+type PokemonStatKey = keyof PokemonStats;
 
 interface Berry {
   name: string;
-  stat: keyof PokemonStats;
+  stat: PokemonStatKey;
 }
 
 const BERRY_POOL: Berry[] = [
@@ -14,14 +18,39 @@ const BERRY_POOL: Berry[] = [
   { name: "배리열매", stat: "speed" },
 ];
 
+function getGrowthTarget(stats: PokemonStats): number {
+  return (
+    STAT_THRESHOLDS.find((threshold) => STAT_KEYS.some((stat) => stats[stat] < threshold)) ??
+    MAX_STAT
+  );
+}
+
+function pickGrowthStat(
+  stats: PokemonStats,
+  target: number,
+  random: () => number,
+): PokemonStatKey | null {
+  const candidates = STAT_KEYS.filter((stat) => stats[stat] < target);
+  if (candidates.length === 0) return null;
+
+  const index = Math.min(Math.floor(random() * candidates.length), candidates.length - 1);
+  return candidates[index] ?? null;
+}
+
 // 정답 보상 계산 (첫 정답 +5, 재정답 +1)
-export function applyCorrectAnswerReward(stats: PokemonStats, isFirstSolve: boolean): PokemonStats {
+export function applyCorrectAnswerReward(
+  stats: PokemonStats,
+  isFirstSolve: boolean,
+  random = Math.random,
+): PokemonStats {
   const delta = isFirstSolve ? 5 : 1;
+  const target = getGrowthTarget(stats);
+  const stat = pickGrowthStat(stats, target, random);
+  if (!stat) return stats;
+
   return {
-    hp: Math.min(stats.hp + delta, MAX_STAT),
-    attack: Math.min(stats.attack + delta, MAX_STAT),
-    defense: Math.min(stats.defense + delta, MAX_STAT),
-    speed: Math.min(stats.speed + delta, MAX_STAT),
+    ...stats,
+    [stat]: Math.min(stats[stat] + delta, target),
   };
 }
 
