@@ -18,7 +18,6 @@ declare
   v_progression progression%rowtype;
   v_stat_delta int;
   v_growth_target int;
-  v_growth_candidates text[];
   v_growth_stat text := null;
   v_berry_given text := null;
   v_berry_stat text := null;
@@ -60,7 +59,7 @@ begin
       else 50
     end;
 
-    select array_agg(stat_name) into v_growth_candidates
+    select stat_name into v_growth_stat
     from (
       values
         ('hp'::text, v_instance.hp),
@@ -68,13 +67,9 @@ begin
         ('defense'::text, v_instance.defense),
         ('speed'::text, v_instance.speed)
     ) as stats(stat_name, stat_value)
-    where stat_value < v_growth_target;
-
-    if array_length(v_growth_candidates, 1) is not null then
-      v_growth_stat := v_growth_candidates[
-        floor(random() * array_length(v_growth_candidates, 1))::int + 1
-      ];
-    end if;
+    where stat_value < v_growth_target
+    order by random()
+    limit 1;
 
     update pokemon_instances set
       hp = case
