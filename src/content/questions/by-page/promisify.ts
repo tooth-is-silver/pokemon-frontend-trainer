@@ -17,17 +17,6 @@ export const promisify: QuestionPage = {
       sourceExcerptId: "promisify-001",
     },
     {
-      questionId: "promisify-yn-002",
-      type: "yes_no",
-      prompt: "promisify로 만든 래퍼는 기존 콜백 함수 호출을 내부에서 위임할 수 있다.",
-      answer: true,
-      acceptedAnswers: ["예", "true"],
-      conceptGroup: "js-promisify",
-      explanation:
-        "래퍼 함수는 새 Promise를 만들고 기존 함수에 커스텀 콜백을 넘겨 resolve 또는 reject한다.",
-      sourceExcerptId: "promisify-002",
-    },
-    {
       questionId: "promisify-yn-003",
       type: "yes_no",
       prompt: "프라미스화는 여러 번 호출되는 콜백에도 모든 결과를 순서대로 계속 전달한다.",
