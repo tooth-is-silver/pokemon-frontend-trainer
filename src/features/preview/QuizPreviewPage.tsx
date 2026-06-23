@@ -1,5 +1,5 @@
 import { PokemonCard } from "@/components/pokemon/PokemonCard";
-import { PokemonStats } from "@/components/pokemon/PokemonStats";
+import { PokemonExp } from "@/components/pokemon/PokemonExp";
 import { EvolutionContent } from "@/components/pokemon/EvolutionContent";
 import { GraduationContent } from "@/components/pokemon/GraduationContent";
 import { PokedexGrid } from "@/components/pokedex/PokedexGrid";
@@ -35,13 +35,13 @@ const graduationCandidates = pickGraduationCandidates({
   allSpecies,
   random: createStablePreviewRandom(),
 });
-const sampleStats = { hp: 42, attack: 57, defense: 33, speed: 61 };
+const sampleExp = 61;
 
 const currentInstanceMock: PokemonInstance = {
   instanceId: "mock-active",
   speciesId: "charmeleon",
   currentStage: 2,
-  stats: { hp: 72, attack: 81, defense: 58, speed: 77 },
+  exp: 81,
   totalCorrectCount: 24,
   graduated: false,
   evolutionPending: false,
@@ -167,7 +167,7 @@ function ModalPreviewShell({ children }: ModalPreviewShellProps) {
       <div className="relative min-h-[760px]">
         <div className="absolute inset-0 flex flex-col items-center gap-4 p-6 opacity-80">
           <PokemonCard species={sampleSpecies} />
-          <PokemonStats stats={sampleStats} />
+          <PokemonExp exp={sampleExp} />
           <div className="w-full max-w-lg">
             <QuizCard question={mcSample as Question} onSubmit={noop} disabled={false} />
           </div>
@@ -190,7 +190,7 @@ export default function QuizPreviewPage() {
           <div className="flex flex-col items-center gap-6 p-6">
             <section className="flex w-full max-w-lg flex-col items-center gap-4">
               <PokemonCard species={sampleSpecies} />
-              <PokemonStats stats={sampleStats} />
+              <PokemonExp exp={sampleExp} />
               <p className="text-sm text-gray-500">
                 연속 정답 <span className="font-bold text-blue-600">3</span>개
               </p>
@@ -237,7 +237,7 @@ export default function QuizPreviewPage() {
         <ModalPreviewShell>
           <GraduationContent
             graduatedSpecies={graduatedSample}
-            graduatedStats={{ hp: 95, attack: 100, defense: 87, speed: 92 }}
+            graduatedExp={100}
             candidates={graduationCandidates}
             submitting={false}
             selectedSpeciesId={null}

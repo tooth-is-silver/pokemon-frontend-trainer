@@ -1,13 +1,12 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useRef, useState } from "react";
 import type { PokemonSpecies } from "@/content/pokemon/types";
-import type { PokemonStats } from "@/stores/types";
 import { GraduationContent } from "./GraduationContent";
 
 interface Props {
   open: boolean;
   graduatedSpecies: PokemonSpecies;
-  graduatedStats: PokemonStats;
+  graduatedExp: number;
   candidates: PokemonSpecies[];
   onSelect: (speciesId: string) => Promise<void>;
 }
@@ -40,7 +39,7 @@ function getSelectionErrorMessage(error: unknown) {
 export function GraduationModal({
   open,
   graduatedSpecies,
-  graduatedStats,
+  graduatedExp,
   candidates,
   onSelect,
 }: Props) {
@@ -82,7 +81,7 @@ export function GraduationModal({
           </Dialog.Description>
           <GraduationContent
             graduatedSpecies={graduatedSpecies}
-            graduatedStats={graduatedStats}
+            graduatedExp={graduatedExp}
             candidates={candidates}
             submitting={submitting}
             selectedSpeciesId={selectedId}

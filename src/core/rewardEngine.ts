@@ -1,57 +1,27 @@
-import type { PokemonStats } from "@/stores/types";
-
-const MAX_STAT = 100;
-const STAT_THRESHOLDS = [50, 85, 100] as const;
-const STAT_KEYS = ["hp", "attack", "defense", "speed"] as const;
-
-type PokemonStatKey = keyof PokemonStats;
+const MAX_EXP = 100;
+const EXP_THRESHOLDS = [50, 85, 100] as const;
 
 interface Berry {
   name: string;
-  stat: PokemonStatKey;
 }
 
 const BERRY_POOL: Berry[] = [
-  { name: "오랭열매", stat: "hp" },
-  { name: "무화열매", stat: "attack" },
-  { name: "나나열매", stat: "defense" },
-  { name: "배리열매", stat: "speed" },
+  { name: "오랭열매" },
+  { name: "무화열매" },
+  { name: "나나열매" },
+  { name: "배리열매" },
 ];
 
-function getGrowthTarget(stats: PokemonStats): number {
-  return (
-    STAT_THRESHOLDS.find((threshold) => STAT_KEYS.some((stat) => stats[stat] < threshold)) ??
-    MAX_STAT
-  );
-}
-
-function pickGrowthStat(
-  stats: PokemonStats,
-  target: number,
-  random: () => number,
-): PokemonStatKey | null {
-  const candidates = STAT_KEYS.filter((stat) => stats[stat] < target);
-  if (candidates.length === 0) return null;
-
-  const index = Math.min(Math.floor(random() * candidates.length), candidates.length - 1);
-  return candidates[index] ?? null;
+function getGrowthTarget(exp: number): number {
+  return EXP_THRESHOLDS.find((threshold) => exp < threshold) ?? MAX_EXP;
 }
 
 // 정답 보상 계산 (첫 정답 +5, 재정답 +1)
-export function applyCorrectAnswerReward(
-  stats: PokemonStats,
-  isFirstSolve: boolean,
-  random = Math.random,
-): PokemonStats {
+export function applyCorrectAnswerReward(exp: number, isFirstSolve: boolean): number {
   const delta = isFirstSolve ? 5 : 1;
-  const target = getGrowthTarget(stats);
-  const stat = pickGrowthStat(stats, target, random);
-  if (!stat) return stats;
+  const target = getGrowthTarget(exp);
 
-  return {
-    ...stats,
-    [stat]: Math.min(stats[stat] + delta, target),
-  };
+  return Math.min(exp + delta, target);
 }
 
 // 연속 정답 갱신
@@ -67,10 +37,7 @@ export function checkBerryReward(streak: number): Berry | null {
   return null;
 }
 
-// 열매 효과 적용 (해당 스탯 +5)
-export function applyBerry(stats: PokemonStats, berry: Berry): PokemonStats {
-  return {
-    ...stats,
-    [berry.stat]: Math.min(stats[berry.stat] + 5, MAX_STAT),
-  };
+// 열매 효과 적용 (EXP +5)
+export function applyBerry(exp: number): number {
+  return Math.min(exp + 5, MAX_EXP);
 }

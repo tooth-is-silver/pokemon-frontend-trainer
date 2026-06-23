@@ -121,12 +121,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       instanceId: row.id,
       speciesId: row.species_id,
       currentStage: row.current_stage,
-      stats: {
-        hp: row.hp,
-        attack: row.attack,
-        defense: row.defense,
-        speed: row.speed,
-      },
+      exp: row.exp,
       totalCorrectCount: row.total_correct_count,
       graduated: row.graduated,
       evolutionPending: row.evolution_pending,
@@ -187,7 +182,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       instanceId,
       speciesId,
       currentStage: 1,
-      stats: { hp: 0, attack: 0, defense: 0, speed: 0 },
+      exp: 0,
       totalCorrectCount: 0,
       graduated: false,
       evolutionPending: false,
@@ -224,7 +219,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       inst.instanceId === activeId
         ? {
             ...inst,
-            stats: result.stats,
+            exp: result.exp,
             totalCorrectCount: inst.totalCorrectCount + (correct ? 1 : 0),
             evolutionPending: result.evolution_pending,
           }
@@ -317,7 +312,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       instanceId: newInstanceId,
       speciesId,
       currentStage: 1,
-      stats: { hp: 0, attack: 0, defense: 0, speed: 0 },
+      exp: 0,
       totalCorrectCount: 0,
       graduated: false,
       evolutionPending: false,

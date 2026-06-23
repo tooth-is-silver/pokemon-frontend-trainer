@@ -36,12 +36,19 @@ npx --yes supabase@latest db push --db-url "$SUPABASE_DB_URL" --include-all
 ## SQL Editor 적용
 
 CLI 인증이 없으면 Supabase Dashboard의 SQL Editor에서 미적용 파일을 순서대로 실행한다.
-현재 다음 포켓몬 선택 오류를 복구하려면 아래 파일들이 운영 DB에 적용되어 있어야 한다.
+운영 DB에는 현재 브랜치/PR에 추가된 새 마이그레이션 파일도 반드시 포함해 적용한다.
+예를 들어 다음 포켓몬 선택 오류를 복구하려면 아래 파일들이 운영 DB에 적용되어 있어야 한다.
 
 ```text
 supabase/migrations/007_graduation_flow.sql
 supabase/migrations/008_legendary_wave_transition.sql
 supabase/migrations/009_complete_ending.sql
+```
+
+EXP 전환 배포에서는 아래 파일도 적용해야 한다.
+
+```text
+supabase/migrations/011_exp_progression.sql
 ```
 
 마지막에 schema cache 갱신을 실행한다.

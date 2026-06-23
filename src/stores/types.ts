@@ -1,16 +1,8 @@
-// 포켓몬 인스턴스
-export interface PokemonStats {
-  hp: number;
-  attack: number;
-  defense: number;
-  speed: number;
-}
-
 export interface PokemonInstance {
   instanceId: string;
   speciesId: string;
   currentStage: number;
-  stats: PokemonStats;
+  exp: number;
   totalCorrectCount: number;
   graduated: boolean;
   evolutionPending: boolean;
@@ -59,7 +51,7 @@ export interface AuthState {
 // 정답 처리 결과 (rpc 반환값)
 export interface ProcessAnswerResult {
   correct: boolean;
-  stats: PokemonStats;
+  exp: number;
   streak: number;
   berry_given: string | null;
   evolution_pending: boolean;

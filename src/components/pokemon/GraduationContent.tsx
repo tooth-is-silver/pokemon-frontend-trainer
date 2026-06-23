@@ -1,13 +1,12 @@
 import { getSpriteUrl } from "@/content/pokemon/types";
 import { findSpeciesById } from "@/content/pokemon";
 import type { PokemonSpecies } from "@/content/pokemon/types";
-import type { PokemonStats as Stats } from "@/stores/types";
 import { resolveGraduationEvolutionLine } from "./graduationEvolutionLine";
-import { PokemonStats } from "./PokemonStats";
+import { PokemonExp } from "./PokemonExp";
 
 interface Props {
   graduatedSpecies: PokemonSpecies;
-  graduatedStats: Stats;
+  graduatedExp: number;
   candidates: PokemonSpecies[];
   submitting: boolean;
   selectedSpeciesId: string | null;
@@ -17,7 +16,7 @@ interface Props {
 
 export function GraduationContent({
   graduatedSpecies,
-  graduatedStats,
+  graduatedExp,
   candidates,
   submitting,
   selectedSpeciesId,
@@ -87,8 +86,8 @@ export function GraduationContent({
         </div>
 
         <div className="flex flex-col items-center gap-2">
-          <p className="text-xs font-semibold text-gray-500">최종 스탯</p>
-          <PokemonStats stats={graduatedStats} />
+          <p className="text-xs font-semibold text-gray-500">최종 EXP</p>
+          <PokemonExp exp={graduatedExp} />
         </div>
       </section>
 

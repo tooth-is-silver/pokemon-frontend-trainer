@@ -190,20 +190,11 @@ type TrainerState = {
 ### 5.3 Party
 
 ```ts
-type PokemonStats = {
-  hp: number;
-  attack: number;
-  defense: number;
-  speed: number;
-};
-```
-
-```ts
 type PokemonInstance = {
   instanceId: string;
   speciesId: string;
   currentStage: number;
-  stats: PokemonStats;
+  exp: number;
   totalCorrectCount: number;
   graduated: boolean;
   evolutionPending: boolean;
@@ -266,7 +257,7 @@ type AuthState = {
 ```ts
 type ProcessAnswerResult = {
   correct: boolean;
-  stats: PokemonStats;
+  exp: number;
   streak: number;
   berry_given: string | null;
   evolution_pending: boolean;
