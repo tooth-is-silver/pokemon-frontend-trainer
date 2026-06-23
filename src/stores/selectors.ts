@@ -10,11 +10,11 @@ export const useActivePokemon = () =>
 // 스타터 선택 여부
 export const useStarterChosen = () => useGameStore((state) => state.trainer.starterChosen);
 
-// 현재 스탯
-export const useActiveStats = () =>
+// 현재 EXP
+export const useActiveExp = () =>
   useGameStore((state) => {
     const id = state.trainer.activePokemonInstanceId;
-    return state.party.instances.find((i) => i.instanceId === id)?.stats ?? null;
+    return state.party.instances.find((i) => i.instanceId === id)?.exp ?? null;
   });
 
 // 연속 정답 수

@@ -7,7 +7,7 @@ import { questionPages, getAllQuestions } from "@/content/questions";
 import { getNextQuestion } from "@/core/quizLoader";
 import { checkAnswer } from "@/core/answerChecker";
 import { PokemonCard } from "@/components/pokemon/PokemonCard";
-import { PokemonStats } from "@/components/pokemon/PokemonStats";
+import { PokemonExp } from "@/components/pokemon/PokemonExp";
 import { EvolutionModal } from "@/components/pokemon/EvolutionModal";
 import { GraduationModal } from "@/components/pokemon/GraduationModal";
 import { EndingScreen } from "@/components/pokemon/EndingScreen";
@@ -117,7 +117,7 @@ export default function LearnPage() {
       ? (instances.find((i) => i.instanceId === pendingGraduationInstanceId) ?? null)
       : null;
   const graduatedSpecies = graduatedInstance ? findSpeciesById(graduatedInstance.speciesId) : null;
-  const graduatedStats = graduatedInstance?.stats ?? null;
+  const graduatedExp = graduatedInstance?.exp ?? null;
   const isMewGraduating = graduatedSpecies?.speciesId === "mew";
   const graduatedSpeciesIds = instances.filter((i) => i.graduated).map((i) => i.speciesId);
   const graduationCandidates = graduatedInstance
@@ -190,7 +190,7 @@ export default function LearnPage() {
       {activeSpecies && activeInstance && (
         <section className="flex flex-col items-center gap-4 w-full max-w-lg">
           <PokemonCard species={activeSpecies} />
-          <PokemonStats stats={activeInstance.stats} />
+          <PokemonExp exp={activeInstance.exp} />
           {streak > 0 && (
             <p className="text-sm text-gray-500" aria-live="polite">
               연속 정답 <span className="font-bold text-blue-600">{streak}</span>개
@@ -246,11 +246,11 @@ export default function LearnPage() {
         />
       )}
 
-      {showGraduationModal && graduatedSpecies && graduatedStats && (
+      {showGraduationModal && graduatedSpecies && graduatedExp !== null && (
         <GraduationModal
           open={true}
           graduatedSpecies={graduatedSpecies}
-          graduatedStats={graduatedStats}
+          graduatedExp={graduatedExp}
           candidates={graduationCandidates}
           onSelect={handleGraduationSelect}
         />

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { getSpriteUrl } from "@/content/pokemon/types";
 import type { PokemonSpecies } from "@/content/pokemon/types";
 import type { PokemonInstance } from "@/stores/types";
-import { PokemonStats } from "@/components/pokemon/PokemonStats";
+import { PokemonExp } from "@/components/pokemon/PokemonExp";
 
 interface Props {
   instance: PokemonInstance;
@@ -62,7 +62,7 @@ export function CurrentPokemonCard({ instance, species, graduationPending = fals
             학습 화면으로 이동하면 졸업 모달이 자동으로 열려 다음 포켓몬을 선택할 수 있어요.
           </p>
         )}
-        <PokemonStats stats={instance.stats} />
+        <PokemonExp exp={instance.exp} />
       </div>
     </article>
   );
