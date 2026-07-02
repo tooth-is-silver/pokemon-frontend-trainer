@@ -1,5 +1,5 @@
-import { getAllQuestions, questionPages } from "../content/questions";
-import type { Question } from "../content/questions/types";
+import { getAllQuestions, questionPages } from "@/content/questions";
+import type { Question } from "@/content/questions/types";
 
 // 전체 문제 풀에서 다음 문제를 선택한다
 // 안 푼 문제 우선, 다 풀었으면 기존 문제 재출제

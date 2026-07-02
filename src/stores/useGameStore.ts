@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { supabase } from "../lib/supabase";
-import { findSpeciesById } from "../content/pokemon";
-import { isGraduationReady } from "../core/evolutionChecker";
+import { supabase } from "@/lib/supabase";
+import { findSpeciesById } from "@/content/pokemon";
+import { isGraduationReady } from "@/core/evolutionChecker";
 import type {
   TrainerState,
   PartyState,

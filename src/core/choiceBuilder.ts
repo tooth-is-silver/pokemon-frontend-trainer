@@ -1,5 +1,5 @@
-import { getAllQuestions } from "../content/questions";
-import type { MultipleChoiceQuestion } from "../content/questions/types";
+import { getAllQuestions } from "@/content/questions";
+import type { MultipleChoiceQuestion } from "@/content/questions/types";
 
 // 배열 셔플 (Fisher-Yates)
 function shuffle<T>(arr: T[]): T[] {

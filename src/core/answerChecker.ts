@@ -1,4 +1,4 @@
-import type { Question } from "../content/questions/types";
+import type { Question } from "@/content/questions/types";
 
 // 입력 정규화: trim, 소문자 변환, 연속 공백 제거
 export function normalizeAnswer(input: string): string {
