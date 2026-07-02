@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { supabase } from "../lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { useGameStore } from "./useGameStore";
 import type { AuthState } from "./types";
 

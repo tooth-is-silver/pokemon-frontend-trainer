@@ -6,10 +6,10 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
 import { AccountBar } from "@/components/layout/AccountBar";
 
-const Landing = lazy(() => import("../features/landing/LandingPage"));
-const Starter = lazy(() => import("../features/starter/StarterPage"));
-const Learn = lazy(() => import("../features/learn/LearnPage"));
-const Pokedex = lazy(() => import("../features/pokedex/PokedexPage"));
+const Landing = lazy(() => import("@/features/landing/LandingPage"));
+const Starter = lazy(() => import("@/features/starter/StarterPage"));
+const Learn = lazy(() => import("@/features/learn/LearnPage"));
+const Pokedex = lazy(() => import("@/features/pokedex/PokedexPage"));
 
 function preventNativeDrag(event: DragEvent) {
   event.preventDefault();

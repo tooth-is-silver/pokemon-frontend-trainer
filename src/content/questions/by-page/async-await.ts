@@ -1,4 +1,4 @@
-import type { QuestionPage } from "../types";
+import type { QuestionPage } from "@/content/questions/types";
 
 export const asyncAwait: QuestionPage = {
   sourceId: "async-await",

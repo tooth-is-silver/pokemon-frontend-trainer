@@ -19,5 +19,18 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['../*'],
+              message: '폴더를 넘는 import는 @/ alias를 사용하세요.',
+            },
+          ],
+        },
+      ],
+    },
   },
 ])

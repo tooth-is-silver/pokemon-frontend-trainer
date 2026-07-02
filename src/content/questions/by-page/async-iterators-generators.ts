@@ -1,4 +1,4 @@
-import type { QuestionPage } from "../types";
+import type { QuestionPage } from "@/content/questions/types";
 
 export const asyncIteratorsGenerators: QuestionPage = {
   sourceId: "async-iterators-generators",
