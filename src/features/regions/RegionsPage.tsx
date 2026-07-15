@@ -52,6 +52,7 @@ export default function RegionsPage() {
   const starterChosen = useGameStore((s) => s.trainer.starterChosen);
   const unlockedSpeciesIds = useGameStore((s) => s.pokedex.unlockedSpeciesIds);
   const [selectedRegionId, setSelectedRegionId] = useState(initialRegionId);
+  const [isSearching, setIsSearching] = useState(false);
 
   if (authLoading || !loaded) {
     return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
@@ -64,6 +65,16 @@ export default function RegionsPage() {
   const selectedRegionUnlocked = selectedRegion
     ? isRegionUnlocked(selectedRegion, unlockedPokedexCount)
     : false;
+
+  const handleSelectRegion = (regionId: string) => {
+    setSelectedRegionId(regionId);
+    setIsSearching(false);
+  };
+
+  const handleStartSearch = () => {
+    if (!selectedRegionUnlocked) return;
+    setIsSearching(true);
+  };
 
   return (
     <div className="min-h-screen bg-white px-3 py-4 text-gray-950 sm:px-5">
@@ -109,7 +120,7 @@ export default function RegionsPage() {
               <button
                 key={region.regionId}
                 type="button"
-                onClick={() => setSelectedRegionId(region.regionId)}
+                onClick={() => handleSelectRegion(region.regionId)}
                 aria-pressed={selected}
                 aria-disabled={!unlocked}
                 aria-label={
@@ -162,11 +173,43 @@ export default function RegionsPage() {
               </div>
               <button
                 type="button"
-                disabled={!selectedRegionUnlocked}
+                onClick={handleStartSearch}
+                disabled={!selectedRegionUnlocked || isSearching}
                 className="min-h-10 rounded-lg bg-white px-4 py-2 text-sm font-black text-gray-950 disabled:cursor-not-allowed disabled:opacity-45"
               >
-                탐색하기
+                {isSearching ? "찾는 중" : "탐색하기"}
               </button>
+            </div>
+          )}
+
+          {selectedRegion && isSearching && (
+            <div
+              className="absolute inset-0 z-30 flex items-center justify-center bg-gray-950/45 p-5 text-white backdrop-blur-[2px]"
+              role="status"
+              aria-live="polite"
+            >
+              <div className="flex w-full max-w-xs flex-col items-center gap-4 bg-gray-950/80 p-5 text-center shadow-2xl">
+                <div className="relative h-20 w-20">
+                  <span className="absolute left-2 top-9 h-5 w-5 rounded-full bg-lime-300 shadow-lg motion-safe:animate-bounce" />
+                  <span className="absolute left-8 top-5 h-6 w-6 rounded-full bg-lime-400 shadow-lg motion-safe:animate-bounce [animation-delay:120ms]" />
+                  <span className="absolute right-2 top-10 h-5 w-5 rounded-full bg-lime-200 shadow-lg motion-safe:animate-bounce [animation-delay:240ms]" />
+                  <span className="absolute inset-x-3 bottom-3 h-3 rounded-full bg-black/25 blur-sm" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-white/60">{selectedRegion.nameKo}</p>
+                  <h2 className="mt-1 text-2xl font-black tracking-tight">찾는 중...</h2>
+                  <p className="mt-2 text-sm leading-6 text-white/75">
+                    풀숲을 살피고 있어요. 무언가 움직이는 것 같아요.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsSearching(false)}
+                  className="min-h-10 rounded-lg border border-white/30 px-4 py-2 text-sm font-bold text-white/90 transition-colors hover:bg-white/10"
+                >
+                  그만 찾기
+                </button>
+              </div>
             </div>
           )}
         </section>
