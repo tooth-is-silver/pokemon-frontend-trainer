@@ -7,6 +7,7 @@ import { useGameStore } from "@/stores/useGameStore";
 interface MapPoint {
   positionClassName: string;
   markerClassName: string;
+  selectedClassName: string;
   shortLabel: string;
 }
 
@@ -16,31 +17,37 @@ const mapPoints: Record<string, MapPoint> = {
   "sprout-field": {
     positionClassName: "left-[50%] top-[47%] sm:left-[48%] sm:top-[48%]",
     markerClassName: "bg-lime-300 text-lime-950",
+    selectedClassName: "region-marker-selected-lime",
     shortLabel: "평원",
   },
   "misty-shore": {
     positionClassName: "left-[79%] top-[56%] sm:left-[82%] sm:top-[57%]",
     markerClassName: "bg-cyan-300 text-cyan-950",
+    selectedClassName: "region-marker-selected-cyan",
     shortLabel: "해안",
   },
   "ashen-mountain": {
     positionClassName: "left-[65%] top-[23%] sm:left-[69%] sm:top-[21%]",
     markerClassName: "bg-orange-300 text-orange-950",
+    selectedClassName: "region-marker-selected-orange",
     shortLabel: "용암",
   },
   "ghost-town": {
     positionClassName: "left-[21%] top-[48%] sm:left-[19%] sm:top-[51%]",
     markerClassName: "bg-violet-300 text-violet-950",
+    selectedClassName: "region-marker-selected-violet",
     shortLabel: "폐허",
   },
   "sky-garden": {
     positionClassName: "left-[31%] top-[23%] sm:left-[30%] sm:top-[23%]",
     markerClassName: "bg-sky-200 text-sky-950",
+    selectedClassName: "region-marker-selected-sky",
     shortLabel: "궁전",
   },
   "neon-city": {
     positionClassName: "left-[47%] top-[78%] sm:left-[47%] sm:top-[76%]",
     markerClassName: "bg-yellow-300 text-yellow-950",
+    selectedClassName: "region-marker-selected-yellow",
     shortLabel: "도시",
   },
 };
@@ -137,7 +144,9 @@ export default function RegionsPage() {
                       : `${region.nameKo} 지역 잠김, 도감 ${remainingCount}마리 더 필요`
                   }
                   className={`absolute z-10 flex min-h-10 -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-xl border-2 border-white/90 px-2.5 py-1.5 text-[11px] font-black shadow-md transition-colors focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-gray-950 ${mapPoint.positionClassName} ${mapPoint.markerClassName} ${
-                    selected ? "region-marker-selected ring-2 ring-white/90" : ""
+                    selected
+                      ? `region-marker-selected ${mapPoint.selectedClassName} ring-2 ring-white/90`
+                      : ""
                   } ${unlocked ? "" : "opacity-65 grayscale"}`}
                 >
                   <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/85 text-xs shadow-inner">
