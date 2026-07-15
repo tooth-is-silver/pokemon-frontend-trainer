@@ -202,11 +202,22 @@ export default function RegionsPage() {
                     <span>찾는 중</span>
                     <span className="sr-only">...</span>
                     <span className="ml-0.5 inline-flex gap-0.5" aria-hidden="true">
-                      <span className="inline-block motion-safe:animate-bounce">.</span>
-                      <span className="inline-block motion-safe:animate-bounce [animation-delay:120ms]">
+                      <span
+                        className="inline-block motion-safe:animate-bounce"
+                        style={{ animationDelay: "0ms", animationDuration: "900ms" }}
+                      >
                         .
                       </span>
-                      <span className="inline-block motion-safe:animate-bounce [animation-delay:240ms]">
+                      <span
+                        className="inline-block motion-safe:animate-bounce"
+                        style={{ animationDelay: "160ms", animationDuration: "900ms" }}
+                      >
+                        .
+                      </span>
+                      <span
+                        className="inline-block motion-safe:animate-bounce"
+                        style={{ animationDelay: "320ms", animationDuration: "900ms" }}
+                      >
                         .
                       </span>
                     </span>
