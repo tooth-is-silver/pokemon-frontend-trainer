@@ -11,7 +11,7 @@ interface MapPoint {
   shortLabel: string;
 }
 
-type SearchStatus = "idle" | "searching" | "missed";
+type SearchStatus = "idle" | "searching" | "missed" | "encountered";
 
 const initialRegionId = regions[0]?.regionId ?? "";
 const SEARCH_RESULT_DELAY_MS = 1400;
@@ -73,16 +73,20 @@ export default function RegionsPage() {
   const isSearchOverlayOpen = searchStatus !== "idle";
   const isSearching = searchStatus === "searching";
   const isSearchMissed = searchStatus === "missed";
+  const isSearchEncountered = searchStatus === "encountered";
+  const encounterRatePercent = selectedRegion?.encounterRatePercent ?? 0;
 
   useEffect(() => {
     if (!isSearching) return;
 
     const timeoutId = window.setTimeout(() => {
-      setSearchStatus("missed");
+      const succeeded = Math.random() * 100 < encounterRatePercent;
+
+      setSearchStatus(succeeded ? "encountered" : "missed");
     }, SEARCH_RESULT_DELAY_MS);
 
     return () => window.clearTimeout(timeoutId);
-  }, [isSearching]);
+  }, [encounterRatePercent, isSearching]);
 
   if (authLoading || !loaded) {
     return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
@@ -302,6 +306,39 @@ export default function RegionsPage() {
                         className="min-h-10 rounded-lg bg-white px-3 py-2 text-sm font-black text-gray-950"
                       >
                         다시 탐색
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleCloseSearch}
+                        className="min-h-10 rounded-lg border border-white/30 px-3 py-2 text-sm font-bold text-white/90 transition-colors hover:bg-white/10"
+                      >
+                        지도 보기
+                      </button>
+                    </div>
+                  </>
+                )}
+
+                {isSearchEncountered && (
+                  <>
+                    <div>
+                      <p className="text-xs font-bold text-white/60">{selectedRegion.nameKo}</p>
+                      <div className="mx-auto mt-2 flex h-20 w-20 items-center justify-center rounded-full border-2 border-yellow-200 bg-yellow-300 text-4xl text-gray-950 shadow-[0_0_24px_rgba(250,204,21,0.65)]">
+                        !
+                      </div>
+                      <h2 className="mt-3 text-2xl font-black tracking-tight">발견했어요!</h2>
+                      <p className="mt-2 text-sm leading-6 text-white/75">
+                        야생 포켓몬이 나타났어요.
+                        <br />
+                        문제를 풀 준비를 해봐요.
+                      </p>
+                    </div>
+                    <div className="grid w-full grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        disabled
+                        className="min-h-10 rounded-lg bg-white px-3 py-2 text-sm font-black text-gray-950 disabled:cursor-not-allowed disabled:opacity-55"
+                      >
+                        문제 풀기 준비 중
                       </button>
                       <button
                         type="button"
