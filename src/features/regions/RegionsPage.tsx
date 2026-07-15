@@ -61,25 +61,15 @@ export default function RegionsPage() {
 
   const unlockedPokedexCount = unlockedSpeciesIds.length;
   const selectedRegion = regions.find((region) => region.regionId === selectedRegionId);
+  const selectedRegionUnlocked = selectedRegion
+    ? isRegionUnlocked(selectedRegion, unlockedPokedexCount)
+    : false;
 
   return (
     <div className="min-h-screen bg-[#d7f4f0] px-3 py-4 text-gray-950 sm:px-5">
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-2">
-        <header className="flex flex-col gap-2 px-1 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.24em] text-teal-700">
-              탐험 지도
-            </p>
-            <h1 className="mt-1 text-2xl font-black tracking-tight sm:text-3xl">
-              어디로 탐색할까요?
-            </h1>
-            <p className="mt-1 max-w-2xl text-xs leading-5 text-gray-600 sm:text-sm">
-              섬 지도를 눌러 지역을 골라요. 도감이 늘어날수록 새로운 지역이 열려요.
-            </p>
-          </div>
-          <p className="w-fit rounded-full bg-white/75 px-3 py-1.5 text-xs font-black text-gray-700 shadow-sm">
-            현재 도감 <span className="tabular-nums text-gray-950">{unlockedPokedexCount}</span>마리
-          </p>
+        <header className="px-1">
+          <h1 className="text-3xl font-black tracking-tight sm:text-4xl">탐험지도</h1>
         </header>
 
         <section
@@ -118,16 +108,16 @@ export default function RegionsPage() {
                 key={region.regionId}
                 type="button"
                 onClick={() => setSelectedRegionId(region.regionId)}
-                disabled={!unlocked}
                 aria-pressed={selected}
+                aria-disabled={!unlocked}
                 aria-label={
                   unlocked
                     ? `${region.nameKo} 지역 선택`
                     : `${region.nameKo} 지역 잠김, 도감 ${remainingCount}마리 더 필요`
                 }
-                className={`absolute z-10 flex min-h-10 -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-xl border-2 border-white/90 px-2.5 py-1.5 text-[11px] font-black shadow-md transition-colors focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-gray-950 disabled:cursor-not-allowed disabled:opacity-60 ${mapPoint.positionClassName} ${mapPoint.markerClassName} ${
+                className={`absolute z-10 flex min-h-10 -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-xl border-2 border-white/90 px-2.5 py-1.5 text-[11px] font-black shadow-md transition-colors focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-gray-950 ${mapPoint.positionClassName} ${mapPoint.markerClassName} ${
                   selected ? "ring-2 ring-gray-950/70" : ""
-                } ${unlocked ? "" : "grayscale"}`}
+                } ${unlocked ? "" : "opacity-65 grayscale"}`}
               >
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/85 text-xs shadow-inner">
                   {unlocked ? "●" : "×"}
@@ -140,18 +130,40 @@ export default function RegionsPage() {
           {selectedRegion && (
             <div className="absolute inset-x-3 bottom-3 z-20 flex flex-col gap-2 bg-gray-950/75 p-3 text-white shadow-lg backdrop-blur sm:inset-x-auto sm:left-3 sm:right-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
-                <p className="text-[11px] font-bold text-white/70">
-                  {selectedRegion.terrainLabel} · 조우 {selectedRegion.encounterRatePercent}%
-                </p>
-                <h2 className="truncate text-lg font-black">{selectedRegion.nameKo}</h2>
-                <p className="sr-only">{selectedRegion.description}</p>
+                {selectedRegionUnlocked ? (
+                  <>
+                    <p className="text-[11px] font-bold text-white/70">
+                      {selectedRegion.terrainLabel} · 조우 {selectedRegion.encounterRatePercent}%
+                    </p>
+                    <h2 className="truncate text-lg font-black">{selectedRegion.nameKo}</h2>
+                    <p className="sr-only">{selectedRegion.description}</p>
+                  </>
+                ) : (
+                  <>
+                    <h2 className="truncate text-lg font-black">{selectedRegion.nameKo}</h2>
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-sm font-bold">
+                      <span
+                        className="relative inline-flex h-6 w-6 overflow-hidden rounded-full border-2 border-white bg-white shadow-sm"
+                        aria-hidden="true"
+                      >
+                        <span className="absolute inset-x-0 top-0 h-1/2 bg-red-500" />
+                        <span className="absolute left-0 top-1/2 h-[2px] w-full bg-gray-950" />
+                        <span className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-gray-950 bg-white" />
+                      </span>
+                      <span className="tabular-nums">{unlockedPokedexCount}마리</span>
+                      <span className="text-white/70">
+                        도감 {selectedRegion.unlockRequiredPokedexCount}마리 필요
+                      </span>
+                    </div>
+                  </>
+                )}
               </div>
               <button
                 type="button"
-                disabled
-                className="min-h-10 rounded-lg bg-white px-4 py-2 text-sm font-black text-gray-950 opacity-45"
+                disabled={!selectedRegionUnlocked}
+                className="min-h-10 rounded-lg bg-white px-4 py-2 text-sm font-black text-gray-950 disabled:cursor-not-allowed disabled:opacity-45"
               >
-                탐색하기 준비 중
+                탐색하기
               </button>
             </div>
           )}
