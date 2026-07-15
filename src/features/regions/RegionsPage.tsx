@@ -41,7 +41,7 @@ const mapPoints: Record<string, MapPoint> = {
   "neon-city": {
     positionClassName: "left-[47%] top-[78%] sm:left-[47%] sm:top-[76%]",
     markerClassName: "bg-yellow-300 text-yellow-950",
-    shortLabel: "현대",
+    shortLabel: "도시",
   },
 };
 
