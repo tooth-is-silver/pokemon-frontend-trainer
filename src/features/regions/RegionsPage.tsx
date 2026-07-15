@@ -256,15 +256,15 @@ export default function RegionsPage() {
 
           {selectedRegion && isSearchOverlayOpen && (
             <div
-              className="absolute inset-0 z-20 flex items-center justify-center bg-gray-950/45 p-5 text-white backdrop-blur-[2px]"
+              className="absolute inset-0 z-20 flex items-center justify-center bg-gray-950/45 p-5 backdrop-blur-[2px]"
               role="status"
               aria-live="polite"
             >
-              <div className="flex h-80 w-full max-w-xs flex-col items-center justify-between gap-4 bg-gray-950/80 p-5 text-center shadow-2xl">
+              <div className="flex h-80 w-full max-w-xs flex-col items-center justify-between gap-4 bg-white p-5 text-center text-gray-950 shadow-2xl">
                 {isSearching && (
                   <>
                     <div>
-                      <p className="text-xs font-bold text-white/60">{selectedRegion.nameKo}</p>
+                      <p className="text-xs font-bold text-gray-500">{selectedRegion.nameKo}</p>
                       <img
                         src="/effects/search-magnifier.gif"
                         alt=""
@@ -296,7 +296,7 @@ export default function RegionsPage() {
                           </span>
                         </span>
                       </h2>
-                      <p className="mt-2 text-sm leading-6 text-white/75">
+                      <p className="mt-2 text-sm leading-6 text-gray-600">
                         {searchTarget ?? "주변을"} 살펴보는 중이에요.
                         <br />
                         잠깐만 기다려봐요.
@@ -305,7 +305,7 @@ export default function RegionsPage() {
                     <button
                       type="button"
                       onClick={handleCloseSearch}
-                      className="min-h-10 rounded-lg border border-white/30 px-4 py-2 text-sm font-bold text-white/90 transition-colors hover:bg-white/10"
+                      className="min-h-10 rounded-lg border border-gray-200 px-4 py-2 text-sm font-bold text-gray-700 transition-colors hover:bg-gray-100"
                     >
                       그만 찾기
                     </button>
@@ -315,12 +315,12 @@ export default function RegionsPage() {
                 {isSearchMissed && (
                   <>
                     <div>
-                      <p className="text-xs font-bold text-white/60">{selectedRegion.nameKo}</p>
-                      <div className="mx-auto mt-2 flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-white/45 bg-white/10 text-4xl">
+                      <p className="text-xs font-bold text-gray-500">{selectedRegion.nameKo}</p>
+                      <div className="mx-auto mt-2 flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-gray-300 bg-gray-100 text-4xl text-gray-500">
                         ?
                       </div>
                       <h2 className="mt-3 text-2xl font-black tracking-tight">놓쳤어요</h2>
-                      <p className="mt-2 text-sm leading-6 text-white/75">
+                      <p className="mt-2 text-sm leading-6 text-gray-600">
                         {searchTarget ?? "주변을"} 살펴봤지만
                         <br />
                         흔적을 찾지 못했어요.
@@ -330,14 +330,14 @@ export default function RegionsPage() {
                       <button
                         type="button"
                         onClick={handleStartSearch}
-                        className="min-h-10 rounded-lg bg-white px-3 py-2 text-sm font-black text-gray-950"
+                        className="min-h-10 rounded-lg bg-gray-950 px-3 py-2 text-sm font-black text-white"
                       >
                         다시 탐색
                       </button>
                       <button
                         type="button"
                         onClick={handleCloseSearch}
-                        className="min-h-10 rounded-lg border border-white/30 px-3 py-2 text-sm font-bold text-white/90 transition-colors hover:bg-white/10"
+                        className="min-h-10 rounded-lg border border-gray-200 px-3 py-2 text-sm font-bold text-gray-700 transition-colors hover:bg-gray-100"
                       >
                         지도 보기
                       </button>
@@ -348,7 +348,7 @@ export default function RegionsPage() {
                 {isSearchEncountered && (
                   <>
                     <div>
-                      <p className="text-xs font-bold text-white/60">{selectedRegion.nameKo}</p>
+                      <p className="text-xs font-bold text-gray-500">{selectedRegion.nameKo}</p>
                       {encounteredSpecies ? (
                         <img
                           src={getSpriteUrl(encounteredSpecies.dexNumber)}
@@ -368,7 +368,7 @@ export default function RegionsPage() {
                             )} 나타났다!`
                           : "앗! 야생 포켓몬이 나타났다!"}
                       </h2>
-                      <p className="mt-2 text-sm leading-6 text-white/75">
+                      <p className="mt-2 text-sm leading-6 text-gray-600">
                         문제를 맞히면
                         <br />
                         몬스터볼을 던질 수 있어요.
@@ -378,14 +378,14 @@ export default function RegionsPage() {
                       <button
                         type="button"
                         disabled
-                        className="min-h-10 rounded-lg bg-white px-3 py-2 text-sm font-black text-gray-950 disabled:cursor-not-allowed disabled:opacity-55"
+                        className="min-h-10 rounded-lg bg-gray-950 px-3 py-2 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-55"
                       >
                         문제 풀기 준비 중
                       </button>
                       <button
                         type="button"
                         onClick={handleCloseSearch}
-                        className="min-h-10 rounded-lg border border-white/30 px-3 py-2 text-sm font-bold text-white/90 transition-colors hover:bg-white/10"
+                        className="min-h-10 rounded-lg border border-gray-200 px-3 py-2 text-sm font-bold text-gray-700 transition-colors hover:bg-gray-100"
                       >
                         지도 보기
                       </button>
