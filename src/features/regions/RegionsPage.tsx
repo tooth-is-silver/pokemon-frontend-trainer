@@ -141,7 +141,7 @@ export default function RegionsPage() {
           })}
 
           {selectedRegion && (
-            <div className="absolute inset-x-3 bottom-3 z-20 flex flex-col gap-2 bg-gray-950/75 p-3 text-white shadow-lg backdrop-blur sm:inset-x-auto sm:left-3 sm:right-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="absolute inset-x-3 bottom-3 z-10 flex flex-col gap-2 bg-gray-950/75 p-3 text-white shadow-lg backdrop-blur sm:inset-x-auto sm:left-3 sm:right-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
                 {selectedRegionUnlocked ? (
                   <>
@@ -184,17 +184,11 @@ export default function RegionsPage() {
 
           {selectedRegion && isSearching && (
             <div
-              className="absolute inset-0 z-30 flex items-center justify-center bg-gray-950/45 p-5 text-white backdrop-blur-[2px]"
+              className="absolute inset-0 z-20 flex items-center justify-center bg-gray-950/45 p-5 text-white backdrop-blur-[2px]"
               role="status"
               aria-live="polite"
             >
               <div className="flex w-full max-w-xs flex-col items-center gap-4 bg-gray-950/80 p-5 text-center shadow-2xl">
-                <div className="relative h-20 w-20">
-                  <span className="absolute left-2 top-9 h-5 w-5 rounded-full bg-lime-300 shadow-lg motion-safe:animate-bounce" />
-                  <span className="absolute left-8 top-5 h-6 w-6 rounded-full bg-lime-400 shadow-lg motion-safe:animate-bounce [animation-delay:120ms]" />
-                  <span className="absolute right-2 top-10 h-5 w-5 rounded-full bg-lime-200 shadow-lg motion-safe:animate-bounce [animation-delay:240ms]" />
-                  <span className="absolute inset-x-3 bottom-3 h-3 rounded-full bg-black/25 blur-sm" />
-                </div>
                 <div>
                   <p className="text-xs font-bold text-white/60">{selectedRegion.nameKo}</p>
                   <h2 className="mt-1 text-2xl font-black tracking-tight">찾는 중...</h2>
