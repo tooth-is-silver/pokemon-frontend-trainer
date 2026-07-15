@@ -264,7 +264,9 @@ export default function RegionsPage() {
                         </span>
                       </h2>
                       <p className="mt-2 text-sm leading-6 text-white/75">
-                        {searchTarget ?? "주변을"} 살펴보고 있어요. 무언가 움직이는 것 같아요.
+                        {searchTarget ?? "주변을"} 살펴보는 중이에요.
+                        <br />
+                        잠깐만 기다려봐요.
                       </p>
                     </div>
                     <button
@@ -284,12 +286,11 @@ export default function RegionsPage() {
                       <div className="mx-auto mt-2 flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-white/45 bg-white/10 text-4xl">
                         ?
                       </div>
-                      <h2 className="mt-3 text-2xl font-black tracking-tight">
-                        포켓몬이 보이지 않아요
-                      </h2>
+                      <h2 className="mt-3 text-2xl font-black tracking-tight">놓쳤어요</h2>
                       <p className="mt-2 text-sm leading-6 text-white/75">
-                        {searchTarget ?? "주변을"} 살펴봤지만 아무 흔적도 찾지 못했어요. 다른 곳을
-                        살펴보거나 다시 탐색해봐요.
+                        {searchTarget ?? "주변을"} 살펴봤지만
+                        <br />
+                        흔적을 찾지 못했어요.
                       </p>
                     </div>
                     <div className="grid w-full grid-cols-2 gap-2">
