@@ -198,7 +198,19 @@ export default function RegionsPage() {
               <div className="flex w-full max-w-xs flex-col items-center gap-4 bg-gray-950/80 p-5 text-center shadow-2xl">
                 <div>
                   <p className="text-xs font-bold text-white/60">{selectedRegion.nameKo}</p>
-                  <h2 className="mt-1 text-2xl font-black tracking-tight">찾는 중...</h2>
+                  <h2 className="mt-1 text-2xl font-black tracking-tight">
+                    <span>찾는 중</span>
+                    <span className="sr-only">...</span>
+                    <span className="ml-0.5 inline-flex gap-0.5" aria-hidden="true">
+                      <span className="inline-block motion-safe:animate-bounce">.</span>
+                      <span className="inline-block motion-safe:animate-bounce [animation-delay:120ms]">
+                        .
+                      </span>
+                      <span className="inline-block motion-safe:animate-bounce [animation-delay:240ms]">
+                        .
+                      </span>
+                    </span>
+                  </h2>
                   <p className="mt-2 text-sm leading-6 text-white/75">
                     {searchTarget ?? "주변을"} 살펴보고 있어요. 무언가 움직이는 것 같아요.
                   </p>
