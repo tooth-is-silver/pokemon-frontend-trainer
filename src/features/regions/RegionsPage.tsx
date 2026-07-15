@@ -200,6 +200,13 @@ export default function RegionsPage() {
               <div className="flex w-full max-w-xs flex-col items-center gap-4 bg-gray-950/80 p-5 text-center shadow-2xl">
                 <div>
                   <p className="text-xs font-bold text-white/60">{selectedRegion.nameKo}</p>
+                  <img
+                    src="/effects/search-magnifier.gif"
+                    alt=""
+                    className="mx-auto mt-2 h-12 w-12 object-contain [image-rendering:pixelated]"
+                    aria-hidden="true"
+                    draggable={false}
+                  />
                   <h2 className="mt-1 text-2xl font-black tracking-tight">
                     <span>찾는 중</span>
                     <span className="sr-only">...</span>
