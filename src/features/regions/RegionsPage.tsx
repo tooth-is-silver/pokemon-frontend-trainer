@@ -214,10 +214,10 @@ export default function RegionsPage() {
                 <button
                   type="button"
                   onClick={handleStartSearch}
-                  disabled={!selectedRegionUnlocked || isSearching}
+                  disabled={!selectedRegionUnlocked || isSearchOverlayOpen}
                   className="min-h-10 rounded-lg bg-white px-4 py-2 text-sm font-black text-gray-950 disabled:cursor-not-allowed disabled:opacity-45"
                 >
-                  {isSearching ? "찾는 중" : "탐색하기"}
+                  탐색하기
                 </button>
               </div>
             )}
