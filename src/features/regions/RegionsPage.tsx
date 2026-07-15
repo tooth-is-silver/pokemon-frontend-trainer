@@ -319,11 +319,13 @@ export default function RegionsPage() {
                       <div className="mx-auto mt-2 flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-gray-300 bg-gray-100 text-4xl text-gray-500">
                         ?
                       </div>
-                      <h2 className="mt-3 text-2xl font-black tracking-tight">놓쳤어요</h2>
+                      <h2 className="mt-3 text-2xl font-black tracking-tight">
+                        포켓몬을 못 찾았어요
+                      </h2>
                       <p className="mt-2 text-sm leading-6 text-gray-600">
                         {searchTarget ?? "주변을"} 살펴봤지만
                         <br />
-                        흔적을 찾지 못했어요.
+                        포켓몬은 보이지 않았어요.
                       </p>
                     </div>
                     <div className="grid w-full grid-cols-2 gap-2">
