@@ -4,3 +4,15 @@ img {
   -webkit-user-drag: none;
   user-select: none;
 }
+
+@keyframes search-dot-wave {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-0.18em);
+  }
+}

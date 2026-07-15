@@ -203,20 +203,20 @@ export default function RegionsPage() {
                     <span className="sr-only">...</span>
                     <span className="ml-0.5 inline-flex gap-0.5" aria-hidden="true">
                       <span
-                        className="inline-block motion-safe:animate-bounce"
-                        style={{ animationDelay: "0ms", animationDuration: "900ms" }}
+                        className="inline-block motion-safe:animate-[search-dot-wave_900ms_ease-in-out_infinite]"
+                        style={{ animationDelay: "0ms" }}
                       >
                         .
                       </span>
                       <span
-                        className="inline-block motion-safe:animate-bounce"
-                        style={{ animationDelay: "160ms", animationDuration: "900ms" }}
+                        className="inline-block motion-safe:animate-[search-dot-wave_900ms_ease-in-out_infinite]"
+                        style={{ animationDelay: "160ms" }}
                       >
                         .
                       </span>
                       <span
-                        className="inline-block motion-safe:animate-bounce"
-                        style={{ animationDelay: "320ms", animationDuration: "900ms" }}
+                        className="inline-block motion-safe:animate-[search-dot-wave_900ms_ease-in-out_infinite]"
+                        style={{ animationDelay: "320ms" }}
                       >
                         .
                       </span>
