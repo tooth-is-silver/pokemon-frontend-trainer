@@ -125,58 +125,60 @@ export default function RegionsPage() {
           aria-label="포켓몬 탐험 지역 지도"
         >
           <div className="absolute inset-0">
-            <img
-              src="/maps/region-map-mobile.png"
-              alt=""
-              className="absolute inset-x-0 top-0 block h-[78%] w-full object-cover object-top [image-rendering:pixelated] sm:hidden"
-              draggable={false}
-              loading="eager"
-              decoding="async"
-            />
-            <img
-              src="/maps/region-map-desktop.png"
-              alt=""
-              className="absolute inset-0 hidden h-full w-full object-cover [image-rendering:pixelated] sm:block"
-              draggable={false}
-              loading="eager"
-              decoding="async"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-white/0 via-white/0 to-black/10" />
+            <div className="absolute inset-x-0 top-0 h-[78%] sm:inset-0 sm:h-full">
+              <img
+                src="/maps/region-map-mobile.png"
+                alt=""
+                className="absolute inset-0 block h-full w-full object-cover object-top [image-rendering:pixelated] sm:hidden"
+                draggable={false}
+                loading="eager"
+                decoding="async"
+              />
+              <img
+                src="/maps/region-map-desktop.png"
+                alt=""
+                className="absolute inset-0 hidden h-full w-full object-cover [image-rendering:pixelated] sm:block"
+                draggable={false}
+                loading="eager"
+                decoding="async"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-white/0 via-white/0 to-black/10" />
 
-            {regions.map((region) => {
-              const unlocked = isRegionUnlocked(region, unlockedPokedexCount);
-              const selected = selectedRegionId === region.regionId;
-              const mapPoint = mapPoints[region.regionId];
-              const remainingCount = Math.max(
-                region.unlockRequiredPokedexCount - unlockedPokedexCount,
-                0,
-              );
+              {regions.map((region) => {
+                const unlocked = isRegionUnlocked(region, unlockedPokedexCount);
+                const selected = selectedRegionId === region.regionId;
+                const mapPoint = mapPoints[region.regionId];
+                const remainingCount = Math.max(
+                  region.unlockRequiredPokedexCount - unlockedPokedexCount,
+                  0,
+                );
 
-              return (
-                <button
-                  key={region.regionId}
-                  type="button"
-                  onClick={() => handleSelectRegion(region.regionId)}
-                  aria-pressed={selected}
-                  aria-disabled={!unlocked}
-                  aria-label={
-                    unlocked
-                      ? `${region.nameKo} 지역 선택`
-                      : `${region.nameKo} 지역 잠김, 도감 ${remainingCount}마리 더 필요`
-                  }
-                  className={`absolute z-10 flex min-h-10 -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-xl border-2 border-white/90 px-2.5 py-1.5 text-[11px] font-black shadow-md transition-colors focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-gray-950 ${mapPoint.positionClassName} ${mapPoint.markerClassName} ${
-                    selected
-                      ? `region-marker-selected ${mapPoint.selectedClassName} ring-2 ring-white/90`
-                      : ""
-                  } ${unlocked ? "" : "opacity-65 grayscale"}`}
-                >
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/85 text-xs shadow-inner">
-                    {unlocked ? "●" : "×"}
-                  </span>
-                  <span>{mapPoint.shortLabel}</span>
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    key={region.regionId}
+                    type="button"
+                    onClick={() => handleSelectRegion(region.regionId)}
+                    aria-pressed={selected}
+                    aria-disabled={!unlocked}
+                    aria-label={
+                      unlocked
+                        ? `${region.nameKo} 지역 선택`
+                        : `${region.nameKo} 지역 잠김, 도감 ${remainingCount}마리 더 필요`
+                    }
+                    className={`absolute z-10 flex min-h-10 -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-xl border-2 border-white/90 px-2.5 py-1.5 text-[11px] font-black shadow-md transition-colors focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-gray-950 ${mapPoint.positionClassName} ${mapPoint.markerClassName} ${
+                      selected
+                        ? `region-marker-selected ${mapPoint.selectedClassName} ring-2 ring-white/90`
+                        : ""
+                    } ${unlocked ? "" : "opacity-65 grayscale"}`}
+                  >
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/85 text-xs shadow-inner">
+                      {unlocked ? "●" : "×"}
+                    </span>
+                    <span>{mapPoint.shortLabel}</span>
+                  </button>
+                );
+              })}
+            </div>
 
             {selectedRegion && (
               <div className="absolute inset-x-3 bottom-3 z-10 flex flex-col gap-2 bg-gray-950/75 p-3 text-white shadow-lg backdrop-blur sm:inset-x-auto sm:left-3 sm:right-3 sm:flex-row sm:items-center sm:justify-between">
