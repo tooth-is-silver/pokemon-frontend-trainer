@@ -85,7 +85,7 @@ export default function RegionsPage() {
 
   return (
     <div className="min-h-screen bg-white px-3 py-4 text-gray-950 sm:px-5">
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-2">
+      <main className="mx-auto flex w-full max-w-4xl flex-col gap-2">
         <header className="flex justify-center">
           <h1 className="text-center text-xl font-black tracking-[0.45em] text-gray-950 sm:text-2xl">
             탐 험 지 도
@@ -93,7 +93,7 @@ export default function RegionsPage() {
         </header>
 
         <section
-          className="relative aspect-[1161/1355] overflow-hidden rounded-2xl bg-[#0477c7] shadow-lg sm:aspect-[4/3]"
+          className="relative aspect-[5/6] overflow-hidden rounded-2xl bg-[#0477c7] shadow-lg sm:aspect-square"
           aria-label="포켓몬 탐험 지역 지도"
         >
           <img
