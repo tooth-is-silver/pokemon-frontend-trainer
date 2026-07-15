@@ -26,22 +26,22 @@ const mapPoints: Record<string, MapPoint> = {
   "ashen-mountain": {
     positionClassName: "left-[65%] top-[23%] sm:left-[69%] sm:top-[21%]",
     markerClassName: "bg-orange-300 text-orange-950",
-    shortLabel: "화산",
+    shortLabel: "용암",
   },
   "ghost-town": {
     positionClassName: "left-[21%] top-[48%] sm:left-[19%] sm:top-[51%]",
     markerClassName: "bg-violet-300 text-violet-950",
-    shortLabel: "고스트",
+    shortLabel: "폐허",
   },
   "sky-garden": {
     positionClassName: "left-[31%] top-[23%] sm:left-[30%] sm:top-[23%]",
     markerClassName: "bg-sky-200 text-sky-950",
-    shortLabel: "하늘",
+    shortLabel: "궁전",
   },
   "neon-city": {
     positionClassName: "left-[47%] top-[78%] sm:left-[47%] sm:top-[76%]",
     markerClassName: "bg-yellow-300 text-yellow-950",
-    shortLabel: "도시",
+    shortLabel: "현대",
   },
 };
 
