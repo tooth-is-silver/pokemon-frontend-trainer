@@ -30,9 +30,9 @@ export default function StarterPage() {
     return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
   }
 
-  // 이미 스타터를 선택했으면 학습 화면으로
+  // 이미 스타터를 선택했으면 지역 화면으로
   if (starterChosen) {
-    return <Navigate to="/learn" replace />;
+    return <Navigate to="/regions" replace />;
   }
 
   const handleSelect = async (species: PokemonSpecies) => {
@@ -42,7 +42,7 @@ export default function StarterPage() {
 
     try {
       await chooseStarter(species.speciesId);
-      navigate("/learn");
+      navigate("/regions");
     } catch (error) {
       console.error("스타터 선택 실패:", error);
       setSelecting(false);

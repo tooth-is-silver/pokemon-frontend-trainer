@@ -164,9 +164,28 @@ type PokemonSpecies = {
 getSpriteUrl(dexNumber: number) => `/sprites/${dexNumber}.png`
 ```
 
-## 5. Game State
+## 5. Region Data
 
-### 5.1 Root State
+```ts
+type Region = {
+  regionId: string;
+  nameKo: string;
+  terrainLabel: string;
+  description: string;
+  unlockRequiredPokedexCount: number;
+  encounterRatePercent: number;
+  habitatSummary: string;
+  accentClassName: string;
+};
+```
+
+- 지역 해금은 현재 도감 등록 수(`pokedex.unlockedSpeciesIds.length`)로 계산한다.
+- 지역 데이터는 `src/content/regions/index.ts`에서 관리한다.
+- 현재 단계에서는 DB에 지역 선택 상태를 저장하지 않는다.
+
+## 6. Game State
+
+### 6.1 Root State
 
 ```ts
 type AppState = {
@@ -178,7 +197,7 @@ type AppState = {
 };
 ```
 
-### 5.2 Trainer
+### 6.2 Trainer
 
 ```ts
 type TrainerState = {
@@ -187,7 +206,7 @@ type TrainerState = {
 };
 ```
 
-### 5.3 Party
+### 6.3 Party
 
 ```ts
 type PokemonInstance = {
@@ -207,7 +226,7 @@ type PartyState = {
 };
 ```
 
-### 5.4 Pokedex
+### 6.4 Pokedex
 
 ```ts
 type PokedexState = {
@@ -216,7 +235,7 @@ type PokedexState = {
 };
 ```
 
-### 5.5 Progression
+### 6.5 Progression
 
 ```ts
 type ProgressionState = {
@@ -231,7 +250,7 @@ type ProgressionState = {
 - `pendingGraduationInstanceId` 가 세팅되면 학습 화면이 졸업 모달을 띄운다. 뮤 졸업 시점에는 모달 대신 엔딩 화면으로 분기한다.
 - `isEnding` 은 `complete_ending` RPC 가 갱신한다. 한 번 `true` 가 되면 학습 화면이 엔딩 화면을 표시한다.
 
-### 5.6 Session
+### 6.6 Session
 
 `session`은 프론트 전용 상태다.
 
@@ -243,7 +262,7 @@ type SessionState = {
 };
 ```
 
-### 5.7 Auth
+### 6.7 Auth
 
 ```ts
 type AuthState = {
@@ -252,7 +271,7 @@ type AuthState = {
 };
 ```
 
-### 5.8 RPC Result
+### 6.8 RPC Result
 
 ```ts
 type ProcessAnswerResult = {

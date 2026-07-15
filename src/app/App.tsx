@@ -10,6 +10,7 @@ const Landing = lazy(() => import("@/features/landing/LandingPage"));
 const Starter = lazy(() => import("@/features/starter/StarterPage"));
 const Learn = lazy(() => import("@/features/learn/LearnPage"));
 const Pokedex = lazy(() => import("@/features/pokedex/PokedexPage"));
+const Regions = lazy(() => import("@/features/regions/RegionsPage"));
 
 function preventNativeDrag(event: DragEvent) {
   event.preventDefault();
@@ -65,6 +66,7 @@ export function App() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/starter" element={<Starter />} />
+            <Route path="/regions" element={<Regions />} />
             <Route path="/learn" element={<Learn />} />
             <Route path="/pokedex" element={<Pokedex />} />
             {import.meta.env.DEV && devRoutes}

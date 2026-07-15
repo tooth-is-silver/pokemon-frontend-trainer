@@ -4,6 +4,7 @@
 
 - 메인 화면 (랜딩)
 - 스타터 선택 화면
+- 지역 화면
 - 학습 화면
 - 진화 모달
 - 졸업 모달
@@ -19,7 +20,7 @@
 - 로그인 버튼 (OAuth)
 - 로그인 완료 시:
   - 스타터 미선택 → `/starter`로 이동
-  - 스타터 선택 완료 → `/learn`으로 이동
+  - 스타터 선택 완료 → `/regions`로 이동
 
 ## 3. Starter Selection
 
@@ -28,7 +29,31 @@
 - 선택 즉시 첫 포켓몬 instance 생성
 - 도감 등록
 
-## 4. Learning Screen
+## 4. Region Screen
+
+표시 요소:
+
+- 전체 지역 카드 6개
+- 각 지역의 지형, 설명, 예상 서식지
+- 조우 확률 기본값 `50%`
+- 도감 등록 수 기준 해금 조건
+- 선택한 지역 요약
+
+지역 해금:
+
+- `새싹 평원`: 기본 해금
+- `물안개 해안`: 도감 5마리
+- `잿빛 바위산`: 도감 12마리
+- `달그림자 마을`: 도감 20마리
+- `하늘 정원`: 도감 35마리
+- `네온 시티`: 도감 50마리
+
+다음 단계:
+
+- 선택한 지역의 `탐색하기` 버튼에서 50% 조우 판정을 실행한다.
+- 조우 성공 시 문제 풀이와 몬스터볼 포획 플로우로 진입한다.
+
+## 5. Learning Screen
 
 표시 요소:
 
@@ -56,7 +81,7 @@
 - 하단에 정답, 해설, 출처 링크 표시
 - 이후 다음 문제 이동
 
-## 5. Evolution Flow
+## 6. Evolution Flow
 
 1. 진화 가능 상태 감지
 2. 진화 모달 표시
@@ -65,7 +90,7 @@
 5. 진화체 도감 등록
 6. 학습 화면 복귀
 
-## 6. Graduation Flow
+## 7. Graduation Flow
 
 1. 졸업 트리거
    - 다단 진화 종: 최종 진화체에서 EXP 100 도달
@@ -87,7 +112,7 @@
   - 도감 등록은 진화체 단위.
   - 도감 미완성 분기가 남아 있으면 졸업 모달 후보 풀에 이브이가 다시 등장한다.
 
-## 7. Legendary Flow
+## 8. Legendary Flow
 
 1. 일반 1세대 도감 완성 (전설 5종 제외 146마리)
 2. 전설 wave 1 자동 진입: 프리저/썬더/파이어 후보 풀 (3 → 2 → 1)
@@ -96,7 +121,7 @@
 4. 뮤츠 졸업 → wave 3으로 전환 (뮤 단독, 자동 해금)
 5. 뮤 졸업 → 엔딩
 
-## 8. Pokedex Screen
+## 9. Pokedex Screen
 
 - 1세대 도감 번호 (1~151)
 - 획득/미획득 표시 (미획득은 실루엣)
@@ -104,9 +129,10 @@
 - 전설 해금 단계 안내 배너
 - 일반 도감 완성률 / 전체 도감 진행률
 
-## 9. Recommended Navigation
+## 10. Recommended Navigation
 
 - `/starter`
+- `/regions`
 - `/learn`
 - `/pokedex`
 
@@ -115,7 +141,7 @@
 - `evolution-modal`
 - `graduation-modal`
 
-## 10. UI Component Structure
+## 11. UI Component Structure
 
 ```text
 src/
@@ -135,4 +161,7 @@ src/
     pokedex/
       PokedexGrid.tsx
       PokedexCard.tsx
+  features/
+    regions/
+      RegionsPage.tsx
 ```

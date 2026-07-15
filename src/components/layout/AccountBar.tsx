@@ -14,6 +14,7 @@ export function AccountBar() {
   if (authLoading || !userId) return null;
 
   const learnActive = location.pathname.startsWith("/learn");
+  const regionsActive = location.pathname.startsWith("/regions");
   const pokedexActive = location.pathname.startsWith("/pokedex");
 
   const handleSignOut = async () => {
@@ -40,6 +41,13 @@ export function AccountBar() {
         </div>
 
         <nav className="flex flex-wrap items-center gap-2 text-sm font-semibold">
+          <Link
+            to="/regions"
+            aria-current={regionsActive ? "page" : undefined}
+            className="rounded-full border border-gray-200 px-3 py-2 text-gray-700 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 aria-[current=page]:border-blue-200 aria-[current=page]:bg-blue-50 aria-[current=page]:text-blue-700"
+          >
+            지역
+          </Link>
           <Link
             to="/learn"
             aria-current={learnActive ? "page" : undefined}

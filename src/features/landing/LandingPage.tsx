@@ -130,7 +130,7 @@ export default function LandingPage() {
     return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
   }
 
-  if (userId && starterChosen) return <Navigate to="/learn" replace />;
+  if (userId && starterChosen) return <Navigate to="/regions" replace />;
   if (userId) return <Navigate to="/starter" replace />;
 
   const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
