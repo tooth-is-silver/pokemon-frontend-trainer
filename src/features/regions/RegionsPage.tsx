@@ -53,6 +53,7 @@ export default function RegionsPage() {
   const unlockedSpeciesIds = useGameStore((s) => s.pokedex.unlockedSpeciesIds);
   const [selectedRegionId, setSelectedRegionId] = useState(initialRegionId);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchTarget, setSearchTarget] = useState<string | null>(null);
 
   if (authLoading || !loaded) {
     return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
@@ -69,10 +70,16 @@ export default function RegionsPage() {
   const handleSelectRegion = (regionId: string) => {
     setSelectedRegionId(regionId);
     setIsSearching(false);
+    setSearchTarget(null);
   };
 
   const handleStartSearch = () => {
-    if (!selectedRegionUnlocked) return;
+    if (!selectedRegion || !selectedRegionUnlocked) return;
+
+    const nextTarget =
+      selectedRegion.searchTargets[Math.floor(Math.random() * selectedRegion.searchTargets.length)];
+
+    setSearchTarget(nextTarget);
     setIsSearching(true);
   };
 
@@ -193,12 +200,15 @@ export default function RegionsPage() {
                   <p className="text-xs font-bold text-white/60">{selectedRegion.nameKo}</p>
                   <h2 className="mt-1 text-2xl font-black tracking-tight">찾는 중...</h2>
                   <p className="mt-2 text-sm leading-6 text-white/75">
-                    풀숲을 살피고 있어요. 무언가 움직이는 것 같아요.
+                    {searchTarget ?? "주변을"} 살펴보고 있어요. 무언가 움직이는 것 같아요.
                   </p>
                 </div>
                 <button
                   type="button"
-                  onClick={() => setIsSearching(false)}
+                  onClick={() => {
+                    setIsSearching(false);
+                    setSearchTarget(null);
+                  }}
                   className="min-h-10 rounded-lg border border-white/30 px-4 py-2 text-sm font-bold text-white/90 transition-colors hover:bg-white/10"
                 >
                   그만 찾기

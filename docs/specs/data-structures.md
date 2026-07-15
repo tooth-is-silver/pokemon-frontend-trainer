@@ -175,6 +175,7 @@ type Region = {
   unlockRequiredPokedexCount: number;
   encounterRatePercent: number;
   habitatSummary: string;
+  searchTargets: string[];
   accentClassName: string;
 };
 ```

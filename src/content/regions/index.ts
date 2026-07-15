@@ -6,6 +6,7 @@ export interface Region {
   unlockRequiredPokedexCount: number;
   encounterRatePercent: number;
   habitatSummary: string;
+  searchTargets: string[];
   accentClassName: string;
 }
 
@@ -18,6 +19,7 @@ export const regions: Region[] = [
     unlockRequiredPokedexCount: 0,
     encounterRatePercent: 50,
     habitatSummary: "풀숲, 들판, 초반 포켓몬",
+    searchTargets: ["풀숲을", "나무 그늘을", "작은 바위를"],
     accentClassName: "from-lime-200 via-emerald-100 to-sky-100 border-lime-200",
   },
   {
@@ -28,6 +30,7 @@ export const regions: Region[] = [
     unlockRequiredPokedexCount: 5,
     encounterRatePercent: 50,
     habitatSummary: "해안, 강가, 물 타입 포켓몬",
+    searchTargets: ["모래사장을", "부둣가를", "얕은 물가를"],
     accentClassName: "from-cyan-200 via-blue-100 to-white border-cyan-200",
   },
   {
@@ -38,6 +41,7 @@ export const regions: Region[] = [
     unlockRequiredPokedexCount: 12,
     encounterRatePercent: 50,
     habitatSummary: "화산, 용암 동굴, 불꽃·바위 포켓몬",
+    searchTargets: ["동굴 입구를", "검은 바위를", "용암길을"],
     accentClassName: "from-stone-300 via-orange-100 to-amber-50 border-stone-300",
   },
   {
@@ -48,6 +52,7 @@ export const regions: Region[] = [
     unlockRequiredPokedexCount: 20,
     encounterRatePercent: 50,
     habitatSummary: "폐건물, 묘지, 고스트 포켓몬",
+    searchTargets: ["낡은 저택을", "묘지 주변을", "부서진 골목을"],
     accentClassName: "from-violet-200 via-slate-200 to-indigo-100 border-violet-200",
   },
   {
@@ -58,6 +63,7 @@ export const regions: Region[] = [
     unlockRequiredPokedexCount: 35,
     encounterRatePercent: 50,
     habitatSummary: "설원, 얼음 성, 수정 동굴",
+    searchTargets: ["얼음 계단을", "수정 기둥을", "눈 덮인 정원을"],
     accentClassName: "from-sky-200 via-indigo-100 to-white border-sky-200",
   },
   {
@@ -68,6 +74,7 @@ export const regions: Region[] = [
     unlockRequiredPokedexCount: 50,
     encounterRatePercent: 50,
     habitatSummary: "도로, 연구소, 전기·도시형 포켓몬",
+    searchTargets: ["네온 골목을", "연구소 주변을", "전기 타워를"],
     accentClassName: "from-yellow-200 via-rose-100 to-blue-100 border-yellow-200",
   },
 ];
