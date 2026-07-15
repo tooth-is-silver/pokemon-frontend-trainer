@@ -16,3 +16,47 @@ img {
     transform: translateY(-0.18em);
   }
 }
+
+.region-marker-selected {
+  border-color: transparent;
+  box-shadow:
+    0 0 0 2px rgb(255 255 255 / 0.85),
+    0 0 18px rgb(250 204 21 / 0.75),
+    0 10px 24px rgb(15 23 42 / 0.35);
+}
+
+.region-marker-selected::before {
+  position: absolute;
+  inset: -5px;
+  padding: 3px;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(120deg, #fde047, #ffffff, #38bdf8, #a3e635, #fde047);
+  background-size: 240% 240%;
+  border-radius: 1rem;
+  animation: region-marker-border-shimmer 1.6s linear infinite;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+@keyframes region-marker-border-shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 240% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .region-marker-selected::before {
+    animation: none;
+  }
+}

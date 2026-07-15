@@ -137,7 +137,7 @@ export default function RegionsPage() {
                       : `${region.nameKo} 지역 잠김, 도감 ${remainingCount}마리 더 필요`
                   }
                   className={`absolute z-10 flex min-h-10 -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-xl border-2 border-white/90 px-2.5 py-1.5 text-[11px] font-black shadow-md transition-colors focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-gray-950 ${mapPoint.positionClassName} ${mapPoint.markerClassName} ${
-                    selected ? "ring-2 ring-gray-950/70" : ""
+                    selected ? "region-marker-selected ring-2 ring-white/90" : ""
                   } ${unlocked ? "" : "opacity-65 grayscale"}`}
                 >
                   <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/85 text-xs shadow-inner">
