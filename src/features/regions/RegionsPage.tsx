@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { regions, isRegionUnlocked } from "@/content/regions";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -11,7 +11,10 @@ interface MapPoint {
   shortLabel: string;
 }
 
+type SearchStatus = "idle" | "searching" | "missed";
+
 const initialRegionId = regions[0]?.regionId ?? "";
+const SEARCH_RESULT_DELAY_MS = 1400;
 
 const mapPoints: Record<string, MapPoint> = {
   "sprout-field": {
@@ -59,8 +62,27 @@ export default function RegionsPage() {
   const starterChosen = useGameStore((s) => s.trainer.starterChosen);
   const unlockedSpeciesIds = useGameStore((s) => s.pokedex.unlockedSpeciesIds);
   const [selectedRegionId, setSelectedRegionId] = useState(initialRegionId);
-  const [isSearching, setIsSearching] = useState(false);
+  const [searchStatus, setSearchStatus] = useState<SearchStatus>("idle");
   const [searchTarget, setSearchTarget] = useState<string | null>(null);
+
+  const unlockedPokedexCount = unlockedSpeciesIds.length;
+  const selectedRegion = regions.find((region) => region.regionId === selectedRegionId);
+  const selectedRegionUnlocked = selectedRegion
+    ? isRegionUnlocked(selectedRegion, unlockedPokedexCount)
+    : false;
+  const isSearchOverlayOpen = searchStatus !== "idle";
+  const isSearching = searchStatus === "searching";
+  const isSearchMissed = searchStatus === "missed";
+
+  useEffect(() => {
+    if (!isSearching) return;
+
+    const timeoutId = window.setTimeout(() => {
+      setSearchStatus("missed");
+    }, SEARCH_RESULT_DELAY_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [isSearching]);
 
   if (authLoading || !loaded) {
     return <div className="flex min-h-screen items-center justify-center">로딩 중...</div>;
@@ -68,15 +90,9 @@ export default function RegionsPage() {
   if (!userId) return <Navigate to="/" replace />;
   if (!starterChosen) return <Navigate to="/starter" replace />;
 
-  const unlockedPokedexCount = unlockedSpeciesIds.length;
-  const selectedRegion = regions.find((region) => region.regionId === selectedRegionId);
-  const selectedRegionUnlocked = selectedRegion
-    ? isRegionUnlocked(selectedRegion, unlockedPokedexCount)
-    : false;
-
   const handleSelectRegion = (regionId: string) => {
     setSelectedRegionId(regionId);
-    setIsSearching(false);
+    setSearchStatus("idle");
     setSearchTarget(null);
   };
 
@@ -87,7 +103,12 @@ export default function RegionsPage() {
       selectedRegion.searchTargets[Math.floor(Math.random() * selectedRegion.searchTargets.length)];
 
     setSearchTarget(nextTarget);
-    setIsSearching(true);
+    setSearchStatus("searching");
+  };
+
+  const handleCloseSearch = () => {
+    setSearchStatus("idle");
+    setSearchTarget(null);
   };
 
   return (
@@ -200,60 +221,95 @@ export default function RegionsPage() {
             )}
           </div>
 
-          {selectedRegion && isSearching && (
+          {selectedRegion && isSearchOverlayOpen && (
             <div
               className="absolute inset-0 z-20 flex items-center justify-center bg-gray-950/45 p-5 text-white backdrop-blur-[2px]"
               role="status"
               aria-live="polite"
             >
               <div className="flex w-full max-w-xs flex-col items-center gap-4 bg-gray-950/80 p-5 text-center shadow-2xl">
-                <div>
-                  <p className="text-xs font-bold text-white/60">{selectedRegion.nameKo}</p>
-                  <img
-                    src="/effects/search-magnifier.gif"
-                    alt=""
-                    className="mx-auto mt-2 h-20 w-20 object-contain [image-rendering:pixelated]"
-                    aria-hidden="true"
-                    draggable={false}
-                  />
-                  <h2 className="mt-1 text-2xl font-black tracking-tight">
-                    <span>찾는 중</span>
-                    <span className="sr-only">...</span>
-                    <span className="ml-0.5 inline-flex gap-0.5" aria-hidden="true">
-                      <span
-                        className="inline-block motion-safe:animate-[search-dot-wave_900ms_ease-in-out_infinite]"
-                        style={{ animationDelay: "0ms" }}
+                {isSearching && (
+                  <>
+                    <div>
+                      <p className="text-xs font-bold text-white/60">{selectedRegion.nameKo}</p>
+                      <img
+                        src="/effects/search-magnifier.gif"
+                        alt=""
+                        className="mx-auto mt-2 h-20 w-20 object-contain [image-rendering:pixelated]"
+                        aria-hidden="true"
+                        draggable={false}
+                      />
+                      <h2 className="mt-1 text-2xl font-black tracking-tight">
+                        <span>찾는 중</span>
+                        <span className="sr-only">...</span>
+                        <span className="ml-0.5 inline-flex gap-0.5" aria-hidden="true">
+                          <span
+                            className="inline-block motion-safe:animate-[search-dot-wave_900ms_ease-in-out_infinite]"
+                            style={{ animationDelay: "0ms" }}
+                          >
+                            .
+                          </span>
+                          <span
+                            className="inline-block motion-safe:animate-[search-dot-wave_900ms_ease-in-out_infinite]"
+                            style={{ animationDelay: "160ms" }}
+                          >
+                            .
+                          </span>
+                          <span
+                            className="inline-block motion-safe:animate-[search-dot-wave_900ms_ease-in-out_infinite]"
+                            style={{ animationDelay: "320ms" }}
+                          >
+                            .
+                          </span>
+                        </span>
+                      </h2>
+                      <p className="mt-2 text-sm leading-6 text-white/75">
+                        {searchTarget ?? "주변을"} 살펴보고 있어요. 무언가 움직이는 것 같아요.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleCloseSearch}
+                      className="min-h-10 rounded-lg border border-white/30 px-4 py-2 text-sm font-bold text-white/90 transition-colors hover:bg-white/10"
+                    >
+                      그만 찾기
+                    </button>
+                  </>
+                )}
+
+                {isSearchMissed && (
+                  <>
+                    <div>
+                      <p className="text-xs font-bold text-white/60">{selectedRegion.nameKo}</p>
+                      <div className="mx-auto mt-2 flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-white/45 bg-white/10 text-4xl">
+                        ?
+                      </div>
+                      <h2 className="mt-3 text-2xl font-black tracking-tight">
+                        포켓몬이 보이지 않아요
+                      </h2>
+                      <p className="mt-2 text-sm leading-6 text-white/75">
+                        {searchTarget ?? "주변을"} 살펴봤지만 아무 흔적도 찾지 못했어요. 다른 곳을
+                        살펴보거나 다시 탐색해봐요.
+                      </p>
+                    </div>
+                    <div className="grid w-full grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={handleStartSearch}
+                        className="min-h-10 rounded-lg bg-white px-3 py-2 text-sm font-black text-gray-950"
                       >
-                        .
-                      </span>
-                      <span
-                        className="inline-block motion-safe:animate-[search-dot-wave_900ms_ease-in-out_infinite]"
-                        style={{ animationDelay: "160ms" }}
+                        다시 탐색
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleCloseSearch}
+                        className="min-h-10 rounded-lg border border-white/30 px-3 py-2 text-sm font-bold text-white/90 transition-colors hover:bg-white/10"
                       >
-                        .
-                      </span>
-                      <span
-                        className="inline-block motion-safe:animate-[search-dot-wave_900ms_ease-in-out_infinite]"
-                        style={{ animationDelay: "320ms" }}
-                      >
-                        .
-                      </span>
-                    </span>
-                  </h2>
-                  <p className="mt-2 text-sm leading-6 text-white/75">
-                    {searchTarget ?? "주변을"} 살펴보고 있어요. 무언가 움직이는 것 같아요.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsSearching(false);
-                    setSearchTarget(null);
-                  }}
-                  className="min-h-10 rounded-lg border border-white/30 px-4 py-2 text-sm font-bold text-white/90 transition-colors hover:bg-white/10"
-                >
-                  그만 찾기
-                </button>
+                        지도 보기
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           )}
