@@ -121,14 +121,14 @@ export default function RegionsPage() {
         </header>
 
         <section
-          className="relative aspect-[5/6] overflow-hidden rounded-2xl bg-[#0477c7] shadow-lg sm:aspect-[4/3]"
+          className="relative aspect-[2/3] overflow-hidden rounded-2xl bg-[#015bb9] shadow-lg sm:aspect-[4/3] sm:bg-[#0477c7]"
           aria-label="포켓몬 탐험 지역 지도"
         >
           <div className="absolute inset-0">
             <img
               src="/maps/region-map-mobile.png"
               alt=""
-              className="absolute inset-0 block h-full w-full object-cover [image-rendering:pixelated] sm:hidden"
+              className="absolute inset-x-0 top-0 block h-[78%] w-full object-cover object-top [image-rendering:pixelated] sm:hidden"
               draggable={false}
               loading="eager"
               decoding="async"
