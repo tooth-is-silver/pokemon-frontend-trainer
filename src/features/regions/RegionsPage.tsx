@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
+import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
+import { getSpriteUrl } from "@/content/pokemon/types";
 import { regions, isRegionUnlocked } from "@/content/regions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
@@ -15,6 +17,7 @@ type SearchStatus = "idle" | "searching" | "missed" | "encountered";
 
 const initialRegionId = regions[0]?.regionId ?? "";
 const SEARCH_RESULT_DELAY_MS = 1400;
+const encounterSpeciesPool = getAllSpecies();
 
 const mapPoints: Record<string, MapPoint> = {
   "sprout-field": {
@@ -55,6 +58,23 @@ const mapPoints: Record<string, MapPoint> = {
   },
 };
 
+function pickRandomEncounterSpecies() {
+  return encounterSpeciesPool[Math.floor(Math.random() * encounterSpeciesPool.length)] ?? null;
+}
+
+function getSubjectParticle(value: string) {
+  const lastChar = value.at(-1);
+  if (!lastChar) return "가";
+
+  const codePoint = lastChar.charCodeAt(0);
+  const hangulStart = 0xac00;
+  const hangulEnd = 0xd7a3;
+
+  if (codePoint < hangulStart || codePoint > hangulEnd) return "가";
+
+  return (codePoint - hangulStart) % 28 === 0 ? "가" : "이";
+}
+
 export default function RegionsPage() {
   const userId = useAuthStore((s) => s.userId);
   const authLoading = useAuthStore((s) => s.loading);
@@ -64,6 +84,7 @@ export default function RegionsPage() {
   const [selectedRegionId, setSelectedRegionId] = useState(initialRegionId);
   const [searchStatus, setSearchStatus] = useState<SearchStatus>("idle");
   const [searchTarget, setSearchTarget] = useState<string | null>(null);
+  const [encounteredSpeciesId, setEncounteredSpeciesId] = useState<string | null>(null);
 
   const unlockedPokedexCount = unlockedSpeciesIds.length;
   const selectedRegion = regions.find((region) => region.regionId === selectedRegionId);
@@ -75,13 +96,16 @@ export default function RegionsPage() {
   const isSearchMissed = searchStatus === "missed";
   const isSearchEncountered = searchStatus === "encountered";
   const encounterRatePercent = selectedRegion?.encounterRatePercent ?? 0;
+  const encounteredSpecies = encounteredSpeciesId ? findSpeciesById(encounteredSpeciesId) : null;
 
   useEffect(() => {
     if (!isSearching) return;
 
     const timeoutId = window.setTimeout(() => {
       const succeeded = Math.random() * 100 < encounterRatePercent;
+      const nextEncounteredSpecies = succeeded ? pickRandomEncounterSpecies() : null;
 
+      setEncounteredSpeciesId(nextEncounteredSpecies?.speciesId ?? null);
       setSearchStatus(succeeded ? "encountered" : "missed");
     }, SEARCH_RESULT_DELAY_MS);
 
@@ -98,6 +122,7 @@ export default function RegionsPage() {
     setSelectedRegionId(regionId);
     setSearchStatus("idle");
     setSearchTarget(null);
+    setEncounteredSpeciesId(null);
   };
 
   const handleStartSearch = () => {
@@ -107,12 +132,14 @@ export default function RegionsPage() {
       selectedRegion.searchTargets[Math.floor(Math.random() * selectedRegion.searchTargets.length)];
 
     setSearchTarget(nextTarget);
+    setEncounteredSpeciesId(null);
     setSearchStatus("searching");
   };
 
   const handleCloseSearch = () => {
     setSearchStatus("idle");
     setSearchTarget(null);
+    setEncounteredSpeciesId(null);
   };
 
   return (
@@ -322,14 +349,29 @@ export default function RegionsPage() {
                   <>
                     <div>
                       <p className="text-xs font-bold text-white/60">{selectedRegion.nameKo}</p>
-                      <div className="mx-auto mt-2 flex h-20 w-20 items-center justify-center rounded-full border-2 border-yellow-200 bg-yellow-300 text-4xl text-gray-950 shadow-[0_0_24px_rgba(250,204,21,0.65)]">
-                        !
-                      </div>
-                      <h2 className="mt-3 text-2xl font-black tracking-tight">발견했어요!</h2>
+                      {encounteredSpecies ? (
+                        <img
+                          src={getSpriteUrl(encounteredSpecies.dexNumber)}
+                          alt={encounteredSpecies.nameKo}
+                          className="mx-auto mt-2 h-20 w-20 object-contain [image-rendering:pixelated]"
+                          draggable={false}
+                        />
+                      ) : (
+                        <div className="mx-auto mt-2 flex h-20 w-20 items-center justify-center rounded-full border-2 border-yellow-200 bg-yellow-300 text-4xl text-gray-950 shadow-[0_0_24px_rgba(250,204,21,0.65)]">
+                          !
+                        </div>
+                      )}
+                      <h2 className="mt-3 text-xl font-black leading-7 tracking-tight">
+                        {encounteredSpecies
+                          ? `앗! 야생의 ${encounteredSpecies.nameKo}${getSubjectParticle(
+                              encounteredSpecies.nameKo,
+                            )} 나타났다!`
+                          : "앗! 야생 포켓몬이 나타났다!"}
+                      </h2>
                       <p className="mt-2 text-sm leading-6 text-white/75">
-                        야생 포켓몬이 나타났어요.
+                        문제를 맞히면
                         <br />
-                        문제를 풀 준비를 해봐요.
+                        몬스터볼을 던질 수 있어요.
                       </p>
                     </div>
                     <div className="grid w-full grid-cols-2 gap-2">
