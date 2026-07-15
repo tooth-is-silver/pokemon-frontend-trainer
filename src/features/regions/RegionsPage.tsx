@@ -212,7 +212,7 @@ export default function RegionsPage() {
                   <img
                     src="/effects/search-magnifier.gif"
                     alt=""
-                    className="mx-auto mt-2 h-12 w-12 object-contain [image-rendering:pixelated]"
+                    className="mx-auto mt-2 h-20 w-20 object-contain [image-rendering:pixelated]"
                     aria-hidden="true"
                     draggable={false}
                   />
