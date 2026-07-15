@@ -66,10 +66,12 @@ export default function RegionsPage() {
     : false;
 
   return (
-    <div className="min-h-screen bg-[#d7f4f0] px-3 py-4 text-gray-950 sm:px-5">
+    <div className="min-h-screen bg-white px-3 py-4 text-gray-950 sm:px-5">
       <main className="mx-auto flex w-full max-w-6xl flex-col gap-2">
-        <header className="px-1">
-          <h1 className="text-3xl font-black tracking-tight sm:text-4xl">탐험지도</h1>
+        <header className="flex justify-center">
+          <h1 className="text-center text-xl font-black tracking-[0.45em] text-gray-950 sm:text-2xl">
+            탐 험 지 도
+          </h1>
         </header>
 
         <section
