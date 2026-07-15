@@ -31,10 +31,10 @@ img {
   padding: 3px;
   pointer-events: none;
   content: "";
-  background: linear-gradient(120deg, #fde047, #ffffff, #38bdf8, #a3e635, #fde047);
-  background-size: 240% 240%;
+  background: linear-gradient(120deg, #facc15, #fff7ad, #facc15);
+  background-size: 180% 180%;
   border-radius: 1rem;
-  animation: region-marker-border-shimmer 1.6s linear infinite;
+  animation: region-marker-border-shimmer 3.2s ease-in-out infinite;
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -51,7 +51,7 @@ img {
   }
 
   100% {
-    background-position: 240% 50%;
+    background-position: 180% 50%;
   }
 }
 
