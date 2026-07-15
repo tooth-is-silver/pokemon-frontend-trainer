@@ -17,6 +17,20 @@ img {
   }
 }
 
+.encounter-shadow-sprite {
+  filter: brightness(0);
+  opacity: 0;
+  transform: translateX(-5rem);
+  animation: encounter-shadow-enter 920ms ease-out forwards;
+}
+
+.encounter-real-sprite,
+.encounter-reveal {
+  visibility: hidden;
+  opacity: 0;
+  animation: encounter-reveal 1ms linear 920ms forwards;
+}
+
 .region-marker-selected {
   --region-marker-selected-color: #facc15;
   box-shadow:
@@ -70,8 +84,48 @@ img {
   }
 }
 
+@keyframes encounter-shadow-enter {
+  0% {
+    opacity: 0;
+    transform: translateX(-5rem);
+  }
+
+  16% {
+    opacity: 0.88;
+  }
+
+  78% {
+    opacity: 0.88;
+    transform: translateX(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+}
+
+@keyframes encounter-reveal {
+  to {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .region-marker-selected::before {
+    animation: none;
+  }
+
+  .encounter-shadow-sprite {
+    display: none;
+    animation: none;
+  }
+
+  .encounter-real-sprite,
+  .encounter-reveal {
+    visibility: visible;
+    opacity: 1;
     animation: none;
   }
 }

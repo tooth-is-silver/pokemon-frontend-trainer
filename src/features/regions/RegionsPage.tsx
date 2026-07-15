@@ -352,31 +352,40 @@ export default function RegionsPage() {
                     <div>
                       <p className="text-xs font-bold text-gray-500">{selectedRegion.nameKo}</p>
                       {encounteredSpecies ? (
-                        <img
-                          src={getSpriteUrl(encounteredSpecies.dexNumber)}
-                          alt={encounteredSpecies.nameKo}
-                          className="mx-auto mt-2 h-20 w-20 object-contain [image-rendering:pixelated]"
-                          draggable={false}
-                        />
+                        <div className="relative mx-auto mt-2 h-20 w-20 overflow-visible">
+                          <img
+                            src={getSpriteUrl(encounteredSpecies.dexNumber)}
+                            alt=""
+                            aria-hidden="true"
+                            className="encounter-shadow-sprite absolute inset-0 h-full w-full object-contain [image-rendering:pixelated]"
+                            draggable={false}
+                          />
+                          <img
+                            src={getSpriteUrl(encounteredSpecies.dexNumber)}
+                            alt={encounteredSpecies.nameKo}
+                            className="encounter-real-sprite absolute inset-0 h-full w-full object-contain [image-rendering:pixelated]"
+                            draggable={false}
+                          />
+                        </div>
                       ) : (
                         <div className="mx-auto mt-2 flex h-20 w-20 items-center justify-center rounded-full border-2 border-yellow-200 bg-yellow-300 text-4xl text-gray-950 shadow-[0_0_24px_rgba(250,204,21,0.65)]">
                           !
                         </div>
                       )}
-                      <h2 className="mt-3 text-xl font-black leading-7 tracking-tight">
+                      <h2 className="encounter-reveal mt-3 text-xl font-black leading-7 tracking-tight">
                         {encounteredSpecies
                           ? `앗! 야생의 ${encounteredSpecies.nameKo}${getSubjectParticle(
                               encounteredSpecies.nameKo,
                             )} 나타났다!`
                           : "앗! 야생 포켓몬이 나타났다!"}
                       </h2>
-                      <p className="mt-2 text-sm leading-6 text-gray-600">
+                      <p className="encounter-reveal mt-2 text-sm leading-6 text-gray-600">
                         문제를 맞히면
                         <br />
                         몬스터볼을 던질 수 있어요.
                       </p>
                     </div>
-                    <div className="grid w-full grid-cols-2 gap-2">
+                    <div className="encounter-reveal grid w-full grid-cols-2 gap-2">
                       <button
                         type="button"
                         disabled
