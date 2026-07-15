@@ -227,7 +227,7 @@ export default function RegionsPage() {
               role="status"
               aria-live="polite"
             >
-              <div className="flex w-full max-w-xs flex-col items-center gap-4 bg-gray-950/80 p-5 text-center shadow-2xl">
+              <div className="flex h-80 w-full max-w-xs flex-col items-center justify-between gap-4 bg-gray-950/80 p-5 text-center shadow-2xl">
                 {isSearching && (
                   <>
                     <div>
