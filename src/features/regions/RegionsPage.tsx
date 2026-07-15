@@ -66,31 +66,27 @@ export default function RegionsPage() {
     : false;
 
   return (
-    <div className="min-h-screen bg-[#d7f4f0] px-4 py-6 text-gray-950 sm:px-6">
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-        <header className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/65 p-5 shadow-sm backdrop-blur">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="flex max-w-2xl flex-col gap-3">
-              <span className="w-fit rounded-full border border-teal-200 bg-white/80 px-3 py-1 text-xs font-bold text-teal-700">
-                탐험 지도
-              </span>
-              <h1 className="text-3xl font-black tracking-tight sm:text-4xl">어디로 탐색할까요?</h1>
-              <p className="text-sm leading-6 text-gray-600">
-                섬 지도를 눌러 탐험할 지역을 골라요. 도감에 등록한 포켓몬이 늘어날수록 새로운 지역이
-                열리고, 다음 단계에서 탐색과 포획을 연결할 거예요.
-              </p>
-            </div>
-            <div className="rounded-3xl border border-teal-100 bg-white/80 p-4 text-sm font-semibold text-gray-700">
-              <p className="text-xs text-gray-500">현재 도감</p>
-              <p className="text-2xl font-black tabular-nums text-gray-950">
-                {unlockedPokedexCount}마리
-              </p>
-            </div>
+    <div className="min-h-screen bg-[#d7f4f0] px-3 py-4 text-gray-950 sm:px-5">
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-3">
+        <header className="flex flex-col gap-2 px-1 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-teal-700">
+              탐험 지도
+            </p>
+            <h1 className="mt-1 text-2xl font-black tracking-tight sm:text-3xl">
+              어디로 탐색할까요?
+            </h1>
+            <p className="mt-1 max-w-2xl text-xs leading-5 text-gray-600 sm:text-sm">
+              섬 지도를 눌러 지역을 골라요. 도감이 늘어날수록 새로운 지역이 열려요.
+            </p>
           </div>
+          <p className="w-fit rounded-full bg-white/75 px-3 py-1.5 text-xs font-black text-gray-700 shadow-sm">
+            현재 도감 <span className="tabular-nums text-gray-950">{unlockedPokedexCount}</span>마리
+          </p>
         </header>
 
         <section
-          className="relative aspect-[1161/1355] overflow-hidden rounded-[2.5rem] border-[10px] border-white bg-[#0477c7] shadow-2xl sm:aspect-[4/3]"
+          className="relative aspect-[1161/1355] overflow-hidden rounded-2xl bg-[#0477c7] shadow-lg sm:aspect-[4/3]"
           aria-label="포켓몬 탐험 지역 지도"
         >
           <picture>
@@ -139,15 +135,15 @@ export default function RegionsPage() {
         </section>
 
         {selectedRegion && (
-          <section className="rounded-[2rem] border border-white/70 bg-white/85 p-5 shadow-sm backdrop-blur">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <section className="border-t border-white/70 bg-white/55 px-1 py-3 backdrop-blur">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
                 <p className="text-xs font-bold text-gray-500">
                   {selectedRegion.terrainLabel} · 조우 {selectedRegion.encounterRatePercent}%
                 </p>
-                <h2 className="mt-1 text-2xl font-black">{selectedRegion.nameKo}</h2>
-                <p className="mt-2 text-sm leading-6 text-gray-600">{selectedRegion.description}</p>
-                <p className="mt-2 text-sm font-semibold text-gray-700">
+                <h2 className="mt-0.5 text-xl font-black">{selectedRegion.nameKo}</h2>
+                <p className="mt-1 text-sm leading-6 text-gray-600">{selectedRegion.description}</p>
+                <p className="mt-1 text-sm font-semibold text-gray-700">
                   예상 서식지: {selectedRegion.habitatSummary}
                 </p>
                 {!selectedRegionUnlocked && (
@@ -159,7 +155,7 @@ export default function RegionsPage() {
               <button
                 type="button"
                 disabled
-                className="min-h-11 rounded-2xl bg-gray-950 px-5 py-3 text-sm font-bold text-white opacity-40"
+                className="min-h-11 rounded-xl bg-gray-950 px-5 py-3 text-sm font-bold text-white opacity-40"
               >
                 탐색하기 준비 중
               </button>
