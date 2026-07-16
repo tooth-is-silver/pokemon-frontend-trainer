@@ -28,7 +28,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
       loading: false,
     });
 
-    // 기존 리스너 정리 후 새로 등록
     authSubscription?.unsubscribe();
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       set({ userId: session?.user.id ?? null, email: session?.user.email ?? null });
@@ -49,7 +48,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
   signOut: async () => {
     await supabase.auth.signOut();
-    // 게임 상태도 초기화
     useGameStore.getState().reset();
     set({ userId: null, email: null });
   },

@@ -97,7 +97,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
         .eq("correct", true),
     ]);
 
-    // 서버 에러 시 로드 실패 처리
     const errors = [
       trainerResponse.error,
       instancesResponse.error,
@@ -112,7 +111,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
       return;
     }
 
-    // 신규 유저: 데이터 없음
     if (!trainerResponse.data) {
       set({ ...initialState, loaded: true });
       return;
