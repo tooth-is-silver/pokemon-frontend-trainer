@@ -1,7 +1,7 @@
 import { getSpriteUrl } from "@/content/pokemon/types";
 import { findSpeciesById } from "@/content/pokemon";
 import type { PokemonSpecies } from "@/content/pokemon/types";
-import { resolveGraduationEvolutionLine } from "./graduationEvolutionLine";
+import { resolveGraduationEvolutionLine } from "@/core/graduationEvolutionLine";
 import { PokemonExp } from "./PokemonExp";
 
 interface Props {
