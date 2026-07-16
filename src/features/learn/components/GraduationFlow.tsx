@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { GraduationModal } from "@/components/pokemon/GraduationModal";
 import { getAllSpecies } from "@/content/pokemon";
 import { resolveGraduationFlow } from "@/core/graduationFlow";
@@ -19,6 +19,18 @@ export function GraduationFlow() {
   const [isAutoGraduationRetrying, setIsAutoGraduationRetrying] = useState(false);
   const autoStartAttemptedGraduationIdsRef = useRef<Set<string>>(new Set());
 
+  const graduationFlow = useMemo(
+    () =>
+      resolveGraduationFlow({
+        pendingGraduationInstanceId,
+        instances,
+        unlockedSpeciesIds,
+        legendaryStage,
+        allSpecies: getAllSpecies(),
+        random: Math.random,
+      }),
+    [pendingGraduationInstanceId, instances, unlockedSpeciesIds, legendaryStage],
+  );
   const {
     graduatedSpecies,
     graduatedExp,
@@ -26,14 +38,7 @@ export function GraduationFlow() {
     graduationCandidates,
     autoGraduationCandidate,
     showGraduationModal,
-  } = resolveGraduationFlow({
-    pendingGraduationInstanceId,
-    instances,
-    unlockedSpeciesIds,
-    legendaryStage,
-    allSpecies: getAllSpecies(),
-    random: Math.random,
-  });
+  } = graduationFlow;
   const autoGraduationSpeciesId = autoGraduationCandidate?.speciesId ?? null;
 
   useEffect(() => {
