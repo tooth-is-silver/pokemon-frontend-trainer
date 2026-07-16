@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { GraduationModal } from "@/components/pokemon/GraduationModal";
 import { QuizCard } from "@/components/quiz/QuizCard";
 import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
-import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
+import { getAllSpecies } from "@/content/pokemon";
 import type { Question } from "@/content/questions/types";
 import { evaluateAnswerAttempt } from "@/core/answerChecker";
 import { resolveGraduationFlow } from "@/core/graduationFlow";
@@ -12,11 +12,9 @@ import { ActivePokemonStatus } from "./ActivePokemonStatus";
 import { EvolutionFlow } from "./EvolutionFlow";
 
 export function LearningSession() {
-  const activeInstanceId = useGameStore((state) => state.trainer.activePokemonInstanceId);
   const instances = useGameStore((state) => state.party.instances);
   const currentQuestionId = useGameStore((state) => state.session.currentQuestionId);
   const solvedQuestionIds = useGameStore((state) => state.session.solvedQuestionIds);
-  const streak = useGameStore((state) => state.progression.streakCorrectCount);
   const pendingGraduationInstanceId = useGameStore(
     (state) => state.progression.pendingGraduationInstanceId,
   );
@@ -34,9 +32,6 @@ export function LearningSession() {
   const [autoGraduationRetrying, setAutoGraduationRetrying] = useState(false);
   const autoStartAttemptedGraduationIdsRef = useRef<Set<string>>(new Set());
 
-  const activeInstance =
-    instances.find((instance) => instance.instanceId === activeInstanceId) ?? null;
-  const activeSpecies = activeInstance ? findSpeciesById(activeInstance.speciesId) : null;
   const currentQuestion = getQuestionById(currentQuestionId);
 
   useEffect(() => {
@@ -144,9 +139,7 @@ export function LearningSession() {
 
   return (
     <div className="flex min-h-screen flex-col items-center gap-6 bg-gray-50 p-6">
-      {activeSpecies && activeInstance && (
-        <ActivePokemonStatus species={activeSpecies} instance={activeInstance} streak={streak} />
-      )}
+      <ActivePokemonStatus />
 
       <section className="flex w-full max-w-lg flex-col gap-4">
         {currentQuestion ? (

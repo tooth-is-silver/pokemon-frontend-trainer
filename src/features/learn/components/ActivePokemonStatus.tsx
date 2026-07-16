@@ -1,19 +1,23 @@
 import { PokemonCard } from "@/components/pokemon/PokemonCard";
 import { PokemonExp } from "@/components/pokemon/PokemonExp";
-import type { PokemonSpecies } from "@/content/pokemon/types";
-import type { PokemonInstance } from "@/stores/types";
+import { findSpeciesById } from "@/content/pokemon";
+import { useGameStore } from "@/stores/useGameStore";
 
-interface Props {
-  species: PokemonSpecies;
-  instance: PokemonInstance;
-  streak: number;
-}
+export function ActivePokemonStatus() {
+  const activeInstanceId = useGameStore((state) => state.trainer.activePokemonInstanceId);
+  const instances = useGameStore((state) => state.party.instances);
+  const streak = useGameStore((state) => state.progression.streakCorrectCount);
 
-export function ActivePokemonStatus({ species, instance, streak }: Props) {
+  const activeInstance =
+    instances.find((instance) => instance.instanceId === activeInstanceId) ?? null;
+  const activeSpecies = activeInstance ? findSpeciesById(activeInstance.speciesId) : null;
+
+  if (!activeInstance || !activeSpecies) return null;
+
   return (
     <section className="flex w-full max-w-lg flex-col items-center gap-4">
-      <PokemonCard species={species} />
-      <PokemonExp exp={instance.exp} />
+      <PokemonCard species={activeSpecies} />
+      <PokemonExp exp={activeInstance.exp} />
       {streak > 0 && (
         <p className="text-sm text-gray-500" aria-live="polite">
           연속 정답 <span className="font-bold text-blue-600">{streak}</span>개
