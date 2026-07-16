@@ -3,6 +3,12 @@ import { Navigate } from "react-router-dom";
 import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
 import { getSpriteUrl } from "@/content/pokemon/types";
 import { regions, isRegionUnlocked } from "@/content/regions";
+import {
+  getKoreanSubjectParticle,
+  isEncounterSuccessful,
+  pickEncounterSpecies,
+  pickSearchTarget,
+} from "@/core/regionEncounter";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
 
@@ -58,23 +64,6 @@ const mapPoints: Record<string, MapPoint> = {
   },
 };
 
-function pickRandomEncounterSpecies() {
-  return encounterSpeciesPool[Math.floor(Math.random() * encounterSpeciesPool.length)] ?? null;
-}
-
-function getSubjectParticle(value: string) {
-  const lastChar = value.at(-1);
-  if (!lastChar) return "가";
-
-  const codePoint = lastChar.charCodeAt(0);
-  const hangulStart = 0xac00;
-  const hangulEnd = 0xd7a3;
-
-  if (codePoint < hangulStart || codePoint > hangulEnd) return "가";
-
-  return (codePoint - hangulStart) % 28 === 0 ? "가" : "이";
-}
-
 export default function RegionsPage() {
   const userId = useAuthStore((s) => s.userId);
   const authLoading = useAuthStore((s) => s.loading);
@@ -102,8 +91,10 @@ export default function RegionsPage() {
     if (!isSearching) return;
 
     const timeoutId = window.setTimeout(() => {
-      const succeeded = Math.random() * 100 < encounterRatePercent;
-      const nextEncounteredSpecies = succeeded ? pickRandomEncounterSpecies() : null;
+      const succeeded = isEncounterSuccessful(encounterRatePercent, Math.random());
+      const nextEncounteredSpecies = succeeded
+        ? pickEncounterSpecies(encounterSpeciesPool, Math.random())
+        : null;
 
       setEncounteredSpeciesId(nextEncounteredSpecies?.speciesId ?? null);
       setSearchStatus(succeeded ? "encountered" : "missed");
@@ -128,8 +119,7 @@ export default function RegionsPage() {
   const handleStartSearch = () => {
     if (!selectedRegion || !selectedRegionUnlocked) return;
 
-    const nextTarget =
-      selectedRegion.searchTargets[Math.floor(Math.random() * selectedRegion.searchTargets.length)];
+    const nextTarget = pickSearchTarget(selectedRegion.searchTargets, Math.random());
 
     setSearchTarget(nextTarget);
     setEncounteredSpeciesId(null);
@@ -374,7 +364,7 @@ export default function RegionsPage() {
                       )}
                       <h2 className="encounter-reveal mt-3 text-xl font-black leading-7 tracking-tight">
                         {encounteredSpecies
-                          ? `앗! 야생의 ${encounteredSpecies.nameKo}${getSubjectParticle(
+                          ? `앗! 야생의 ${encounteredSpecies.nameKo}${getKoreanSubjectParticle(
                               encounteredSpecies.nameKo,
                             )} 나타났다!`
                           : "앗! 야생 포켓몬이 나타났다!"}
