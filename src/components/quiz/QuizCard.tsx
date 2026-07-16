@@ -14,7 +14,8 @@ interface Props {
 export function QuizCard({ question, onSubmit, disabled }: Props) {
   // 문제가 바뀔 때만 보기 재생성
   const multipleChoiceOptions = useMemo(
-    () => (question.type === "multiple_choice" ? buildMultipleChoiceOptions(question) : []),
+    () =>
+      question.type === "multiple_choice" ? buildMultipleChoiceOptions(question, Math.random) : [],
     [question],
   );
 

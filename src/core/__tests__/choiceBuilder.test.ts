@@ -15,19 +15,26 @@ const question: MultipleChoiceQuestion = {
 
 describe("buildMultipleChoiceOptions", () => {
   it("보기에 정답이 항상 포함", () => {
-    const options = buildMultipleChoiceOptions(question);
+    const options = buildMultipleChoiceOptions(question, () => 0);
     expect(options).toContain(question.answer);
   });
 
   it("기존 보기 5개면 5개 반환", () => {
-    const options = buildMultipleChoiceOptions(question);
+    const options = buildMultipleChoiceOptions(question, () => 0);
     expect(options).toHaveLength(5);
   });
 
-  it("셔플되어 순서가 달라질 수 있음 (10회 중 한 번이라도 다르면 통과)", () => {
-    const results = Array.from({ length: 10 }, () => buildMultipleChoiceOptions(question));
-    const firstOrder = JSON.stringify(results[0]);
-    const hasDifferentOrder = results.some((r) => JSON.stringify(r) !== firstOrder);
-    expect(hasDifferentOrder).toBe(true);
+  it("같은 난수 입력에는 같은 보기 순서를 반환", () => {
+    const firstOptions = buildMultipleChoiceOptions(question, () => 0);
+    const secondOptions = buildMultipleChoiceOptions(question, () => 0);
+
+    expect(secondOptions).toEqual(firstOptions);
+  });
+
+  it("다른 난수 입력에는 다른 보기 순서를 반환", () => {
+    const firstOptions = buildMultipleChoiceOptions(question, () => 0);
+    const secondOptions = buildMultipleChoiceOptions(question, () => 0.999);
+
+    expect(secondOptions).not.toEqual(firstOptions);
   });
 });
