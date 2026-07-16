@@ -12,7 +12,7 @@ import { GraduationModal } from "@/components/pokemon/GraduationModal";
 import { EndingScreen } from "@/components/pokemon/EndingScreen";
 import { QuizCard } from "@/components/quiz/QuizCard";
 import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
-import { pickGraduationCandidates } from "@/core/candidatePicker";
+import { resolveGraduationFlow } from "@/core/graduationFlow";
 import type { Question } from "@/content/questions/types";
 
 export default function LearnPage() {
@@ -101,31 +101,22 @@ export default function LearnPage() {
     await evolve(activeInstance.instanceId, nextEvolutionSpecies.speciesId);
   };
 
-  const graduatedInstance =
-    pendingGraduationInstanceId !== null
-      ? (instances.find((i) => i.instanceId === pendingGraduationInstanceId) ?? null)
-      : null;
-  const graduatedSpecies = graduatedInstance ? findSpeciesById(graduatedInstance.speciesId) : null;
-  const graduatedExp = graduatedInstance?.exp ?? null;
-  const isMewGraduating = graduatedSpecies?.speciesId === "mew";
-  const graduatedSpeciesIds = instances.filter((i) => i.graduated).map((i) => i.speciesId);
-  const graduationCandidates = graduatedInstance
-    ? pickGraduationCandidates({
-        unlockedSpeciesIds,
-        graduatedSpeciesIds,
-        graduatingSpeciesId: graduatedSpecies?.speciesId,
-        legendaryStage,
-        allSpecies: getAllSpecies(),
-      })
-    : [];
-  const autoGraduationCandidate =
-    graduatedSpecies && !isMewGraduating && graduationCandidates.length === 1
-      ? graduationCandidates[0]
-      : null;
+  const graduationFlow = resolveGraduationFlow({
+    pendingGraduationInstanceId,
+    instances,
+    unlockedSpeciesIds,
+    legendaryStage,
+    allSpecies: getAllSpecies(),
+  });
+  const {
+    graduatedSpecies,
+    graduatedExp,
+    isMewGraduating,
+    graduationCandidates,
+    autoGraduationCandidate,
+    showGraduationModal,
+  } = graduationFlow;
   const autoGraduationSpeciesId = autoGraduationCandidate?.speciesId ?? null;
-  const showGraduationModal = Boolean(
-    graduatedSpecies && graduationCandidates.length > 1 && !isMewGraduating,
-  );
 
   // 뮤 졸업 트리거 → 자동 엔딩 처리
   useEffect(() => {
