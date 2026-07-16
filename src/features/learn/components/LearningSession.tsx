@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { EvolutionModal } from "@/components/pokemon/EvolutionModal";
 import { GraduationModal } from "@/components/pokemon/GraduationModal";
 import { QuizCard } from "@/components/quiz/QuizCard";
 import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
@@ -10,6 +9,7 @@ import { resolveGraduationFlow } from "@/core/graduationFlow";
 import { getNextQuestion, getQuestionById, getQuestionSourceUrl } from "@/core/quizLoader";
 import { useGameStore } from "@/stores/useGameStore";
 import { ActivePokemonStatus } from "./ActivePokemonStatus";
+import { EvolutionFlow } from "./EvolutionFlow";
 
 export function LearningSession() {
   const activeInstanceId = useGameStore((state) => state.trainer.activePokemonInstanceId);
@@ -25,7 +25,6 @@ export function LearningSession() {
   const isEnding = useGameStore((state) => state.progression.isEnding);
   const setCurrentQuestion = useGameStore((state) => state.setCurrentQuestion);
   const submitAnswer = useGameStore((state) => state.submitAnswer);
-  const evolve = useGameStore((state) => state.evolve);
   const startNextPokemon = useGameStore((state) => state.startNextPokemon);
   const completeEnding = useGameStore((state) => state.completeEnding);
 
@@ -85,19 +84,6 @@ export function LearningSession() {
     const nextQuestion = getNextQuestion(solvedQuestionIds, skippedQuestionId);
     if (nextQuestion) setCurrentQuestion(nextQuestion.questionId);
     setWrongQuestion(null);
-  };
-
-  const nextEvolutionSpecies =
-    activeSpecies?.nextEvolutionSpeciesId != null
-      ? findSpeciesById(activeSpecies.nextEvolutionSpeciesId)
-      : null;
-  const showEvolutionModal = Boolean(
-    activeInstance?.evolutionPending && activeSpecies && nextEvolutionSpecies,
-  );
-
-  const handleEvolve = async () => {
-    if (!activeInstance || !nextEvolutionSpecies) return;
-    await evolve(activeInstance.instanceId, nextEvolutionSpecies.speciesId);
   };
 
   const graduationFlow = resolveGraduationFlow({
@@ -200,14 +186,7 @@ export function LearningSession() {
         )}
       </section>
 
-      {showEvolutionModal && activeSpecies && nextEvolutionSpecies && (
-        <EvolutionModal
-          open={true}
-          currentSpecies={activeSpecies}
-          nextSpecies={nextEvolutionSpecies}
-          onEvolve={handleEvolve}
-        />
-      )}
+      <EvolutionFlow />
 
       {showGraduationModal && graduatedSpecies && graduatedExp !== null && (
         <GraduationModal
