@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { supabase } from "@/lib/supabase";
-import { findSpeciesById } from "@/content/pokemon";
+import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
+import { resolveAnswerProgression } from "@/core/answerProgression";
 import { isGraduationReady } from "@/core/evolutionChecker";
 import type {
   TrainerState,
@@ -33,7 +34,7 @@ interface GameStore {
   // 정답 처리
   submitAnswer: (
     questionId: string,
-    correct: boolean,
+    isCorrect: boolean,
     isFirstSolve: boolean,
   ) => Promise<ProcessAnswerResult>;
 
@@ -201,10 +202,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
     });
   },
 
-  submitAnswer: async (questionId, correct, isFirstSolve) => {
+  submitAnswer: async (questionId, isCorrect, isFirstSolve) => {
     const { data, error } = await supabase.rpc("process_answer", {
       p_question_id: questionId,
-      p_correct: correct,
+      p_correct: isCorrect,
       p_is_first_solve: isFirstSolve,
     });
 
@@ -212,50 +213,19 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     const result = data as ProcessAnswerResult;
     const state = get();
-    const activeId = state.trainer.activePokemonInstanceId;
-
-    // 정답 반영된 인스턴스로 졸업 가능 여부 판정
-    const updatedInstances = state.party.instances.map((inst) =>
-      inst.instanceId === activeId
-        ? {
-            ...inst,
-            exp: result.exp,
-            totalCorrectCount: inst.totalCorrectCount + (correct ? 1 : 0),
-            evolutionPending: result.evolution_pending,
-          }
-        : inst,
-    );
-    const updatedActive = updatedInstances.find((i) => i.instanceId === activeId);
-    const activeSpecies = updatedActive ? findSpeciesById(updatedActive.speciesId) : null;
-    const graduationReady = Boolean(
-      correct &&
-      activeId &&
-      updatedActive &&
-      activeSpecies &&
-      isGraduationReady(updatedActive, activeSpecies),
-    );
-
-    set({
-      party: { instances: updatedInstances },
-      progression: {
-        ...state.progression,
-        streakCorrectCount: result.streak,
-        pendingEvolutionInstanceId: result.evolution_pending
-          ? activeId
-          : state.progression.pendingEvolutionInstanceId,
-        pendingGraduationInstanceId: graduationReady
-          ? activeId
-          : state.progression.pendingGraduationInstanceId,
-      },
-      session: {
-        ...state.session,
-        lastAnswerCorrect: correct,
-        solvedQuestionIds:
-          correct && isFirstSolve
-            ? [...new Set([...state.session.solvedQuestionIds, questionId])]
-            : state.session.solvedQuestionIds,
-      },
+    const answerProgression = resolveAnswerProgression({
+      activeInstanceId: state.trainer.activePokemonInstanceId,
+      instances: state.party.instances,
+      progression: state.progression,
+      session: state.session,
+      questionId,
+      isCorrect,
+      isFirstSolve,
+      result,
+      allSpecies: getAllSpecies(),
     });
+
+    set(answerProgression);
 
     return result;
   },
