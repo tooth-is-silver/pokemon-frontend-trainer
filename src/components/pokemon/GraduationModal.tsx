@@ -1,6 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { useRef, useState } from "react";
 import type { PokemonSpecies } from "@/content/pokemon/types";
+import { getGraduationSelectionErrorMessage } from "@/core/graduationFlow";
 import { GraduationContent } from "./GraduationContent";
 
 interface Props {
@@ -9,31 +10,6 @@ interface Props {
   graduatedExp: number;
   candidates: PokemonSpecies[];
   onSelect: (speciesId: string) => Promise<void>;
-}
-
-function getErrorMessage(error: unknown) {
-  if (error instanceof Error) return error.message;
-  if (typeof error !== "object" || error === null || !("message" in error)) return "";
-
-  const message = (error as { message?: unknown }).message;
-  return typeof message === "string" ? message : "";
-}
-
-function getSelectionErrorMessage(error: unknown) {
-  const rawMessage = getErrorMessage(error);
-  const message = rawMessage.toLowerCase();
-
-  if (message.includes("authentication") || message.includes("jwt")) {
-    return "로그인 세션이 만료됐을 수 있어요. 새로고침 후 다시 시도해주세요.";
-  }
-
-  if (message.includes("network") || message.includes("fetch")) {
-    return "네트워크 연결이 불안정해요. 잠시 후 다시 시도해주세요.";
-  }
-
-  return rawMessage
-    ? `다음 포켓몬을 시작하지 못했어요. ${rawMessage}`
-    : "다음 포켓몬을 시작하지 못했어요. 잠시 후 다시 시도해주세요.";
 }
 
 export function GraduationModal({
@@ -59,7 +35,7 @@ export function GraduationModal({
     } catch (error) {
       console.error("졸업 후 선택 실패:", error);
       setSelectedId(null);
-      setErrorMessage(getSelectionErrorMessage(error));
+      setErrorMessage(getGraduationSelectionErrorMessage(error));
     } finally {
       submittingRef.current = false;
       setSubmitting(false);

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveGraduationFlow } from "@/core/graduationFlow";
+import { getGraduationSelectionErrorMessage, resolveGraduationFlow } from "@/core/graduationFlow";
 import type { PokemonSpecies } from "@/content/pokemon/types";
 import type { PokemonInstance } from "@/stores/types";
 
@@ -84,7 +84,7 @@ describe("resolveGraduationFlow", () => {
       allSpecies,
     });
 
-    expect(result.graduationCandidates.map((s) => s.speciesId).sort()).toEqual([
+    expect(result.graduationCandidates.map((species) => species.speciesId).sort()).toEqual([
       "pidgey",
       "spearow",
     ]);
@@ -104,5 +104,31 @@ describe("resolveGraduationFlow", () => {
     expect(result.isMewGraduating).toBe(true);
     expect(result.autoGraduationCandidate).toBeNull();
     expect(result.showGraduationModal).toBe(false);
+  });
+});
+
+describe("getGraduationSelectionErrorMessage", () => {
+  it("인증 오류를 세션 만료 안내로 변환", () => {
+    expect(getGraduationSelectionErrorMessage(new Error("JWT authentication failed"))).toBe(
+      "로그인 세션이 만료됐을 수 있어요. 새로고침 후 다시 시도해주세요.",
+    );
+  });
+
+  it("네트워크 오류를 재시도 안내로 변환", () => {
+    expect(getGraduationSelectionErrorMessage({ message: "Failed to fetch" })).toBe(
+      "네트워크 연결이 불안정해요. 잠시 후 다시 시도해주세요.",
+    );
+  });
+
+  it("서버 메시지가 있으면 기본 안내 뒤에 보존", () => {
+    expect(getGraduationSelectionErrorMessage(new Error("candidate is locked"))).toBe(
+      "다음 포켓몬을 시작하지 못했어요. candidate is locked",
+    );
+  });
+
+  it("메시지를 확인할 수 없으면 기본 안내를 반환", () => {
+    expect(getGraduationSelectionErrorMessage(null)).toBe(
+      "다음 포켓몬을 시작하지 못했어요. 잠시 후 다시 시도해주세요.",
+    );
   });
 });
