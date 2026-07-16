@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
 import { isRegionUnlocked, regions } from "@/content/regions";
 import {
-  isEncounterSuccessful,
-  pickEncounterSpecies,
+  createRegionSearchState,
   pickSearchTarget,
+  regionSearchReducer,
+  resolveRegionEncounter,
 } from "@/core/regionEncounter";
 import { useGameStore } from "@/stores/useGameStore";
-import { RegionSearchOverlay, type RegionSearchStatus } from "./RegionSearchOverlay";
+import { RegionSearchOverlay } from "./RegionSearchOverlay";
 
 interface MapPoint {
   positionClassName: string;
@@ -61,10 +62,12 @@ const mapPoints: Record<string, MapPoint> = {
 
 export function RegionExplorer() {
   const unlockedSpeciesIds = useGameStore((state) => state.pokedex.unlockedSpeciesIds);
-  const [selectedRegionId, setSelectedRegionId] = useState(initialRegionId);
-  const [searchStatus, setSearchStatus] = useState<RegionSearchStatus>("idle");
-  const [searchTarget, setSearchTarget] = useState<string | null>(null);
-  const [encounteredSpeciesId, setEncounteredSpeciesId] = useState<string | null>(null);
+  const [searchState, dispatchSearch] = useReducer(
+    regionSearchReducer,
+    initialRegionId,
+    createRegionSearchState,
+  );
+  const { selectedRegionId, searchStatus, searchTarget, encounteredSpeciesId } = searchState;
 
   const unlockedPokedexCount = unlockedSpeciesIds.length;
   const selectedRegion = regions.find((region) => region.regionId === selectedRegionId);
@@ -80,26 +83,21 @@ export function RegionExplorer() {
     if (!isSearching) return;
 
     const timeoutId = window.setTimeout(() => {
-      const isSearchEncounterSuccessful = isEncounterSuccessful(
+      const result = resolveRegionEncounter({
         encounterRatePercent,
-        Math.random(),
-      );
-      const nextEncounteredSpecies = isSearchEncounterSuccessful
-        ? pickEncounterSpecies(encounterSpeciesPool, Math.random())
-        : null;
+        speciesPool: encounterSpeciesPool,
+        encounterRandomValue: Math.random(),
+        speciesRandomValue: Math.random(),
+      });
 
-      setEncounteredSpeciesId(nextEncounteredSpecies?.speciesId ?? null);
-      setSearchStatus(isSearchEncounterSuccessful ? "encountered" : "missed");
+      dispatchSearch({ type: "searchResolved", result });
     }, SEARCH_RESULT_DELAY_MS);
 
     return () => window.clearTimeout(timeoutId);
   }, [encounterRatePercent, isSearching]);
 
   const handleSelectRegion = (regionId: string) => {
-    setSelectedRegionId(regionId);
-    setSearchStatus("idle");
-    setSearchTarget(null);
-    setEncounteredSpeciesId(null);
+    dispatchSearch({ type: "regionSelected", regionId });
   };
 
   const handleStartSearch = () => {
@@ -107,15 +105,11 @@ export function RegionExplorer() {
 
     const nextTarget = pickSearchTarget(selectedRegion.searchTargets, Math.random());
 
-    setSearchTarget(nextTarget);
-    setEncounteredSpeciesId(null);
-    setSearchStatus("searching");
+    dispatchSearch({ type: "searchStarted", searchTarget: nextTarget });
   };
 
   const handleCloseSearch = () => {
-    setSearchStatus("idle");
-    setSearchTarget(null);
-    setEncounteredSpeciesId(null);
+    dispatchSearch({ type: "searchClosed" });
   };
 
   return (

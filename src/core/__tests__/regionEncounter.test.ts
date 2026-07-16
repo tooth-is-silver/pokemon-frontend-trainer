@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  createRegionSearchState,
   getKoreanSubjectParticle,
   isEncounterSuccessful,
   pickEncounterSpecies,
   pickSearchTarget,
+  regionSearchReducer,
+  resolveRegionEncounter,
 } from "@/core/regionEncounter";
 import type { PokemonSpecies } from "@/content/pokemon/types";
 
@@ -35,6 +38,89 @@ const speciesPool: PokemonSpecies[] = [
 ];
 
 describe("regionEncounter", () => {
+  it("선택, 탐색, 조우, 닫기 상태를 일관된 형태로 전환", () => {
+    const initialState = createRegionSearchState("sprout-field");
+    const searchingState = regionSearchReducer(initialState, {
+      type: "searchStarted",
+      searchTarget: "풀숲을",
+    });
+    const encounteredState = regionSearchReducer(searchingState, {
+      type: "searchResolved",
+      result: {
+        searchStatus: "encountered",
+        encounteredSpeciesId: "bulbasaur",
+      },
+    });
+
+    expect(searchingState).toEqual({
+      selectedRegionId: "sprout-field",
+      searchStatus: "searching",
+      searchTarget: "풀숲을",
+      encounteredSpeciesId: null,
+    });
+    expect(encounteredState).toMatchObject({
+      searchStatus: "encountered",
+      encounteredSpeciesId: "bulbasaur",
+    });
+    expect(regionSearchReducer(encounteredState, { type: "searchClosed" })).toEqual(initialState);
+  });
+
+  it("지역을 바꾸면 이전 탐색 결과를 초기화", () => {
+    const previousState = {
+      selectedRegionId: "sprout-field",
+      searchStatus: "missed" as const,
+      searchTarget: "풀숲을",
+      encounteredSpeciesId: null,
+    };
+
+    expect(
+      regionSearchReducer(previousState, {
+        type: "regionSelected",
+        regionId: "misty-shore",
+      }),
+    ).toEqual(createRegionSearchState("misty-shore"));
+  });
+
+  it("확률 판정과 포켓몬 선택 결과를 하나의 조우 결과로 반환", () => {
+    expect(
+      resolveRegionEncounter({
+        encounterRatePercent: 50,
+        speciesPool,
+        encounterRandomValue: 0.49,
+        speciesRandomValue: 0.5,
+      }),
+    ).toEqual({
+      searchStatus: "encountered",
+      encounteredSpeciesId: "charizard",
+    });
+
+    expect(
+      resolveRegionEncounter({
+        encounterRatePercent: 50,
+        speciesPool,
+        encounterRandomValue: 0.5,
+        speciesRandomValue: 0,
+      }),
+    ).toEqual({
+      searchStatus: "missed",
+      encounteredSpeciesId: null,
+    });
+  });
+
+  it("조우 성공이어도 포켓몬 풀이 비어 있으면 실패로 처리", () => {
+    expect(
+      resolveRegionEncounter({
+        encounterRatePercent: 100,
+        speciesPool: [],
+        encounterRandomValue: 0,
+        speciesRandomValue: 0,
+      }),
+    ).toEqual({
+      searchStatus: "missed",
+      encounteredSpeciesId: null,
+    });
+  });
+
   it("조우 확률과 랜덤 값으로 성공 여부를 판정", () => {
     expect(isEncounterSuccessful(50, 0.49)).toBe(true);
     expect(isEncounterSuccessful(50, 0.5)).toBe(false);

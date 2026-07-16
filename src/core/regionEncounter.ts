@@ -2,6 +2,89 @@ import type { PokemonSpecies } from "@/content/pokemon/types";
 
 const MAX_RANDOM_VALUE = 1 - Number.EPSILON;
 
+export type RegionSearchStatus = "idle" | "searching" | "missed" | "encountered";
+
+export interface RegionSearchState {
+  selectedRegionId: string;
+  searchStatus: RegionSearchStatus;
+  searchTarget: string | null;
+  encounteredSpeciesId: string | null;
+}
+
+interface RegionEncounterResult {
+  searchStatus: "missed" | "encountered";
+  encounteredSpeciesId: string | null;
+}
+
+interface ResolveRegionEncounterArgs {
+  encounterRatePercent: number;
+  speciesPool: PokemonSpecies[];
+  encounterRandomValue: number;
+  speciesRandomValue: number;
+}
+
+type RegionSearchAction =
+  | { type: "regionSelected"; regionId: string }
+  | { type: "searchStarted"; searchTarget: string | null }
+  | { type: "searchResolved"; result: RegionEncounterResult }
+  | { type: "searchClosed" };
+
+export function createRegionSearchState(selectedRegionId: string): RegionSearchState {
+  return {
+    selectedRegionId,
+    searchStatus: "idle",
+    searchTarget: null,
+    encounteredSpeciesId: null,
+  };
+}
+
+export function regionSearchReducer(
+  state: RegionSearchState,
+  action: RegionSearchAction,
+): RegionSearchState {
+  if (action.type === "regionSelected") {
+    return createRegionSearchState(action.regionId);
+  }
+
+  if (action.type === "searchStarted") {
+    return {
+      ...state,
+      searchStatus: "searching",
+      searchTarget: action.searchTarget,
+      encounteredSpeciesId: null,
+    };
+  }
+
+  if (action.type === "searchResolved") {
+    return {
+      ...state,
+      ...action.result,
+    };
+  }
+
+  return createRegionSearchState(state.selectedRegionId);
+}
+
+export function resolveRegionEncounter({
+  encounterRatePercent,
+  speciesPool,
+  encounterRandomValue,
+  speciesRandomValue,
+}: ResolveRegionEncounterArgs): RegionEncounterResult {
+  if (!isEncounterSuccessful(encounterRatePercent, encounterRandomValue)) {
+    return { searchStatus: "missed", encounteredSpeciesId: null };
+  }
+
+  const encounteredSpecies = pickEncounterSpecies(speciesPool, speciesRandomValue);
+
+  return encounteredSpecies
+    ? {
+        searchStatus: "encountered",
+        encounteredSpeciesId: encounteredSpecies.speciesId,
+      }
+    : { searchStatus: "missed", encounteredSpeciesId: null };
+}
+
 export function isEncounterSuccessful(encounterRatePercent: number, randomValue: number): boolean {
   return normalizeRandomValue(randomValue) * 100 < clampEncounterRate(encounterRatePercent);
 }

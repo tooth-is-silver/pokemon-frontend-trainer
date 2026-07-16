@@ -1,9 +1,7 @@
 import { getSpriteUrl } from "@/content/pokemon/types";
 import type { PokemonSpecies } from "@/content/pokemon/types";
 import type { Region } from "@/content/regions";
-import { getKoreanSubjectParticle } from "@/core/regionEncounter";
-
-export type RegionSearchStatus = "idle" | "searching" | "missed" | "encountered";
+import { getKoreanSubjectParticle, type RegionSearchStatus } from "@/core/regionEncounter";
 
 interface Props {
   selectedRegion: Region;
