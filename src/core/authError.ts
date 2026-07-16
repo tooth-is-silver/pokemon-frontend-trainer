@@ -3,6 +3,13 @@ interface AuthCallbackErrorParams {
   errorDescription: string | null;
 }
 
+interface AuthCallbackUrlResult {
+  errorMessage: string | null;
+  sanitizedUrl: string | null;
+}
+
+const AUTH_ERROR_PARAM_NAMES = ["error", "error_code", "error_description"];
+
 export function getLoginErrorMessage(error: unknown) {
   const code = getErrorCode(error);
   const message = getErrorText(error);
@@ -62,6 +69,27 @@ export function getAuthCallbackErrorMessage({
     : "로그인을 완료하지 못했어요. 새 로그인 링크를 다시 받아주세요.";
 }
 
+export function resolveAuthCallbackUrl(urlValue: string): AuthCallbackUrlResult {
+  const url = new URL(urlValue);
+  const hashParams = new URLSearchParams(url.hash.replace(/^#/, ""));
+  const errorCode = url.searchParams.get("error_code") ?? hashParams.get("error_code");
+  const errorDescription =
+    url.searchParams.get("error_description") ?? hashParams.get("error_description");
+  const errorMessage = getAuthCallbackErrorMessage({ errorCode, errorDescription });
+  const removedSearchParams = removeAuthErrorParams(url.searchParams);
+  const removedHashParams = removeAuthErrorParams(hashParams);
+
+  if (removedHashParams) {
+    const nextHash = hashParams.toString();
+    url.hash = nextHash ? `#${nextHash}` : "";
+  }
+
+  return {
+    errorMessage,
+    sanitizedUrl: removedSearchParams || removedHashParams ? url.toString() : null,
+  };
+}
+
 function getErrorText(error: unknown) {
   return error instanceof Error ? error.message : "";
 }
@@ -71,4 +99,17 @@ function getErrorCode(error: unknown) {
 
   const code = error.code;
   return typeof code === "string" ? code.toLowerCase() : "";
+}
+
+function removeAuthErrorParams(params: URLSearchParams) {
+  let removed = false;
+
+  AUTH_ERROR_PARAM_NAMES.forEach((paramName) => {
+    if (!params.has(paramName)) return;
+
+    params.delete(paramName);
+    removed = true;
+  });
+
+  return removed;
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { getAuthCallbackErrorMessage, getLoginErrorMessage } from "@/core/authError";
+import { getLoginErrorMessage, resolveAuthCallbackUrl } from "@/core/authError";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 export function EmailLoginForm() {
@@ -11,12 +11,14 @@ export function EmailLoginForm() {
   const [sentEmail, setSentEmail] = useState<string | null>(null);
 
   useEffect(() => {
-    const authCallbackError = readAuthCallbackError();
+    if (typeof window === "undefined") return;
 
-    if (!authCallbackError) return;
+    const { errorMessage, sanitizedUrl } = resolveAuthCallbackUrl(window.location.href);
 
-    setLoginError(authCallbackError);
-    clearAuthCallbackErrorParams();
+    if (errorMessage) setLoginError(errorMessage);
+    if (sanitizedUrl) {
+      window.history.replaceState(window.history.state, "", sanitizedUrl);
+    }
   }, []);
 
   const handleSignIn = async (event: FormEvent<HTMLFormElement>) => {
@@ -100,49 +102,4 @@ export function EmailLoginForm() {
       )}
     </form>
   );
-}
-
-function readAuthCallbackError() {
-  if (typeof window === "undefined") return null;
-
-  const searchParams = new URLSearchParams(window.location.search);
-  const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-  const errorCode = searchParams.get("error_code") ?? hashParams.get("error_code");
-  const errorDescription =
-    searchParams.get("error_description") ?? hashParams.get("error_description");
-
-  return getAuthCallbackErrorMessage({ errorCode, errorDescription });
-}
-
-function clearAuthCallbackErrorParams() {
-  if (typeof window === "undefined") return;
-
-  const url = new URL(window.location.href);
-  const errorParams = ["error", "error_code", "error_description"];
-  let hasErrorParams = false;
-
-  errorParams.forEach((param) => {
-    if (!url.searchParams.has(param)) return;
-    url.searchParams.delete(param);
-    hasErrorParams = true;
-  });
-
-  if (url.hash.includes("error")) {
-    const hashParams = new URLSearchParams(url.hash.replace(/^#/, ""));
-
-    errorParams.forEach((param) => {
-      if (!hashParams.has(param)) return;
-      hashParams.delete(param);
-      hasErrorParams = true;
-    });
-
-    if (hasErrorParams) {
-      const nextHash = hashParams.toString();
-      url.hash = nextHash ? `#${nextHash}` : "";
-    }
-  }
-
-  if (hasErrorParams) {
-    window.history.replaceState(window.history.state, "", url.toString());
-  }
 }

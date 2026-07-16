@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { getAuthCallbackErrorMessage, getLoginErrorMessage } from "@/core/authError";
+import {
+  getAuthCallbackErrorMessage,
+  getLoginErrorMessage,
+  resolveAuthCallbackUrl,
+} from "@/core/authError";
 
 describe("getLoginErrorMessage", () => {
   it("잘못된 이메일 오류를 안내 문구로 변환한다", () => {
@@ -47,5 +51,32 @@ describe("getAuthCallbackErrorMessage", () => {
         errorDescription: "Redirect URL is invalid",
       }),
     ).toContain("Supabase Redirect URL과 이메일 템플릿");
+  });
+});
+
+describe("resolveAuthCallbackUrl", () => {
+  it("쿼리의 인증 오류를 읽고 다른 URL 정보는 유지한다", () => {
+    const result = resolveAuthCallbackUrl(
+      "https://example.com/?source=email&error_code=otp_expired&error_description=Email%20link%20expired#section",
+    );
+
+    expect(result.errorMessage).toContain("새 로그인 링크를 다시 받아주세요.");
+    expect(result.sanitizedUrl).toBe("https://example.com/?source=email#section");
+  });
+
+  it("해시의 인증 오류만 제거하고 다른 해시 값은 유지한다", () => {
+    const result = resolveAuthCallbackUrl(
+      "https://example.com/#next=%2Flearn&error_code=otp_expired&error_description=Expired",
+    );
+
+    expect(result.errorMessage).toContain("새 로그인 링크를 다시 받아주세요.");
+    expect(result.sanitizedUrl).toBe("https://example.com/#next=%2Flearn");
+  });
+
+  it("인증 오류가 없으면 URL을 변경하지 않는다", () => {
+    expect(resolveAuthCallbackUrl("https://example.com/?source=email#section")).toEqual({
+      errorMessage: null,
+      sanitizedUrl: null,
+    });
   });
 });
