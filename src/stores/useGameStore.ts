@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { supabase } from "@/lib/supabase";
 import { getAllSpecies } from "@/content/pokemon";
 import { resolveAnswerProgression } from "@/core/answerProgression";
+import { resolveEndingStats, type EndingStats } from "@/core/endingSummary";
 import { resolveLoadedGameState } from "@/core/gameBootstrap";
 import {
   resolveEndingState,
@@ -32,6 +33,9 @@ interface GameStore {
 
   // 서버에서 상태 로드
   loadFromServer: (userId: string) => Promise<void>;
+
+  // 엔딩 학습 통계 로드
+  loadEndingStats: (userId: string, signal: AbortSignal) => Promise<EndingStats>;
 
   // 스타터 선택
   chooseStarter: (speciesId: string) => Promise<void>;
@@ -139,6 +143,30 @@ export const useGameStore = create<GameStore>((set, get) => ({
     });
 
     set(loadedState);
+  },
+
+  loadEndingStats: async (userId, signal) => {
+    const [attemptsResponse, correctResponse] = await Promise.all([
+      supabase
+        .from("solved_questions")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .abortSignal(signal),
+      supabase
+        .from("solved_questions")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .eq("correct", true)
+        .abortSignal(signal),
+    ]);
+
+    if (attemptsResponse.error) throw attemptsResponse.error;
+    if (correctResponse.error) throw correctResponse.error;
+
+    return resolveEndingStats({
+      totalAttempts: attemptsResponse.count ?? 0,
+      totalCorrect: correctResponse.count ?? 0,
+    });
   },
 
   chooseStarter: async (speciesId) => {

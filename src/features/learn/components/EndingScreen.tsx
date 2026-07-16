@@ -1,72 +1,31 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getAllSpecies } from "@/content/pokemon";
 import { getSpriteUrl, TOTAL_DEX } from "@/content/pokemon/types";
-import { resolveEndingStats, resolveEndingSummary, type EndingStats } from "@/core/endingSummary";
-import { supabase } from "@/lib/supabase";
-import { useAuthStore } from "@/stores/useAuthStore";
-import { useGameStore } from "@/stores/useGameStore";
+import type { EndingStats, EndingSummary } from "@/core/endingSummary";
 
-export function EndingScreen() {
-  const userId = useAuthStore((state) => state.userId);
-  const unlockedSpeciesIds = useGameStore((state) => state.pokedex.unlockedSpeciesIds);
-  const instances = useGameStore((state) => state.party.instances);
-  const [stats, setStats] = useState<EndingStats | null>(null);
-  const [statsError, setStatsError] = useState(false);
-  const { unlockedCount, pokedexPercent, isPokedexComplete, graduatedSpecies } =
-    resolveEndingSummary({
-      unlockedSpeciesIds,
-      instances,
-      allSpecies: getAllSpecies(),
-      totalDex: TOTAL_DEX,
-    });
+interface EndingScreenProps {
+  stats: EndingStats | null;
+  hasStatsError: boolean;
+  summary: EndingSummary;
+}
 
-  useEffect(() => {
-    if (!userId) return;
+type StatCardTone = "blue" | "emerald" | "amber";
 
-    let cancelled = false;
+interface StatCardProps {
+  label: string;
+  value: number | undefined;
+  isLoading: boolean;
+  tone: StatCardTone;
+}
 
-    async function loadStats() {
-      try {
-        if (!cancelled) {
-          setStatsError(false);
-        }
+const STAT_CARD_TONE_CLASS: Record<StatCardTone, string> = {
+  blue: "bg-blue-50 text-blue-900 ring-blue-100",
+  emerald: "bg-emerald-50 text-emerald-900 ring-emerald-100",
+  amber: "bg-amber-50 text-amber-900 ring-amber-100",
+};
 
-        const statsRes = await supabase
-          .from("solved_questions")
-          .select("correct", { count: "exact" })
-          .eq("user_id", userId);
-
-        if (statsRes.error) {
-          console.error("엔딩 통계 로드 실패:", statsRes.error);
-          if (!cancelled) {
-            setStats(null);
-            setStatsError(true);
-          }
-          return;
-        }
-
-        const totalAttempts = statsRes.count ?? 0;
-        const totalCorrect = statsRes.data?.filter((row) => row.correct).length ?? 0;
-
-        if (!cancelled) {
-          setStats(resolveEndingStats({ totalAttempts, totalCorrect }));
-        }
-      } catch (error) {
-        console.error("엔딩 통계 로드 실패:", error);
-        if (!cancelled) {
-          setStats(null);
-          setStatsError(true);
-        }
-      }
-    }
-
-    loadStats();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [userId]);
+export function EndingScreen({ stats, hasStatsError, summary }: EndingScreenProps) {
+  const { unlockedCount, pokedexPercent, isPokedexComplete, graduatedSpecies } = summary;
+  const isStatsLoading = stats === null && !hasStatsError;
 
   return (
     <div
@@ -98,24 +57,24 @@ export function EndingScreen() {
           <StatCard
             label="푼 문제"
             value={stats?.totalAttempts}
-            loading={stats === null}
+            isLoading={isStatsLoading}
             tone="blue"
           />
           <StatCard
             label="맞춘 문제"
             value={stats?.totalCorrect}
-            loading={stats === null}
+            isLoading={isStatsLoading}
             tone="emerald"
           />
           <StatCard
             label="틀린 문제"
             value={stats?.totalWrong}
-            loading={stats === null}
+            isLoading={isStatsLoading}
             tone="amber"
           />
         </section>
 
-        {statsError && (
+        {hasStatsError && (
           <p
             className="w-full rounded-2xl bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800 ring-1 ring-amber-200"
             role="status"
@@ -131,7 +90,14 @@ export function EndingScreen() {
               {unlockedCount} / {TOTAL_DEX} · {pokedexPercent}%
             </span>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+          <div
+            className="h-2 overflow-hidden rounded-full bg-slate-200"
+            role="progressbar"
+            aria-valuenow={pokedexPercent}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`도감 진행률 ${pokedexPercent}%`}
+          >
             <div
               className="h-full rounded-full bg-blue-500 transition-all duration-500"
               style={{ width: `${pokedexPercent}%` }}
@@ -197,27 +163,11 @@ export function EndingScreen() {
   );
 }
 
-function StatCard({
-  label,
-  value,
-  loading,
-  tone,
-}: {
-  label: string;
-  value: number | undefined;
-  loading: boolean;
-  tone: "blue" | "emerald" | "amber";
-}) {
-  const toneClass = {
-    blue: "bg-blue-50 text-blue-900 ring-blue-100",
-    emerald: "bg-emerald-50 text-emerald-900 ring-emerald-100",
-    amber: "bg-amber-50 text-amber-900 ring-amber-100",
-  }[tone];
-
+function StatCard({ label, value, isLoading, tone }: StatCardProps) {
   return (
-    <div className={`rounded-2xl px-4 py-5 ring-1 ${toneClass}`}>
+    <div className={`rounded-2xl px-4 py-5 ring-1 ${STAT_CARD_TONE_CLASS[tone]}`}>
       <p className="text-sm font-medium">{label}</p>
-      <p className="mt-2 text-3xl font-bold tabular-nums">{loading ? "..." : value}</p>
+      <p className="mt-2 text-3xl font-bold tabular-nums">{isLoading ? "..." : (value ?? "-")}</p>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
-import { EndingScreen } from "@/components/pokemon/EndingScreen";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
+import { EndingFlow } from "./components/EndingFlow";
 import { LearningSession } from "./components/LearningSession";
 
 export default function LearnPage() {
@@ -17,7 +17,7 @@ export default function LearnPage() {
 
   if (!userId) return <Navigate to="/" replace />;
   if (!starterChosen) return <Navigate to="/starter" replace />;
-  if (isEnding) return <EndingScreen />;
+  if (isEnding) return <EndingFlow />;
 
   return <LearningSession />;
 }
