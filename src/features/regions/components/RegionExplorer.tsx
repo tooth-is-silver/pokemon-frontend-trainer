@@ -1,8 +1,9 @@
 import { useEffect, useReducer } from "react";
 import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
-import { isRegionUnlocked, regions } from "@/content/regions";
+import { regions } from "@/content/regions";
 import {
   createRegionSearchState,
+  isRegionUnlocked,
   pickSearchTarget,
   regionSearchReducer,
   resolveRegionEncounter,

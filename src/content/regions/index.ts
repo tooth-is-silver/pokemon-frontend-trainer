@@ -78,7 +78,3 @@ export const regions: Region[] = [
     accentClassName: "from-yellow-200 via-rose-100 to-blue-100 border-yellow-200",
   },
 ];
-
-export function isRegionUnlocked(region: Region, unlockedPokedexCount: number) {
-  return unlockedPokedexCount >= region.unlockRequiredPokedexCount;
-}

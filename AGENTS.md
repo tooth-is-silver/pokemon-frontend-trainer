@@ -64,8 +64,10 @@
 
 ```text
 src/
-  app/          # 라우터, 레이아웃
-  components/   # 공통 UI 컴포넌트
+  app/
+    App.tsx     # 라우터, 앱 조립
+    components/ # 인증·라우팅 상태를 사용하는 앱 전용 레이아웃
+  components/   # 스토어에 의존하지 않는 공통 UI 컴포넌트
   features/     # 페이지별 컴포넌트 (landing, starter, learn, pokedex)
   content/      # 정적 데이터
   core/         # 순수 로직

@@ -1,4 +1,5 @@
 import type { PokemonSpecies } from "@/content/pokemon/types";
+import type { Region } from "@/content/regions";
 
 const MAX_RANDOM_VALUE = 1 - Number.EPSILON;
 
@@ -83,6 +84,10 @@ export function resolveRegionEncounter({
         encounteredSpeciesId: encounteredSpecies.speciesId,
       }
     : { searchStatus: "missed", encounteredSpeciesId: null };
+}
+
+export function isRegionUnlocked(region: Region, unlockedPokedexCount: number) {
+  return unlockedPokedexCount >= region.unlockRequiredPokedexCount;
 }
 
 export function isEncounterSuccessful(encounterRatePercent: number, randomValue: number): boolean {

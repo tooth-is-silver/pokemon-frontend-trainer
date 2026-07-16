@@ -3,12 +3,14 @@ import {
   createRegionSearchState,
   getKoreanSubjectParticle,
   isEncounterSuccessful,
+  isRegionUnlocked,
   pickEncounterSpecies,
   pickSearchTarget,
   regionSearchReducer,
   resolveRegionEncounter,
 } from "@/core/regionEncounter";
 import type { PokemonSpecies } from "@/content/pokemon/types";
+import { regions } from "@/content/regions";
 
 const speciesPool: PokemonSpecies[] = [
   {
@@ -124,6 +126,13 @@ describe("regionEncounter", () => {
   it("조우 확률과 랜덤 값으로 성공 여부를 판정", () => {
     expect(isEncounterSuccessful(50, 0.49)).toBe(true);
     expect(isEncounterSuccessful(50, 0.5)).toBe(false);
+  });
+
+  it("각 지역은 요구 도감 수에 도달한 시점부터 해금", () => {
+    regions.forEach((region) => {
+      expect(isRegionUnlocked(region, region.unlockRequiredPokedexCount)).toBe(true);
+      expect(isRegionUnlocked(region, region.unlockRequiredPokedexCount - 1)).toBe(false);
+    });
   });
 
   it("조우 확률을 0~100 사이로 보정", () => {
