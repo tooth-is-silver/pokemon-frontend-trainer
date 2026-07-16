@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { supabase } from "@/lib/supabase";
-import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
+import { getAllSpecies } from "@/content/pokemon";
 import { resolveAnswerProgression } from "@/core/answerProgression";
-import { isGraduationReady } from "@/core/evolutionChecker";
+import { resolveLoadedGameState } from "@/core/gameBootstrap";
 import {
   resolveEndingState,
   resolveEvolutionState,
@@ -90,7 +90,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   loadFromServer: async (userId) => {
-    const [trainerRes, instancesRes, pokedexRes, progressionRes, solvedRes] = await Promise.all([
+    const [
+      trainerResponse,
+      instancesResponse,
+      pokedexResponse,
+      progressionResponse,
+      solvedQuestionsResponse,
+    ] = await Promise.all([
       supabase.from("trainers").select("*").eq("user_id", userId).maybeSingle(),
       supabase.from("pokemon_instances").select("*").eq("user_id", userId),
       supabase.from("pokedex_entries").select("species_id").eq("user_id", userId),
@@ -104,75 +110,35 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     // 서버 에러 시 로드 실패 처리
     const errors = [
-      trainerRes.error,
-      instancesRes.error,
-      pokedexRes.error,
-      progressionRes.error,
-      solvedRes.error,
+      trainerResponse.error,
+      instancesResponse.error,
+      pokedexResponse.error,
+      progressionResponse.error,
+      solvedQuestionsResponse.error,
     ].filter(Boolean);
 
     if (errors.length > 0) {
-      errors.forEach((err) => console.error("상태 로드 실패:", err));
+      errors.forEach((error) => console.error("상태 로드 실패:", error));
       set({ ...initialState, loaded: true });
       return;
     }
 
     // 신규 유저: 데이터 없음
-    if (!trainerRes.data) {
+    if (!trainerResponse.data) {
       set({ ...initialState, loaded: true });
       return;
     }
 
-    const instances: PokemonInstance[] = (instancesRes.data ?? []).map((row) => ({
-      instanceId: row.id,
-      speciesId: row.species_id,
-      currentStage: row.current_stage,
-      exp: row.exp,
-      totalCorrectCount: row.total_correct_count,
-      graduated: row.graduated,
-      evolutionPending: row.evolution_pending,
-    }));
-
-    const solvedIds = [...new Set((solvedRes.data ?? []).map((r) => r.question_id))];
-    const activeInstanceId = trainerRes.data.active_pokemon_instance_id;
-    const activeInstance = instances.find((inst) => inst.instanceId === activeInstanceId);
-    const activeSpecies = activeInstance ? findSpeciesById(activeInstance.speciesId) : null;
-    const restoredGraduationInstanceId =
-      activeInstance && activeSpecies && isGraduationReady(activeInstance, activeSpecies)
-        ? activeInstance.instanceId
-        : null;
-    const serverProgression = progressionRes.data;
-
-    set({
-      trainer: {
-        starterChosen: trainerRes.data.starter_chosen,
-        activePokemonInstanceId: activeInstanceId,
-      },
-      party: { instances },
-      pokedex: {
-        unlockedSpeciesIds: (pokedexRes.data ?? []).map((r) => r.species_id),
-        normalPokedexCompleted: false,
-      },
-      progression: serverProgression
-        ? {
-            streakCorrectCount: serverProgression.streak_correct_count,
-            pendingEvolutionInstanceId: serverProgression.pending_evolution_instance_id,
-            pendingGraduationInstanceId:
-              serverProgression.pending_graduation_instance_id ?? restoredGraduationInstanceId,
-            unlockedLegendaryStage: serverProgression.unlocked_legendary_stage,
-            isEnding: serverProgression.is_ending ?? false,
-          }
-        : {
-            ...initialState.progression,
-            pendingGraduationInstanceId: restoredGraduationInstanceId,
-          },
-      session: {
-        currentQuestionId: null,
-        solvedQuestionIds: solvedIds,
-        lastAnswerCorrect: null,
-      },
-      loaded: true,
+    const loadedState = resolveLoadedGameState({
+      trainerRow: trainerResponse.data,
+      instanceRows: instancesResponse.data ?? [],
+      pokedexEntryRows: pokedexResponse.data ?? [],
+      progressionRow: progressionResponse.data,
+      solvedQuestionRows: solvedQuestionsResponse.data ?? [],
+      allSpecies: getAllSpecies(),
     });
+
+    set(loadedState);
   },
 
   chooseStarter: async (speciesId) => {
