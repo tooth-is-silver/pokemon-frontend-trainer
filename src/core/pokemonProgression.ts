@@ -7,6 +7,17 @@ import type {
   TrainerState,
 } from "@/stores/types";
 
+interface ResolveStarterStateArgs {
+  speciesId: string;
+  instanceId: string;
+}
+
+interface StarterState {
+  trainer: TrainerState;
+  party: PartyState;
+  pokedex: PokedexState;
+}
+
 interface ResolveEvolutionStateArgs {
   instances: PokemonInstance[];
   pokedex: PokedexState;
@@ -49,6 +60,35 @@ interface ResolveEndingStateArgs {
 interface EndingState {
   party: PartyState;
   progression: ProgressionState;
+}
+
+export function resolveStarterState({
+  speciesId,
+  instanceId,
+}: ResolveStarterStateArgs): StarterState {
+  return {
+    trainer: {
+      starterChosen: true,
+      activePokemonInstanceId: instanceId,
+    },
+    party: {
+      instances: [
+        {
+          instanceId,
+          speciesId,
+          currentStage: 1,
+          exp: 0,
+          totalCorrectCount: 0,
+          graduated: false,
+          evolutionPending: false,
+        },
+      ],
+    },
+    pokedex: {
+      unlockedSpeciesIds: [speciesId],
+      normalPokedexCompleted: false,
+    },
+  };
 }
 
 export function resolveEvolutionState({

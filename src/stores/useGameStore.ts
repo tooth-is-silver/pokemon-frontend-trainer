@@ -8,6 +8,7 @@ import {
   resolveEndingState,
   resolveEvolutionState,
   resolveNextPokemonState,
+  resolveStarterState,
 } from "@/core/pokemonProgression";
 import type {
   TrainerState,
@@ -15,7 +16,6 @@ import type {
   PokedexState,
   ProgressionState,
   SessionState,
-  PokemonInstance,
   ProcessAnswerResult,
   StartNextPokemonResult,
 } from "./types";
@@ -177,28 +177,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (error) throw error;
 
     const instanceId = data.instance_id as string;
-
-    const newInstance: PokemonInstance = {
-      instanceId,
-      speciesId,
-      currentStage: 1,
-      exp: 0,
-      totalCorrectCount: 0,
-      graduated: false,
-      evolutionPending: false,
-    };
-
-    set({
-      trainer: {
-        starterChosen: true,
-        activePokemonInstanceId: instanceId,
-      },
-      party: { instances: [newInstance] },
-      pokedex: {
-        unlockedSpeciesIds: [speciesId],
-        normalPokedexCompleted: false,
-      },
-    });
+    set(resolveStarterState({ speciesId, instanceId }));
   },
 
   submitAnswer: async (questionId, isCorrect, isFirstSolve) => {

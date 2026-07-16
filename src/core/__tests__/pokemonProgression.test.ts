@@ -3,6 +3,7 @@ import {
   resolveEndingState,
   resolveEvolutionState,
   resolveNextPokemonState,
+  resolveStarterState,
 } from "@/core/pokemonProgression";
 import type {
   PokedexState,
@@ -45,6 +46,35 @@ const session: SessionState = {
   solvedQuestionIds: ["question-1"],
   lastAnswerCorrect: true,
 };
+
+describe("resolveStarterState", () => {
+  it("선택한 스타터를 활성 포켓몬과 첫 도감 항목으로 등록한다", () => {
+    const nextState = resolveStarterState({
+      speciesId: "bulbasaur",
+      instanceId: "starter-instance",
+    });
+
+    expect(nextState.trainer).toEqual({
+      starterChosen: true,
+      activePokemonInstanceId: "starter-instance",
+    });
+    expect(nextState.party.instances).toEqual([
+      {
+        instanceId: "starter-instance",
+        speciesId: "bulbasaur",
+        currentStage: 1,
+        exp: 0,
+        totalCorrectCount: 0,
+        graduated: false,
+        evolutionPending: false,
+      },
+    ]);
+    expect(nextState.pokedex).toEqual({
+      unlockedSpeciesIds: ["bulbasaur"],
+      normalPokedexCompleted: false,
+    });
+  });
+});
 
 describe("resolveEvolutionState", () => {
   it("진화체와 도감 등록 상태를 함께 반영한다", () => {
