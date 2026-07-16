@@ -1,7 +1,8 @@
 import { CurrentPokemonCard } from "@/components/pokedex/CurrentPokemonCard";
 import { PokedexGrid } from "@/components/pokedex/PokedexGrid";
-import { findSpeciesById } from "@/content/pokemon";
+import { getAllSpecies } from "@/content/pokemon";
 import { TOTAL_DEX } from "@/content/pokemon/types";
+import { resolveActivePokemon } from "@/core/activePokemon";
 import { useGameStore } from "@/stores/useGameStore";
 
 const LEGENDARY_MESSAGE: Record<"none" | "legendary-birds" | "mewtwo" | "mew", string> = {
@@ -22,9 +23,11 @@ export function Pokedex() {
 
   const unlockedCount = unlockedSpeciesIds.length;
   const progressPercent = Math.floor((unlockedCount / TOTAL_DEX) * 100);
-  const activeInstance =
-    instances.find((instance) => instance.instanceId === activeInstanceId) ?? null;
-  const activeSpecies = activeInstance ? findSpeciesById(activeInstance.speciesId) : null;
+  const { activeInstance, activeSpecies } = resolveActivePokemon({
+    activeInstanceId,
+    instances,
+    allSpecies: getAllSpecies(),
+  });
 
   return (
     <div className="flex min-h-screen flex-col items-center gap-6 bg-gray-50 p-6">

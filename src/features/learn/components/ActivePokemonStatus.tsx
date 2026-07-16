@@ -1,6 +1,7 @@
 import { PokemonCard } from "@/components/pokemon/PokemonCard";
 import { PokemonExp } from "@/components/pokemon/PokemonExp";
-import { findSpeciesById } from "@/content/pokemon";
+import { getAllSpecies } from "@/content/pokemon";
+import { resolveActivePokemon } from "@/core/activePokemon";
 import { useGameStore } from "@/stores/useGameStore";
 
 export function ActivePokemonStatus() {
@@ -8,9 +9,11 @@ export function ActivePokemonStatus() {
   const instances = useGameStore((state) => state.party.instances);
   const streak = useGameStore((state) => state.progression.streakCorrectCount);
 
-  const activeInstance =
-    instances.find((instance) => instance.instanceId === activeInstanceId) ?? null;
-  const activeSpecies = activeInstance ? findSpeciesById(activeInstance.speciesId) : null;
+  const { activeInstance, activeSpecies } = resolveActivePokemon({
+    activeInstanceId,
+    instances,
+    allSpecies: getAllSpecies(),
+  });
 
   if (!activeInstance || !activeSpecies) return null;
 
