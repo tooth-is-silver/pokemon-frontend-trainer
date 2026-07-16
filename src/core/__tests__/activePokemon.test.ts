@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { getAllSpecies } from "@/content/pokemon";
 import { resolveActivePokemon } from "@/core/activePokemon";
-import type { PokemonInstance } from "@/stores/types";
+import type { PokemonInstance } from "@/core/types";
 
 const instance: PokemonInstance = {
   instanceId: "active-instance",

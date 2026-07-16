@@ -5,7 +5,7 @@ import type {
   ProgressionState,
   SessionState,
   TrainerState,
-} from "@/stores/types";
+} from "@/core/types";
 
 interface ResolveStarterStateArgs {
   speciesId: string;

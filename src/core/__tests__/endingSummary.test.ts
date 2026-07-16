@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { getAllSpecies } from "@/content/pokemon";
 import { resolveEndingStats, resolveEndingSummary } from "@/core/endingSummary";
-import type { PokemonInstance } from "@/stores/types";
+import type { PokemonInstance } from "@/core/types";
 
 const instances: PokemonInstance[] = [
   {

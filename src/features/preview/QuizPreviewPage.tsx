@@ -14,7 +14,7 @@ import type {
   MultipleChoiceQuestion as MCQ,
   FillBlankQuestion as FBQ,
 } from "@/content/questions/types";
-import type { PokemonInstance } from "@/stores/types";
+import type { PokemonInstance } from "@/core/types";
 
 const allSpecies = getAllSpecies();
 const sampleSpecies = findSpeciesById("charmander") ?? allSpecies[0];

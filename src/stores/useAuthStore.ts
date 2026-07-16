@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { supabase } from "@/lib/supabase";
+import type { AuthState } from "@/core/types";
 import { useGameStore } from "./useGameStore";
-import type { AuthState } from "./types";
 
 interface AuthStore {
   userId: AuthState["userId"];

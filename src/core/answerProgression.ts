@@ -6,7 +6,7 @@ import type {
   ProcessAnswerResult,
   ProgressionState,
   SessionState,
-} from "@/stores/types";
+} from "@/core/types";
 
 interface ResolveAnswerProgressionArgs {
   activeInstanceId: string | null;

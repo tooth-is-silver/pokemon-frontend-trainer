@@ -1,5 +1,5 @@
 import type { PokemonSpecies } from "@/content/pokemon/types";
-import type { PokemonInstance } from "@/stores/types";
+import type { PokemonInstance } from "@/core/types";
 
 export interface EndingStats {
   totalAttempts: number;

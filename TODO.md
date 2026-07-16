@@ -169,7 +169,7 @@
 - [x] `data-structures.md` `ProgressionState` 갱신
   - [x] `pendingPokemonSelection` 제거
   - [x] `pendingGraduationInstanceId: string | null` 추가
-- [x] `stores/types.ts` 정합화
+- [x] `core/types.ts` 정합화
 
 ### B.3 졸업 모달 (UI)
 

@@ -9,7 +9,7 @@
 
 - `src/content/questions/types.ts`
 - `src/content/pokemon/types.ts`
-- `src/stores/types.ts`
+- `src/core/types.ts`
 
 ## 2. Directory Layout
 
@@ -33,12 +33,12 @@ src/
 ### 3.1 Question Page
 
 ```ts
-type QuestionPage = {
+interface QuestionPage {
   sourceId: string;
   title: string;
   url: string;
   questions: Question[];
-};
+}
 ```
 
 예시:
@@ -57,7 +57,7 @@ type QuestionPage = {
 ```ts
 type QuestionType = "yes_no" | "multiple_choice" | "fill_blank";
 
-type QuestionBase = {
+interface QuestionBase {
   questionId: string;
   type: QuestionType;
   prompt: string;
@@ -65,7 +65,7 @@ type QuestionBase = {
   conceptGroup: string;
   explanation: string;
   sourceExcerptId: string;
-};
+}
 ```
 
 ```ts
@@ -125,7 +125,7 @@ type ConceptPools = Record<string, string[]>;
 ### 4.1 Species Type
 
 ```ts
-type PokemonSpecies = {
+interface PokemonSpecies {
   speciesId: string;
   dexNumber: number;
   nameKo: string;
@@ -136,7 +136,7 @@ type PokemonSpecies = {
   evolutionLine: string[];
   nextEvolutionSpeciesId: string | null;
   branchEvolutionSpeciesIds: string[];
-};
+}
 ```
 
 예시:
@@ -201,16 +201,16 @@ type AppState = {
 ### 6.2 Trainer
 
 ```ts
-type TrainerState = {
+interface TrainerState {
   starterChosen: boolean;
   activePokemonInstanceId: string | null;
-};
+}
 ```
 
 ### 6.3 Party
 
 ```ts
-type PokemonInstance = {
+interface PokemonInstance {
   instanceId: string;
   speciesId: string;
   currentStage: number;
@@ -218,34 +218,34 @@ type PokemonInstance = {
   totalCorrectCount: number;
   graduated: boolean;
   evolutionPending: boolean;
-};
+}
 ```
 
 ```ts
-type PartyState = {
+interface PartyState {
   instances: PokemonInstance[];
-};
+}
 ```
 
 ### 6.4 Pokedex
 
 ```ts
-type PokedexState = {
+interface PokedexState {
   unlockedSpeciesIds: string[];
   normalPokedexCompleted: boolean;
-};
+}
 ```
 
 ### 6.5 Progression
 
 ```ts
-type ProgressionState = {
+interface ProgressionState {
   streakCorrectCount: number;
   pendingEvolutionInstanceId: string | null;
   pendingGraduationInstanceId: string | null;
   unlockedLegendaryStage: "none" | "legendary-birds" | "mewtwo" | "mew";
   isEnding: boolean;
-};
+}
 ```
 
 - `pendingGraduationInstanceId` 가 세팅되면 학습 화면이 졸업 모달을 띄운다. 뮤 졸업 시점에는 모달 대신 엔딩 화면으로 분기한다.
@@ -256,30 +256,31 @@ type ProgressionState = {
 `session`은 프론트 전용 상태다.
 
 ```ts
-type SessionState = {
+interface SessionState {
   currentQuestionId: string | null;
   solvedQuestionIds: string[];
   lastAnswerCorrect: boolean | null;
-};
+}
 ```
 
 ### 6.7 Auth
 
 ```ts
-type AuthState = {
+interface AuthState {
   userId: string | null;
+  email: string | null;
   loading: boolean;
-};
+}
 ```
 
 ### 6.8 RPC Result
 
 ```ts
-type ProcessAnswerResult = {
+interface ProcessAnswerResult {
   correct: boolean;
   exp: number;
   streak: number;
   berry_given: string | null;
   evolution_pending: boolean;
-};
+}
 ```

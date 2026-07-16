@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { getSpriteUrl } from "@/content/pokemon/types";
 import type { PokemonSpecies } from "@/content/pokemon/types";
-import type { PokemonInstance } from "@/stores/types";
+import type { PokemonInstance } from "@/core/types";
 import { PokemonExp } from "@/components/pokemon/PokemonExp";
 
 interface Props {

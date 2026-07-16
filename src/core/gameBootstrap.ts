@@ -7,7 +7,7 @@ import type {
   ProgressionState,
   SessionState,
   TrainerState,
-} from "@/stores/types";
+} from "@/core/types";
 
 interface TrainerRow {
   starter_chosen: boolean;

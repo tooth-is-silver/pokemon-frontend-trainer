@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { getGraduationSelectionErrorMessage, resolveGraduationFlow } from "@/core/graduationFlow";
 import type { PokemonSpecies } from "@/content/pokemon/types";
-import type { PokemonInstance } from "@/stores/types";
+import type { PokemonInstance } from "@/core/types";
 
 function species(overrides: Partial<PokemonSpecies>): PokemonSpecies {
   return {

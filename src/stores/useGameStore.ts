@@ -4,21 +4,21 @@ import { getAllSpecies } from "@/content/pokemon";
 import { resolveAnswerProgression } from "@/core/answerProgression";
 import { resolveEndingStats, type EndingStats } from "@/core/endingSummary";
 import { resolveLoadedGameState } from "@/core/gameBootstrap";
+import type {
+  PartyState,
+  PokedexState,
+  ProcessAnswerResult,
+  ProgressionState,
+  SessionState,
+  StartNextPokemonResult,
+  TrainerState,
+} from "@/core/types";
 import {
   resolveEndingState,
   resolveEvolutionState,
   resolveNextPokemonState,
   resolveStarterState,
 } from "@/core/pokemonProgression";
-import type {
-  TrainerState,
-  PartyState,
-  PokedexState,
-  ProgressionState,
-  SessionState,
-  ProcessAnswerResult,
-  StartNextPokemonResult,
-} from "./types";
 
 interface GameStore {
   trainer: TrainerState;

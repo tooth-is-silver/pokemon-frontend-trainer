@@ -1,7 +1,7 @@
 import { pickGraduationCandidates } from "@/core/candidatePicker";
 import type { LegendaryStage } from "@/core/candidatePicker";
 import type { PokemonSpecies } from "@/content/pokemon/types";
-import type { PokemonInstance } from "@/stores/types";
+import type { PokemonInstance } from "@/core/types";
 
 interface ResolveGraduationFlowArgs {
   pendingGraduationInstanceId: string | null;

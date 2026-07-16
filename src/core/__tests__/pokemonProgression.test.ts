@@ -11,7 +11,7 @@ import type {
   ProgressionState,
   SessionState,
   TrainerState,
-} from "@/stores/types";
+} from "@/core/types";
 
 const activeInstance: PokemonInstance = {
   instanceId: "active-instance",
