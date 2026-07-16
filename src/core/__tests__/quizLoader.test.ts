@@ -48,7 +48,7 @@ const questionPages: QuestionPage[] = [
 
 describe("getNextQuestion", () => {
   it("정적 문제 목록에서도 다음 문제를 반환", () => {
-    const result = getNextQuestion([], null);
+    const result = getNextQuestion([], null, () => 0);
     expect(result).not.toBeNull();
   });
 });

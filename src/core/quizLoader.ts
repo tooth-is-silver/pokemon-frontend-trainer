@@ -4,28 +4,29 @@ import type { Question, QuestionPage } from "@/content/questions/types";
 export function getNextQuestion(
   solvedQuestionIds: string[],
   currentQuestionId: string | null,
+  random: () => number,
 ): Question | null {
-  return pickNextQuestion(getAllQuestions(), solvedQuestionIds, currentQuestionId);
+  return pickNextQuestion(getAllQuestions(), solvedQuestionIds, currentQuestionId, random);
 }
 
 export function pickNextQuestion(
   questions: Question[],
   solvedQuestionIds: string[],
   currentQuestionId: string | null,
-  random = Math.random,
+  random: () => number,
 ): Question | null {
   if (questions.length === 0) return null;
   const solvedSet = new Set(solvedQuestionIds);
 
   const unsolved = questions.filter(
-    (q) => !solvedSet.has(q.questionId) && q.questionId !== currentQuestionId,
+    (question) => !solvedSet.has(question.questionId) && question.questionId !== currentQuestionId,
   );
 
   if (unsolved.length > 0) {
     return pickRandomQuestion(unsolved, random);
   }
 
-  const others = questions.filter((q) => q.questionId !== currentQuestionId);
+  const others = questions.filter((question) => question.questionId !== currentQuestionId);
 
   if (others.length > 0) {
     return pickRandomQuestion(others, random);
@@ -43,7 +44,7 @@ export function findQuestionById(
   questionId: string | null,
 ): Question | null {
   if (!questionId) return null;
-  return questions.find((q) => q.questionId === questionId) ?? null;
+  return questions.find((question) => question.questionId === questionId) ?? null;
 }
 
 export function getQuestionSourceUrl(questionId: string): string {
@@ -51,12 +52,14 @@ export function getQuestionSourceUrl(questionId: string): string {
 }
 
 export function findQuestionSourceUrl(pages: QuestionPage[], questionId: string): string {
-  const page = pages.find((p) => p.questions.some((q) => q.questionId === questionId));
+  const page = pages.find((questionPage) =>
+    questionPage.questions.some((question) => question.questionId === questionId),
+  );
   return page?.url ?? "";
 }
 
 export function loadQuestionsBySource(sourceId: string): Question[] {
-  const page = questionPages.find((p) => p.sourceId === sourceId);
+  const page = questionPages.find((questionPage) => questionPage.sourceId === sourceId);
   return page?.questions ?? [];
 }
 

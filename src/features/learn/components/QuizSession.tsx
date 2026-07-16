@@ -23,7 +23,7 @@ export function QuizSession() {
   useEffect(() => {
     if (currentQuestion) return;
 
-    const nextQuestion = getNextQuestion(solvedQuestionIds, null);
+    const nextQuestion = getNextQuestion(solvedQuestionIds, null, Math.random);
     if (nextQuestion) setCurrentQuestion(nextQuestion.questionId);
   }, [currentQuestion, solvedQuestionIds, setCurrentQuestion]);
 
@@ -48,6 +48,7 @@ export function QuizSession() {
         const nextQuestion = getNextQuestion(
           answerAttempt.solvedQuestionIds,
           currentQuestion.questionId,
+          Math.random,
         );
         if (nextQuestion) setCurrentQuestion(nextQuestion.questionId);
       } else {
@@ -62,7 +63,7 @@ export function QuizSession() {
 
   const handleNext = () => {
     const skippedQuestionId = wrongQuestion?.questionId ?? currentQuestion?.questionId ?? null;
-    const nextQuestion = getNextQuestion(solvedQuestionIds, skippedQuestionId);
+    const nextQuestion = getNextQuestion(solvedQuestionIds, skippedQuestionId, Math.random);
     if (nextQuestion) setCurrentQuestion(nextQuestion.questionId);
     setWrongQuestion(null);
   };
