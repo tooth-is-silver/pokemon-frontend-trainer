@@ -70,13 +70,15 @@ export function QuizSession() {
 
   return (
     <section className="flex w-full max-w-lg flex-col gap-4">
-      {currentQuestion ? (
+      {currentQuestion && (
         <QuizCard
           question={currentQuestion}
           onSubmit={handleAnswer}
           disabled={isSubmitting || wrongQuestion !== null || isGraduationPending}
         />
-      ) : isGraduationPending ? null : (
+      )}
+
+      {!currentQuestion && !isGraduationPending && (
         <div className="p-6 text-center text-gray-500">출제할 문제가 없습니다.</div>
       )}
 

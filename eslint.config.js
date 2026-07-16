@@ -37,6 +37,7 @@ export default defineConfig([
       globals: globals.browser,
     },
     rules: {
+      'no-nested-ternary': 'error',
       'no-restricted-imports': [
         'error',
         {
