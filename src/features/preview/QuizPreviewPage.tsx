@@ -264,6 +264,7 @@ export default function QuizPreviewPage() {
                 instance={currentInstancePreview}
                 species={currentSpeciesPreview}
                 graduationPending={true}
+                onOpenLearning={doNothing}
               />
             </section>
 

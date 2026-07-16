@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { getSpriteUrl } from "@/content/pokemon/types";
 import type { PokemonSpecies } from "@/content/pokemon/types";
 import type { PokemonInstance } from "@/core/types";
@@ -8,9 +7,15 @@ interface Props {
   instance: PokemonInstance;
   species: PokemonSpecies;
   graduationPending?: boolean;
+  onOpenLearning: () => void;
 }
 
-export function CurrentPokemonCard({ instance, species, graduationPending = false }: Props) {
+export function CurrentPokemonCard({
+  instance,
+  species,
+  graduationPending = false,
+  onOpenLearning,
+}: Props) {
   const maxStage = species.evolutionLine.length;
 
   return (
@@ -36,12 +41,13 @@ export function CurrentPokemonCard({ instance, species, graduationPending = fals
             현재 포켓몬
           </span>
           {instance.evolutionPending && (
-            <Link
-              to="/learn"
+            <button
+              type="button"
+              onClick={onOpenLearning}
               className="inline-flex min-h-11 items-center rounded-full bg-emerald-100 px-3 py-2 font-bold text-emerald-700 transition-colors hover:bg-emerald-200"
             >
               ✨ 진화 대기 (학습으로 이동)
-            </Link>
+            </button>
           )}
           {instance.graduated && (
             <span className="font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
@@ -49,12 +55,13 @@ export function CurrentPokemonCard({ instance, species, graduationPending = fals
             </span>
           )}
           {graduationPending && (
-            <Link
-              to="/learn"
+            <button
+              type="button"
+              onClick={onOpenLearning}
               className="inline-flex min-h-11 items-center rounded-full bg-amber-100 px-3 py-2 font-bold text-amber-800 transition-colors hover:bg-amber-200"
             >
               🎓 졸업 대기 (학습에서 선택)
-            </Link>
+            </button>
           )}
         </div>
         {graduationPending && (

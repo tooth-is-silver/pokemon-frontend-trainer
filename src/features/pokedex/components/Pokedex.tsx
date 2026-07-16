@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { CurrentPokemonCard } from "@/components/pokedex/CurrentPokemonCard";
 import { PokedexGrid } from "@/components/pokedex/PokedexGrid";
 import { getAllSpecies } from "@/content/pokemon";
@@ -13,6 +14,7 @@ const LEGENDARY_MESSAGE: Record<"none" | "legendary-birds" | "mewtwo" | "mew", s
 };
 
 export function Pokedex() {
+  const navigate = useNavigate();
   const unlockedSpeciesIds = useGameStore((state) => state.pokedex.unlockedSpeciesIds);
   const legendaryStage = useGameStore((state) => state.progression.unlockedLegendaryStage);
   const pendingGraduationInstanceId = useGameStore(
@@ -60,6 +62,7 @@ export function Pokedex() {
             instance={activeInstance}
             species={activeSpecies}
             graduationPending={activeInstance.instanceId === pendingGraduationInstanceId}
+            onOpenLearning={() => navigate("/learn")}
           />
         </section>
       )}
