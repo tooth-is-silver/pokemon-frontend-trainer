@@ -20,63 +20,48 @@ import {
   resolveStarterState,
 } from "@/core/pokemonProgression";
 
-interface GameStore {
+interface GameState {
   trainer: TrainerState;
   party: PartyState;
   pokedex: PokedexState;
   progression: ProgressionState;
   session: SessionState;
   loaded: boolean;
+}
 
-  // 상태 초기화 (로그아웃 시)
+interface GameStore extends GameState {
   reset: () => void;
-
-  // 서버에서 상태 로드
   loadFromServer: (userId: string) => Promise<void>;
-
-  // 엔딩 학습 통계 로드
   loadEndingStats: (userId: string, signal: AbortSignal) => Promise<EndingStats>;
-
-  // 스타터 선택
   chooseStarter: (speciesId: string) => Promise<void>;
-
-  // 정답 처리
   submitAnswer: (
     questionId: string,
     isCorrect: boolean,
     isFirstSolve: boolean,
   ) => Promise<ProcessAnswerResult>;
-
-  // 진화 처리
   evolve: (instanceId: string, nextSpeciesId: string) => Promise<void>;
-
-  // 졸업 후 새 인스턴스 시작
   startNextPokemon: (speciesId: string) => Promise<void>;
-
-  // 엔딩 처리 (뮤 졸업 시)
   completeEnding: (instanceId: string) => Promise<void>;
-
-  // 세션 (프론트 전용)
   setCurrentQuestion: (questionId: string) => void;
   addSolvedQuestion: (questionId: string) => void;
 }
 
-const initialState = {
-  trainer: { starterChosen: false, activePokemonInstanceId: null } as TrainerState,
-  party: { instances: [] } as PartyState,
-  pokedex: { unlockedSpeciesIds: [], normalPokedexCompleted: false } as PokedexState,
+const initialState: GameState = {
+  trainer: { starterChosen: false, activePokemonInstanceId: null },
+  party: { instances: [] },
+  pokedex: { unlockedSpeciesIds: [], normalPokedexCompleted: false },
   progression: {
     streakCorrectCount: 0,
     pendingEvolutionInstanceId: null,
     pendingGraduationInstanceId: null,
     unlockedLegendaryStage: "none",
     isEnding: false,
-  } as ProgressionState,
+  },
   session: {
     currentQuestionId: null,
     solvedQuestionIds: [],
     lastAnswerCorrect: null,
-  } as SessionState,
+  },
   loaded: false,
 };
 
@@ -176,7 +161,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     if (error) throw error;
 
-    const instanceId = data.instance_id as string;
+    const instanceId: string = data.instance_id;
     set(resolveStarterState({ speciesId, instanceId }));
   },
 
@@ -189,7 +174,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     if (error) throw error;
 
-    const result = data as ProcessAnswerResult;
+    const result: ProcessAnswerResult = data;
     const state = get();
     const answerProgression = resolveAnswerProgression({
       activeInstanceId: state.trainer.activePokemonInstanceId,
@@ -240,7 +225,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     });
     if (error) throw error;
 
-    const result = data as StartNextPokemonResult;
+    const result: StartNextPokemonResult = data;
     const newInstanceId = result.instance_id;
     const state = get();
     const nextPokemonState = resolveNextPokemonState({
