@@ -19,6 +19,7 @@ export function FillBlankQuestion({ onSubmit, disabled }: Props) {
     <form onSubmit={handleSubmit} className="flex min-w-0 gap-2">
       <input
         type="text"
+        aria-label="정답 입력"
         value={value}
         onChange={(event) => setValue(event.target.value)}
         disabled={disabled}
