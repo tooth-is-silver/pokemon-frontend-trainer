@@ -40,7 +40,7 @@ interface SolvedQuestionRow {
   question_id: string;
 }
 
-interface ResolveLoadedGameStateArgs {
+interface ResolveLoadedGameStateInput {
   trainerRow: TrainerRow;
   instanceRows: PokemonInstanceRow[];
   pokedexEntryRows: PokedexEntryRow[];
@@ -65,7 +65,7 @@ export function resolveLoadedGameState({
   progressionRow,
   solvedQuestionRows,
   allSpecies,
-}: ResolveLoadedGameStateArgs): LoadedGameState {
+}: ResolveLoadedGameStateInput): LoadedGameState {
   const instances = instanceRows.map(mapPokemonInstance);
   const activeInstance = instances.find(
     (instance) => instance.instanceId === trainerRow.active_pokemon_instance_id,

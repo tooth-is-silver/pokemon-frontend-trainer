@@ -7,7 +7,7 @@ export type LegendaryStage = "none" | "legendary-birds" | "mewtwo" | "mew";
 const NORMAL_WAVE_SIZE = 3;
 const LEGENDARY_BIRD_IDS = ["articuno", "zapdos", "moltres"];
 
-interface PickGraduationCandidatesArgs {
+interface PickGraduationCandidatesInput {
   unlockedSpeciesIds: string[];
   graduatedSpeciesIds: string[];
   // 졸업 모달을 띄운 현재 포켓몬은 아직 서버상 graduated가 아니므로 후보 계산에서 함께 제외한다.
@@ -28,7 +28,7 @@ export function pickGraduationCandidates({
   legendaryStage,
   allSpecies,
   random,
-}: PickGraduationCandidatesArgs): PokemonSpecies[] {
+}: PickGraduationCandidatesInput): PokemonSpecies[] {
   const pool = buildPool({
     unlockedSpeciesIds,
     graduatedSpeciesIds,
@@ -52,7 +52,7 @@ function buildPool({
   graduatingSpeciesId,
   legendaryStage,
   allSpecies,
-}: Omit<PickGraduationCandidatesArgs, "random">): PokemonSpecies[] {
+}: Omit<PickGraduationCandidatesInput, "random">): PokemonSpecies[] {
   const unlocked = new Set(unlockedSpeciesIds);
   const graduated = new Set([
     ...graduatedSpeciesIds,

@@ -17,7 +17,7 @@ interface RegionEncounterResult {
   encounteredSpeciesId: string | null;
 }
 
-interface ResolveRegionEncounterArgs {
+interface ResolveRegionEncounterInput {
   encounterRatePercent: number;
   speciesPool: PokemonSpecies[];
   encounterRandomValue: number;
@@ -71,7 +71,7 @@ export function resolveRegionEncounter({
   speciesPool,
   encounterRandomValue,
   speciesRandomValue,
-}: ResolveRegionEncounterArgs): RegionEncounterResult {
+}: ResolveRegionEncounterInput): RegionEncounterResult {
   if (!isEncounterSuccessful(encounterRatePercent, encounterRandomValue)) {
     return { searchStatus: "missed", encounteredSpeciesId: null };
   }

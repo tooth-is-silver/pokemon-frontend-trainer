@@ -8,7 +8,7 @@ import type {
   SessionState,
 } from "@/core/types";
 
-interface ResolveAnswerProgressionArgs {
+interface ResolveAnswerProgressionInput {
   activeInstanceId: string | null;
   instances: PokemonInstance[];
   progression: ProgressionState;
@@ -36,7 +36,7 @@ export function resolveAnswerProgression({
   isFirstSolve,
   result,
   allSpecies,
-}: ResolveAnswerProgressionArgs): AnswerProgression {
+}: ResolveAnswerProgressionInput): AnswerProgression {
   const updatedInstances = instances.map((instance) =>
     instance.instanceId === activeInstanceId
       ? {

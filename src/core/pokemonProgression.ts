@@ -7,7 +7,7 @@ import type {
   TrainerState,
 } from "@/core/types";
 
-interface ResolveStarterStateArgs {
+interface ResolveStarterStateInput {
   speciesId: string;
   instanceId: string;
 }
@@ -18,7 +18,7 @@ interface StarterState {
   pokedex: PokedexState;
 }
 
-interface ResolveEvolutionStateArgs {
+interface ResolveEvolutionStateInput {
   instances: PokemonInstance[];
   pokedex: PokedexState;
   progression: ProgressionState;
@@ -32,7 +32,7 @@ interface EvolutionState {
   progression: ProgressionState;
 }
 
-interface ResolveNextPokemonStateArgs {
+interface ResolveNextPokemonStateInput {
   trainer: TrainerState;
   instances: PokemonInstance[];
   pokedex: PokedexState;
@@ -51,7 +51,7 @@ interface NextPokemonState {
   session: SessionState;
 }
 
-interface ResolveEndingStateArgs {
+interface ResolveEndingStateInput {
   instances: PokemonInstance[];
   progression: ProgressionState;
   instanceId: string;
@@ -65,7 +65,7 @@ interface EndingState {
 export function resolveStarterState({
   speciesId,
   instanceId,
-}: ResolveStarterStateArgs): StarterState {
+}: ResolveStarterStateInput): StarterState {
   return {
     trainer: {
       starterChosen: true,
@@ -97,7 +97,7 @@ export function resolveEvolutionState({
   progression,
   instanceId,
   nextSpeciesId,
-}: ResolveEvolutionStateArgs): EvolutionState {
+}: ResolveEvolutionStateInput): EvolutionState {
   return {
     party: {
       instances: instances.map((instance) =>
@@ -131,7 +131,7 @@ export function resolveNextPokemonState({
   speciesId,
   newInstanceId,
   unlockedLegendaryStage,
-}: ResolveNextPokemonStateArgs): NextPokemonState {
+}: ResolveNextPokemonStateInput): NextPokemonState {
   const newInstance: PokemonInstance = {
     instanceId: newInstanceId,
     speciesId,
@@ -180,7 +180,7 @@ export function resolveEndingState({
   instances,
   progression,
   instanceId,
-}: ResolveEndingStateArgs): EndingState {
+}: ResolveEndingStateInput): EndingState {
   return {
     party: {
       instances: instances.map((instance) =>

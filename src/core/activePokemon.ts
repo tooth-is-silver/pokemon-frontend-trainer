@@ -1,7 +1,7 @@
 import type { PokemonSpecies } from "@/content/pokemon/types";
 import type { PokemonInstance } from "@/core/types";
 
-interface ResolveActivePokemonArgs {
+interface ResolveActivePokemonInput {
   activeInstanceId: string | null;
   instances: PokemonInstance[];
   allSpecies: PokemonSpecies[];
@@ -11,7 +11,7 @@ export function resolveActivePokemon({
   activeInstanceId,
   instances,
   allSpecies,
-}: ResolveActivePokemonArgs) {
+}: ResolveActivePokemonInput) {
   const activeInstance =
     instances.find((instance) => instance.instanceId === activeInstanceId) ?? null;
   const activeSpecies = activeInstance

@@ -14,12 +14,12 @@ export interface EndingSummary {
   graduatedSpecies: PokemonSpecies[];
 }
 
-interface ResolveEndingStatsArgs {
+interface ResolveEndingStatsInput {
   totalAttempts: number;
   totalCorrect: number;
 }
 
-interface ResolveEndingSummaryArgs {
+interface ResolveEndingSummaryInput {
   unlockedSpeciesIds: string[];
   instances: PokemonInstance[];
   allSpecies: PokemonSpecies[];
@@ -29,7 +29,7 @@ interface ResolveEndingSummaryArgs {
 export function resolveEndingStats({
   totalAttempts,
   totalCorrect,
-}: ResolveEndingStatsArgs): EndingStats {
+}: ResolveEndingStatsInput): EndingStats {
   const normalizedAttempts = Math.max(totalAttempts, 0);
   const normalizedCorrect = Math.min(Math.max(totalCorrect, 0), normalizedAttempts);
 
@@ -45,7 +45,7 @@ export function resolveEndingSummary({
   instances,
   allSpecies,
   totalDex,
-}: ResolveEndingSummaryArgs): EndingSummary {
+}: ResolveEndingSummaryInput): EndingSummary {
   const unlockedCount = new Set(unlockedSpeciesIds).size;
   const graduatedSpeciesIds = new Set(
     instances.filter((instance) => instance.graduated).map((instance) => instance.speciesId),

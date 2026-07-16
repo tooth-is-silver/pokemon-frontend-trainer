@@ -3,7 +3,7 @@ import type { LegendaryStage } from "@/core/candidatePicker";
 import type { PokemonSpecies } from "@/content/pokemon/types";
 import type { PokemonInstance } from "@/core/types";
 
-interface ResolveGraduationFlowArgs {
+interface ResolveGraduationFlowInput {
   pendingGraduationInstanceId: string | null;
   instances: PokemonInstance[];
   unlockedSpeciesIds: string[];
@@ -29,7 +29,7 @@ export function resolveGraduationFlow({
   legendaryStage,
   allSpecies,
   random,
-}: ResolveGraduationFlowArgs): GraduationFlow {
+}: ResolveGraduationFlowInput): GraduationFlow {
   const graduatedInstance = pendingGraduationInstanceId
     ? (instances.find((instance) => instance.instanceId === pendingGraduationInstanceId) ?? null)
     : null;

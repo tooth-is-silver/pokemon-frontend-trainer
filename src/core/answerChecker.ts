@@ -1,6 +1,6 @@
 import type { Question } from "@/content/questions/types";
 
-interface EvaluateAnswerAttemptArgs {
+interface EvaluateAnswerAttemptInput {
   question: Question;
   userAnswer: string;
   solvedQuestionIds: string[];
@@ -33,7 +33,7 @@ export function evaluateAnswerAttempt({
   question,
   userAnswer,
   solvedQuestionIds,
-}: EvaluateAnswerAttemptArgs): AnswerAttempt {
+}: EvaluateAnswerAttemptInput): AnswerAttempt {
   const isCorrect = checkAnswer(question, userAnswer);
   const isFirstSolve = isCorrect && !solvedQuestionIds.includes(question.questionId);
 
