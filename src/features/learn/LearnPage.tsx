@@ -4,7 +4,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
 import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
 import { getNextQuestion, getQuestionById, getQuestionSourceUrl } from "@/core/quizLoader";
-import { checkAnswer } from "@/core/answerChecker";
+import { evaluateAnswerAttempt } from "@/core/answerChecker";
 import { EvolutionModal } from "@/components/pokemon/EvolutionModal";
 import { GraduationModal } from "@/components/pokemon/GraduationModal";
 import { EndingScreen } from "@/components/pokemon/EndingScreen";
@@ -56,19 +56,22 @@ export default function LearnPage() {
   const handleAnswer = async (userAnswer: string) => {
     if (!currentQuestion || submitting || wrongQuestion) return;
 
-    const correct = checkAnswer(currentQuestion, userAnswer);
-    const alreadySolved = solvedQuestionIds.includes(currentQuestion.questionId);
-    const isFirstSolve = correct && !alreadySolved;
+    const answerAttempt = evaluateAnswerAttempt({
+      question: currentQuestion,
+      userAnswer,
+      solvedQuestionIds,
+    });
 
     setSubmitting(true);
     try {
-      await submitAnswer(currentQuestion.questionId, correct, isFirstSolve);
+      await submitAnswer(
+        currentQuestion.questionId,
+        answerAttempt.isCorrect,
+        answerAttempt.isFirstSolve,
+      );
 
-      if (correct) {
-        const updatedSolved = isFirstSolve
-          ? [...solvedQuestionIds, currentQuestion.questionId]
-          : solvedQuestionIds;
-        const next = getNextQuestion(updatedSolved, currentQuestion.questionId);
+      if (answerAttempt.isCorrect) {
+        const next = getNextQuestion(answerAttempt.solvedQuestionIds, currentQuestion.questionId);
         if (next) setCurrentQuestion(next.questionId);
       } else {
         setWrongQuestion(currentQuestion);

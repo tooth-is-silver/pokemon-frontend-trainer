@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { checkAnswer, normalizeAnswer } from "@/core/answerChecker";
+import { checkAnswer, evaluateAnswerAttempt, normalizeAnswer } from "@/core/answerChecker";
 import type {
   YesNoQuestion,
   MultipleChoiceQuestion,
@@ -85,6 +85,65 @@ describe("checkAnswer", () => {
 
     it("허용되지 않은 답 → 오답", () => {
       expect(checkAnswer(question, "that")).toBe(false);
+    });
+  });
+});
+
+describe("evaluateAnswerAttempt", () => {
+  const question: MultipleChoiceQuestion = {
+    questionId: "test-attempt",
+    type: "multiple_choice",
+    prompt: "테스트",
+    answer: "정답",
+    choices: ["정답", "오답 1", "오답 2", "오답 3", "오답 4"],
+    conceptGroup: "test",
+    explanation: "",
+    sourceExcerptId: "test",
+  };
+
+  it("처음 맞힌 문제를 해결 목록에 추가한다", () => {
+    expect(
+      evaluateAnswerAttempt({
+        question,
+        userAnswer: "정답",
+        solvedQuestionIds: ["solved-question"],
+      }),
+    ).toEqual({
+      isCorrect: true,
+      isFirstSolve: true,
+      solvedQuestionIds: ["solved-question", "test-attempt"],
+    });
+  });
+
+  it("이미 푼 문제를 다시 맞혀도 해결 목록을 변경하지 않는다", () => {
+    const solvedQuestionIds = ["test-attempt"];
+
+    expect(
+      evaluateAnswerAttempt({
+        question,
+        userAnswer: "정답",
+        solvedQuestionIds,
+      }),
+    ).toEqual({
+      isCorrect: true,
+      isFirstSolve: false,
+      solvedQuestionIds,
+    });
+  });
+
+  it("오답이면 해결 목록을 변경하지 않는다", () => {
+    const solvedQuestionIds = ["solved-question"];
+
+    expect(
+      evaluateAnswerAttempt({
+        question,
+        userAnswer: "오답 1",
+        solvedQuestionIds,
+      }),
+    ).toEqual({
+      isCorrect: false,
+      isFirstSolve: false,
+      solvedQuestionIds,
     });
   });
 });
