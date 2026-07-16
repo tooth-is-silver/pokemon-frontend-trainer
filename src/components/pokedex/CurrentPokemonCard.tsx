@@ -38,7 +38,7 @@ export function CurrentPokemonCard({ instance, species, graduationPending = fals
           {instance.evolutionPending && (
             <Link
               to="/learn"
-              className="font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full hover:bg-emerald-200 transition-colors"
+              className="inline-flex min-h-11 items-center rounded-full bg-emerald-100 px-3 py-2 font-bold text-emerald-700 transition-colors hover:bg-emerald-200"
             >
               ✨ 진화 대기 (학습으로 이동)
             </Link>
@@ -51,7 +51,7 @@ export function CurrentPokemonCard({ instance, species, graduationPending = fals
           {graduationPending && (
             <Link
               to="/learn"
-              className="font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full hover:bg-amber-200 transition-colors"
+              className="inline-flex min-h-11 items-center rounded-full bg-amber-100 px-3 py-2 font-bold text-amber-800 transition-colors hover:bg-amber-200"
             >
               🎓 졸업 대기 (학습에서 선택)
             </Link>

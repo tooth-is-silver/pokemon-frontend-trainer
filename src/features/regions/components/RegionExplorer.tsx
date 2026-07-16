@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
 import { regions } from "@/content/regions";
 import {
@@ -63,6 +63,7 @@ const mapPoints: Record<string, MapPoint> = {
 
 export function RegionExplorer() {
   const unlockedSpeciesIds = useGameStore((state) => state.pokedex.unlockedSpeciesIds);
+  const searchButtonRef = useRef<HTMLButtonElement>(null);
   const [searchState, dispatchSearch] = useReducer(
     regionSearchReducer,
     initialRegionId,
@@ -161,13 +162,12 @@ export function RegionExplorer() {
                     type="button"
                     onClick={() => handleSelectRegion(region.regionId)}
                     aria-pressed={selected}
-                    aria-disabled={!unlocked}
                     aria-label={
                       unlocked
                         ? `${region.nameKo} 지역 선택`
                         : `${region.nameKo} 지역 잠김, 도감 ${remainingCount}마리 더 필요`
                     }
-                    className={`absolute z-10 flex min-h-10 -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-xl border-2 border-white/90 px-2.5 py-1.5 text-[11px] font-black shadow-md transition-colors focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-gray-950 ${mapPoint.positionClassName} ${mapPoint.markerClassName} ${
+                    className={`absolute z-10 flex min-h-11 -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-xl border-2 border-white/90 px-2.5 py-1.5 text-[11px] font-black shadow-md transition-colors focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-gray-950 ${mapPoint.positionClassName} ${mapPoint.markerClassName} ${
                       selected
                         ? `region-marker-selected ${mapPoint.selectedClassName} ring-2 ring-white/90`
                         : ""
@@ -214,10 +214,11 @@ export function RegionExplorer() {
                   )}
                 </div>
                 <button
+                  ref={searchButtonRef}
                   type="button"
                   onClick={handleStartSearch}
                   disabled={!selectedRegionUnlocked || isSearchOverlayOpen}
-                  className="min-h-10 rounded-lg bg-white px-4 py-2 text-sm font-black text-gray-950 disabled:cursor-not-allowed disabled:opacity-45"
+                  className="min-h-11 rounded-lg bg-white px-4 py-2 text-sm font-black text-gray-950 disabled:cursor-not-allowed disabled:opacity-45"
                 >
                   탐색하기
                 </button>
@@ -233,6 +234,7 @@ export function RegionExplorer() {
               encounteredSpecies={encounteredSpecies}
               onStartSearch={handleStartSearch}
               onCloseSearch={handleCloseSearch}
+              returnFocusRef={searchButtonRef}
             />
           )}
         </section>

@@ -28,14 +28,14 @@ export function WrongAnswerPanel({ question, sourceUrl, onNext }: Props) {
           href={sourceUrl}
           target="_blank"
           rel="noreferrer"
-          className="text-sm text-blue-600 hover:underline"
+          className="inline-flex min-h-11 items-center text-sm text-blue-600 hover:underline"
         >
           출처 보기 →
         </a>
         <button
           type="button"
           onClick={onNext}
-          className="px-5 py-2 rounded-lg bg-gray-900 text-white font-semibold hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gray-900 transition-colors"
+          className="min-h-11 rounded-lg bg-gray-900 px-5 py-2 font-semibold text-white transition-colors hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gray-900"
         >
           다음 문제
         </button>
