@@ -4,10 +4,10 @@ import { useAuthStore } from "@/stores/useAuthStore";
 
 export function AccountBar() {
   const location = useLocation();
-  const authLoading = useAuthStore((s) => s.loading);
-  const userId = useAuthStore((s) => s.userId);
-  const email = useAuthStore((s) => s.email);
-  const signOut = useAuthStore((s) => s.signOut);
+  const authLoading = useAuthStore((state) => state.loading);
+  const userId = useAuthStore((state) => state.userId);
+  const email = useAuthStore((state) => state.email);
+  const signOut = useAuthStore((state) => state.signOut);
   const [signingOut, setSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState<string | null>(null);
 

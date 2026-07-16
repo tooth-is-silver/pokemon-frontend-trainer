@@ -12,13 +12,13 @@ export function getAllSpecies(): PokemonSpecies[] {
 }
 
 export function findSpeciesById(speciesId: string): PokemonSpecies | null {
-  return allSpecies.find((s) => s.speciesId === speciesId) ?? null;
+  return allSpecies.find((species) => species.speciesId === speciesId) ?? null;
 }
 
 export function findSpeciesByDex(dexNumber: number): PokemonSpecies | null {
-  return allSpecies.find((s) => s.dexNumber === dexNumber) ?? null;
+  return allSpecies.find((species) => species.dexNumber === dexNumber) ?? null;
 }
 
 export function getStarters(): PokemonSpecies[] {
-  return allSpecies.filter((s) => s.isStarter);
+  return allSpecies.filter((species) => species.isStarter);
 }

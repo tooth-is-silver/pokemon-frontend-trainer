@@ -48,5 +48,5 @@ export function evaluateAnswerAttempt({
 
 function checkFillBlank(acceptedAnswers: string[], userAnswer: string): boolean {
   const normalized = normalizeAnswer(userAnswer);
-  return acceptedAnswers.some((a) => normalizeAnswer(a) === normalized);
+  return acceptedAnswers.some((acceptedAnswer) => normalizeAnswer(acceptedAnswer) === normalized);
 }

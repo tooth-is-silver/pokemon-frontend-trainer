@@ -48,8 +48,8 @@ export function GraduationModal({
         <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40" />
         <Dialog.Content
           className="fixed left-1/2 top-1/2 z-50 max-h-[calc(100dvh-2rem)] w-[90vw] max-w-md -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl bg-white shadow-xl focus:outline-none"
-          onEscapeKeyDown={(e) => e.preventDefault()}
-          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(event) => event.preventDefault()}
+          onPointerDownOutside={(event) => event.preventDefault()}
         >
           <Dialog.Title className="sr-only">졸업 후 다음 포켓몬 선택</Dialog.Title>
           <Dialog.Description className="sr-only">

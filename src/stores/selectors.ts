@@ -4,7 +4,7 @@ import { useGameStore } from "./useGameStore";
 export const useActivePokemon = () =>
   useGameStore((state) => {
     const id = state.trainer.activePokemonInstanceId;
-    return state.party.instances.find((i) => i.instanceId === id) ?? null;
+    return state.party.instances.find((instance) => instance.instanceId === id) ?? null;
   });
 
 // 스타터 선택 여부
@@ -14,7 +14,7 @@ export const useStarterChosen = () => useGameStore((state) => state.trainer.star
 export const useActiveExp = () =>
   useGameStore((state) => {
     const id = state.trainer.activePokemonInstanceId;
-    return state.party.instances.find((i) => i.instanceId === id)?.exp ?? null;
+    return state.party.instances.find((instance) => instance.instanceId === id)?.exp ?? null;
   });
 
 // 연속 정답 수

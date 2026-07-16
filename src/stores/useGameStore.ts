@@ -210,7 +210,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   evolve: async (instanceId, nextSpeciesId) => {
     const state = get();
-    const instance = state.party.instances.find((i) => i.instanceId === instanceId);
+    const instance = state.party.instances.find(
+      (pokemonInstance) => pokemonInstance.instanceId === instanceId,
+    );
     if (!instance) throw new Error("포켓몬 인스턴스를 찾을 수 없습니다.");
 
     const { error } = await supabase.rpc("evolve_pokemon", {

@@ -35,8 +35,8 @@ export function EvolutionModal({ open, currentSpecies, nextSpecies, onEvolve }: 
         <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40" />
         <Dialog.Content
           className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-xl w-[90vw] max-w-md z-50 focus:outline-none"
-          onEscapeKeyDown={(e) => e.preventDefault()}
-          onPointerDownOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(event) => event.preventDefault()}
+          onPointerDownOutside={(event) => event.preventDefault()}
         >
           <Dialog.Title className="sr-only">진화 확인</Dialog.Title>
           <Dialog.Description className="sr-only">

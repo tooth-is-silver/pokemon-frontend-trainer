@@ -17,10 +17,10 @@ function preventNativeDrag(event: DragEvent) {
 }
 
 export function App() {
-  const authLoading = useAuthStore((s) => s.loading);
-  const userId = useAuthStore((s) => s.userId);
-  const loadFromServer = useGameStore((s) => s.loadFromServer);
-  const resetGame = useGameStore((s) => s.reset);
+  const authLoading = useAuthStore((state) => state.loading);
+  const userId = useAuthStore((state) => state.userId);
+  const loadFromServer = useGameStore((state) => state.loadFromServer);
+  const resetGame = useGameStore((state) => state.reset);
   const bootstrappedRef = useRef(false);
   const loadedUserRef = useRef<string | null | undefined>(undefined);
 
