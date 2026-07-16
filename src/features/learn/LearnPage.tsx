@@ -3,8 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
 import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
-import { questionPages, getAllQuestions } from "@/content/questions";
-import { getNextQuestion } from "@/core/quizLoader";
+import { getNextQuestion, getQuestionById, getQuestionSourceUrl } from "@/core/quizLoader";
 import { checkAnswer } from "@/core/answerChecker";
 import { PokemonCard } from "@/components/pokemon/PokemonCard";
 import { PokemonExp } from "@/components/pokemon/PokemonExp";
@@ -15,16 +14,6 @@ import { QuizCard } from "@/components/quiz/QuizCard";
 import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
 import { pickGraduationCandidates } from "@/core/candidatePicker";
 import type { Question } from "@/content/questions/types";
-
-function findSourceUrl(questionId: string): string {
-  const page = questionPages.find((p) => p.questions.some((q) => q.questionId === questionId));
-  return page?.url ?? "";
-}
-
-function findQuestion(questionId: string | null): Question | null {
-  if (!questionId) return null;
-  return getAllQuestions().find((q) => q.questionId === questionId) ?? null;
-}
 
 export default function LearnPage() {
   const userId = useAuthStore((s) => s.userId);
@@ -56,7 +45,7 @@ export default function LearnPage() {
 
   const activeInstance = instances.find((i) => i.instanceId === activeInstanceId) ?? null;
   const activeSpecies = activeInstance ? findSpeciesById(activeInstance.speciesId) : null;
-  const currentQuestion = findQuestion(currentQuestionId);
+  const currentQuestion = getQuestionById(currentQuestionId);
 
   // 현재 문제가 없으면 다음 문제 로드
   useEffect(() => {
@@ -231,7 +220,7 @@ export default function LearnPage() {
         {wrongQuestion && (
           <WrongAnswerPanel
             question={wrongQuestion}
-            sourceUrl={findSourceUrl(wrongQuestion.questionId)}
+            sourceUrl={getQuestionSourceUrl(wrongQuestion.questionId)}
             onNext={handleNext}
           />
         )}
