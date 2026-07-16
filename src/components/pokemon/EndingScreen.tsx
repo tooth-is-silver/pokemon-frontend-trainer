@@ -1,31 +1,25 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { findSpeciesById } from "@/content/pokemon";
+import { getAllSpecies } from "@/content/pokemon";
 import { getSpriteUrl, TOTAL_DEX } from "@/content/pokemon/types";
+import { resolveEndingStats, resolveEndingSummary, type EndingStats } from "@/core/endingSummary";
 import { supabase } from "@/lib/supabase";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
 
-type EndingStats = {
-  totalAttempts: number;
-  totalCorrect: number;
-  totalWrong: number;
-};
-
 export function EndingScreen() {
-  const userId = useAuthStore((s) => s.userId);
-  const unlockedSpeciesIds = useGameStore((s) => s.pokedex.unlockedSpeciesIds);
-  const instances = useGameStore((s) => s.party.instances);
+  const userId = useAuthStore((state) => state.userId);
+  const unlockedSpeciesIds = useGameStore((state) => state.pokedex.unlockedSpeciesIds);
+  const instances = useGameStore((state) => state.party.instances);
   const [stats, setStats] = useState<EndingStats | null>(null);
   const [statsError, setStatsError] = useState(false);
-  const pokedexPercent = Math.floor((unlockedSpeciesIds.length / TOTAL_DEX) * 100);
-  const pokedexComplete = unlockedSpeciesIds.length >= TOTAL_DEX;
-  const graduatedSpecies = [
-    ...new Set(instances.filter((i) => i.graduated).map((i) => i.speciesId)),
-  ]
-    .map((speciesId) => findSpeciesById(speciesId))
-    .filter((species) => species !== null)
-    .sort((a, b) => a.dexNumber - b.dexNumber);
+  const { unlockedCount, pokedexPercent, isPokedexComplete, graduatedSpecies } =
+    resolveEndingSummary({
+      unlockedSpeciesIds,
+      instances,
+      allSpecies: getAllSpecies(),
+      totalDex: TOTAL_DEX,
+    });
 
   useEffect(() => {
     if (!userId) return;
@@ -56,11 +50,7 @@ export function EndingScreen() {
         const totalCorrect = statsRes.data?.filter((row) => row.correct).length ?? 0;
 
         if (!cancelled) {
-          setStats({
-            totalAttempts,
-            totalCorrect,
-            totalWrong: Math.max(totalAttempts - totalCorrect, 0),
-          });
+          setStats(resolveEndingStats({ totalAttempts, totalCorrect }));
         }
       } catch (error) {
         console.error("엔딩 통계 로드 실패:", error);
@@ -97,7 +87,7 @@ export function EndingScreen() {
             여기까지 온 것만으로도 정말 대단해요. 문제를 하나씩 풀고, 틀려도 다시 확인하고, 끝까지
             포기하지 않고 자바스크립트 훈련을 이어온 시간이 분명히 남아 있을 거예요.
           </p>
-          {pokedexComplete && (
+          {isPokedexComplete && (
             <p className="rounded-full bg-yellow-100 px-4 py-2 text-sm font-bold text-yellow-800 ring-1 ring-yellow-200">
               1세대 도감 100% 완성
             </p>
@@ -138,7 +128,7 @@ export function EndingScreen() {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-lg font-semibold text-slate-900">도감 진행</h2>
             <span className="text-sm font-medium text-slate-600 tabular-nums">
-              {unlockedSpeciesIds.length} / {TOTAL_DEX} · {pokedexPercent}%
+              {unlockedCount} / {TOTAL_DEX} · {pokedexPercent}%
             </span>
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-slate-200">
@@ -148,7 +138,7 @@ export function EndingScreen() {
             />
           </div>
           <p className="text-sm leading-relaxed text-slate-600">
-            {pokedexComplete
+            {isPokedexComplete
               ? "일반 포켓몬부터 전설 포켓몬까지 모두 도감에 남았어요. 긴 훈련의 끝을 숫자로도 확인할 수 있어요."
               : "지금까지 함께한 포켓몬들이 차곡차곡 도감에 남아 있어요. 완주까지 이어온 흐름이 한눈에 보이도록 정리했어요."}
           </p>
