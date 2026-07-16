@@ -9,10 +9,9 @@ import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
 import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
 import { pickGraduationCandidates } from "@/core/candidatePicker";
 import type {
-  Question,
-  YesNoQuestion as YesNoQ,
-  MultipleChoiceQuestion as MCQ,
-  FillBlankQuestion as FBQ,
+  FillBlankQuestion,
+  MultipleChoiceQuestion,
+  YesNoQuestion,
 } from "@/content/questions/types";
 import type { PokemonInstance } from "@/core/types";
 
@@ -37,7 +36,7 @@ const graduationCandidates = pickGraduationCandidates({
 });
 const sampleExp = 61;
 
-const currentInstanceMock: PokemonInstance = {
+const currentInstancePreview: PokemonInstance = {
   instanceId: "mock-active",
   speciesId: "charmeleon",
   currentStage: 2,
@@ -46,9 +45,9 @@ const currentInstanceMock: PokemonInstance = {
   graduated: false,
   evolutionPending: false,
 };
-const currentSpeciesMock = findSpeciesById("charmeleon") ?? allSpecies[0];
+const currentSpeciesPreview = findSpeciesById("charmeleon") ?? allSpecies[0];
 
-const yesNoSample: YesNoQ = {
+const yesNoSample: YesNoQuestion = {
   questionId: "preview-yn",
   type: "yes_no",
   prompt: "화살표 함수는 자신만의 this를 가진다.",
@@ -59,7 +58,7 @@ const yesNoSample: YesNoQ = {
   sourceExcerptId: "preview-001",
 };
 
-const mcSample: MCQ = {
+const multipleChoiceSample: MultipleChoiceQuestion = {
   questionId: "preview-mc",
   type: "multiple_choice",
   prompt: "메서드 안의 this는 보통 무엇을 가리키나?",
@@ -70,7 +69,7 @@ const mcSample: MCQ = {
   sourceExcerptId: "preview-002",
 };
 
-const fbSample: FBQ = {
+const fillBlankSample: FillBlankQuestion = {
   questionId: "preview-fb",
   type: "fill_blank",
   prompt: "obj.method() 호출 시, method 안의 this는 ____ 를 가리킨다.",
@@ -81,7 +80,7 @@ const fbSample: FBQ = {
   sourceExcerptId: "preview-003",
 };
 
-const noop = () => {};
+const doNothing = () => {};
 
 interface SectionProps {
   id: string;
@@ -169,7 +168,7 @@ function ModalPreviewShell({ children }: ModalPreviewShellProps) {
           <PokemonCard species={sampleSpecies} />
           <PokemonExp exp={sampleExp} />
           <div className="w-full max-w-lg">
-            <QuizCard question={mcSample as Question} onSubmit={noop} disabled={false} />
+            <QuizCard question={multipleChoiceSample} onSubmit={doNothing} disabled={false} />
           </div>
         </div>
         <div className="relative z-10 flex min-h-[760px] items-center justify-center bg-black/50 p-6">
@@ -197,27 +196,27 @@ export default function QuizPreviewPage() {
             </section>
 
             <section className="flex w-full max-w-lg flex-col gap-4">
-              <QuizCard question={mcSample as Question} onSubmit={noop} disabled={false} />
+              <QuizCard question={multipleChoiceSample} onSubmit={doNothing} disabled={false} />
             </section>
           </div>
         </PagePreviewShell>
       </Section>
 
       <Section id="preview-yesno" title="예/아니오 문제">
-        <QuizCard question={yesNoSample as Question} onSubmit={noop} disabled={false} />
+        <QuizCard question={yesNoSample} onSubmit={doNothing} disabled={false} />
       </Section>
 
       <Section id="preview-fillblank" title="주관식 문제">
-        <QuizCard question={fbSample as Question} onSubmit={noop} disabled={false} />
+        <QuizCard question={fillBlankSample} onSubmit={doNothing} disabled={false} />
       </Section>
 
       <Section id="preview-wrong" title="오답 패널">
         <div className="flex flex-col gap-4">
-          <QuizCard question={yesNoSample as Question} onSubmit={noop} disabled={true} />
+          <QuizCard question={yesNoSample} onSubmit={doNothing} disabled={true} />
           <WrongAnswerPanel
-            question={yesNoSample as Question}
+            question={yesNoSample}
             sourceUrl="https://ko.javascript.info/object-methods"
-            onNext={noop}
+            onNext={doNothing}
           />
         </div>
       </Section>
@@ -228,7 +227,7 @@ export default function QuizPreviewPage() {
             currentSpecies={sampleSpecies}
             nextSpecies={evolutionNext}
             submitting={false}
-            onEvolve={noop}
+            onEvolve={doNothing}
           />
         </ModalPreviewShell>
       </Section>
@@ -241,7 +240,7 @@ export default function QuizPreviewPage() {
             candidates={graduationCandidates}
             submitting={false}
             selectedSpeciesId={null}
-            onSelect={noop}
+            onSelect={doNothing}
           />
         </ModalPreviewShell>
       </Section>
@@ -262,8 +261,8 @@ export default function QuizPreviewPage() {
 
             <section className="w-full max-w-4xl">
               <CurrentPokemonCard
-                instance={currentInstanceMock}
-                species={currentSpeciesMock}
+                instance={currentInstancePreview}
+                species={currentSpeciesPreview}
                 graduationPending={true}
               />
             </section>
