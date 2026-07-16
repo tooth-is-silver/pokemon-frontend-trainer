@@ -9,6 +9,7 @@ interface ResolveGraduationFlowArgs {
   unlockedSpeciesIds: string[];
   legendaryStage: LegendaryStage;
   allSpecies: PokemonSpecies[];
+  random: () => number;
 }
 
 interface GraduationFlow {
@@ -27,6 +28,7 @@ export function resolveGraduationFlow({
   unlockedSpeciesIds,
   legendaryStage,
   allSpecies,
+  random,
 }: ResolveGraduationFlowArgs): GraduationFlow {
   const graduatedInstance = pendingGraduationInstanceId
     ? (instances.find((instance) => instance.instanceId === pendingGraduationInstanceId) ?? null)
@@ -46,6 +48,7 @@ export function resolveGraduationFlow({
         graduatingSpeciesId: graduatedSpecies?.speciesId,
         legendaryStage,
         allSpecies,
+        random,
       })
     : [];
   const autoGraduationCandidate =

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { pickGraduationCandidates } from "@/core/candidatePicker";
+import { pickGraduationCandidates as pickGraduationCandidatesCore } from "@/core/candidatePicker";
 import type { PokemonSpecies } from "@/content/pokemon/types";
 
 function species(overrides: Partial<PokemonSpecies>): PokemonSpecies {
@@ -48,8 +48,13 @@ const allSpecies: PokemonSpecies[] = [
   mew,
 ];
 
-// 결정론적 random: i 번째 호출에서 0 반환 → shuffleSlice 가 앞에서부터 차례로 뽑음
-const det = () => 0;
+const deterministicRandom = () => 0;
+
+function pickGraduationCandidates(
+  input: Omit<Parameters<typeof pickGraduationCandidatesCore>[0], "random">,
+) {
+  return pickGraduationCandidatesCore({ ...input, random: deterministicRandom });
+}
 
 describe("pickGraduationCandidates - 일반 wave", () => {
   it("미등록 일반 1차 진화체 중 풀이 충분하면 3마리 반환", () => {
@@ -58,12 +63,11 @@ describe("pickGraduationCandidates - 일반 wave", () => {
       graduatedSpeciesIds: [],
       legendaryStage: "none",
       allSpecies,
-      random: det,
     });
     expect(result).toHaveLength(3);
-    result.forEach((s) => {
-      expect(s.category).toBe("normal");
-      expect(s.evolutionStage).toBe(1);
+    result.forEach((pokemonSpecies) => {
+      expect(pokemonSpecies.category).toBe("normal");
+      expect(pokemonSpecies.evolutionStage).toBe(1);
     });
   });
 
@@ -73,12 +77,11 @@ describe("pickGraduationCandidates - 일반 wave", () => {
       graduatedSpeciesIds: [],
       legendaryStage: "none",
       allSpecies,
-      random: det,
     });
-    const ids = result.map((s) => s.speciesId);
-    expect(ids).not.toContain("bulbasaur");
-    expect(ids).not.toContain("charmander");
-    expect(ids).not.toContain("squirtle");
+    const speciesIds = result.map((pokemonSpecies) => pokemonSpecies.speciesId);
+    expect(speciesIds).not.toContain("bulbasaur");
+    expect(speciesIds).not.toContain("charmander");
+    expect(speciesIds).not.toContain("squirtle");
   });
 
   it("진화 중간 단계(evolutionStage > 1)는 후보가 아님", () => {
@@ -87,10 +90,9 @@ describe("pickGraduationCandidates - 일반 wave", () => {
       graduatedSpeciesIds: [],
       legendaryStage: "none",
       allSpecies,
-      random: det,
     });
-    const ids = result.map((s) => s.speciesId);
-    expect(ids).not.toContain("ivysaur");
+    const speciesIds = result.map((pokemonSpecies) => pokemonSpecies.speciesId);
+    expect(speciesIds).not.toContain("ivysaur");
   });
 
   it("전설 5종은 일반 wave 후보에서 항상 제외", () => {
@@ -99,11 +101,10 @@ describe("pickGraduationCandidates - 일반 wave", () => {
       graduatedSpeciesIds: [],
       legendaryStage: "none",
       allSpecies,
-      random: det,
     });
-    const ids = result.map((s) => s.speciesId);
-    ["articuno", "zapdos", "moltres", "mewtwo", "mew"].forEach((id) => {
-      expect(ids).not.toContain(id);
+    const speciesIds = result.map((pokemonSpecies) => pokemonSpecies.speciesId);
+    ["articuno", "zapdos", "moltres", "mewtwo", "mew"].forEach((speciesId) => {
+      expect(speciesIds).not.toContain(speciesId);
     });
   });
 
@@ -113,7 +114,6 @@ describe("pickGraduationCandidates - 일반 wave", () => {
       graduatedSpeciesIds: [],
       legendaryStage: "none",
       allSpecies,
-      random: det,
     });
     expect(result).toHaveLength(1);
     expect(result[0].speciesId).toBe("rattata");
@@ -125,7 +125,6 @@ describe("pickGraduationCandidates - 일반 wave", () => {
       graduatedSpeciesIds: [],
       legendaryStage: "none",
       allSpecies,
-      random: det,
     });
     expect(result).toEqual([]);
   });
@@ -136,10 +135,9 @@ describe("pickGraduationCandidates - 일반 wave", () => {
       graduatedSpeciesIds: [],
       legendaryStage: "none",
       allSpecies,
-      random: det,
     });
-    const ids = result.map((s) => s.speciesId);
-    expect(ids.sort()).toEqual(["articuno", "moltres", "zapdos"]);
+    const speciesIds = result.map((pokemonSpecies) => pokemonSpecies.speciesId);
+    expect(speciesIds.sort()).toEqual(["articuno", "moltres", "zapdos"]);
   });
 });
 
@@ -151,8 +149,8 @@ describe("pickGraduationCandidates - 전설 wave 1 (legendary-birds)", () => {
       legendaryStage: "legendary-birds",
       allSpecies,
     });
-    const ids = result.map((s) => s.speciesId);
-    expect(ids.sort()).toEqual(["articuno", "moltres", "zapdos"]);
+    const speciesIds = result.map((pokemonSpecies) => pokemonSpecies.speciesId);
+    expect(speciesIds.sort()).toEqual(["articuno", "moltres", "zapdos"]);
   });
 
   it("1마리 졸업 시 풀이 2마리로 줄어듦", () => {
@@ -163,7 +161,7 @@ describe("pickGraduationCandidates - 전설 wave 1 (legendary-birds)", () => {
       allSpecies,
     });
     expect(result).toHaveLength(2);
-    expect(result.map((s) => s.speciesId)).not.toContain("articuno");
+    expect(result.map((pokemonSpecies) => pokemonSpecies.speciesId)).not.toContain("articuno");
   });
 
   it("현재 졸업 중인 전설 새는 다음 후보에서 제외", () => {

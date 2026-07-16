@@ -7,14 +7,14 @@ export type LegendaryStage = "none" | "legendary-birds" | "mewtwo" | "mew";
 const NORMAL_WAVE_SIZE = 3;
 const LEGENDARY_BIRD_IDS = ["articuno", "zapdos", "moltres"];
 
-interface PickArgs {
+interface PickGraduationCandidatesArgs {
   unlockedSpeciesIds: string[];
   graduatedSpeciesIds: string[];
   // 졸업 모달을 띄운 현재 포켓몬은 아직 서버상 graduated가 아니므로 후보 계산에서 함께 제외한다.
   graduatingSpeciesId?: string;
   legendaryStage: LegendaryStage;
   allSpecies: PokemonSpecies[];
-  random?: () => number;
+  random: () => number;
 }
 
 // 졸업 후 다음 포켓몬 후보를 결정한다.
@@ -27,8 +27,8 @@ export function pickGraduationCandidates({
   graduatingSpeciesId,
   legendaryStage,
   allSpecies,
-  random = Math.random,
-}: PickArgs): PokemonSpecies[] {
+  random,
+}: PickGraduationCandidatesArgs): PokemonSpecies[] {
   const pool = buildPool({
     unlockedSpeciesIds,
     graduatedSpeciesIds,
@@ -52,7 +52,7 @@ function buildPool({
   graduatingSpeciesId,
   legendaryStage,
   allSpecies,
-}: Omit<PickArgs, "random">): PokemonSpecies[] {
+}: Omit<PickGraduationCandidatesArgs, "random">): PokemonSpecies[] {
   const unlocked = new Set(unlockedSpeciesIds);
   const graduated = new Set([
     ...graduatedSpeciesIds,
@@ -115,11 +115,14 @@ function pickSingleLegendary(
   );
 }
 
-function shuffleSlice<T>(arr: T[], n: number, random: () => number): T[] {
-  const copy = [...arr];
-  for (let i = 0; i < n; i++) {
-    const j = i + Math.floor(random() * (copy.length - i));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
+function shuffleSlice<T>(items: T[], count: number, random: () => number): T[] {
+  const shuffledItems = [...items];
+  for (let index = 0; index < count; index++) {
+    const swapIndex = index + Math.floor(random() * (shuffledItems.length - index));
+    [shuffledItems[index], shuffledItems[swapIndex]] = [
+      shuffledItems[swapIndex],
+      shuffledItems[index],
+    ];
   }
-  return copy.slice(0, n);
+  return shuffledItems.slice(0, count);
 }

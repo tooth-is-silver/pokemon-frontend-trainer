@@ -52,6 +52,7 @@ describe("resolveGraduationFlow", () => {
       unlockedSpeciesIds: [],
       legendaryStage: "none",
       allSpecies,
+      random: () => 0,
     });
 
     expect(result.graduatedInstance).toBeNull();
@@ -68,6 +69,7 @@ describe("resolveGraduationFlow", () => {
       unlockedSpeciesIds: ["rattata", "pidgey"],
       legendaryStage: "none",
       allSpecies,
+      random: () => 0,
     });
 
     expect(result.graduatedSpecies?.speciesId).toBe("rattata");
@@ -82,6 +84,7 @@ describe("resolveGraduationFlow", () => {
       unlockedSpeciesIds: ["rattata"],
       legendaryStage: "none",
       allSpecies,
+      random: () => 0,
     });
 
     expect(result.graduationCandidates.map((species) => species.speciesId).sort()).toEqual([
@@ -99,6 +102,7 @@ describe("resolveGraduationFlow", () => {
       unlockedSpeciesIds: ["rattata", "pidgey", "spearow", "mew"],
       legendaryStage: "mew",
       allSpecies,
+      random: () => 0,
     });
 
     expect(result.isMewGraduating).toBe(true);

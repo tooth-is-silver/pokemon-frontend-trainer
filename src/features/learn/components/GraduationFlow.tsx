@@ -32,6 +32,7 @@ export function GraduationFlow() {
     unlockedSpeciesIds,
     legendaryStage,
     allSpecies: getAllSpecies(),
+    random: Math.random,
   });
   const autoGraduationSpeciesId = autoGraduationCandidate?.speciesId ?? null;
 
