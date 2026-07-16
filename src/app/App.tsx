@@ -4,7 +4,7 @@ import type { DragEvent } from "react";
 import { devRoutes } from "@/features/preview/routes";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
-import { AccountBar } from "@/components/layout/AccountBar";
+import { AccountBar } from "@/app/components/AccountBar";
 
 const Landing = lazy(() => import("@/features/landing/LandingPage"));
 const Starter = lazy(() => import("@/features/starter/StarterPage"));
