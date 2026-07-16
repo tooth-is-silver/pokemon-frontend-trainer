@@ -32,6 +32,7 @@
 
 - 코드 변경 후 `npm run build`가 통과해야 한다.
 - `npm run lint`가 통과해야 한다.
+- UI 변경은 `eslint-plugin-jsx-a11y` recommended 규칙을 통과해야 한다.
 - `src/core/` 아래 순수 함수는 입출력 기준으로 검증한다.
 - PR 리뷰에서 must-fix로 판단한 항목은 바로 수정하고 같은 브랜치에 커밋까지 반영한다.
 
