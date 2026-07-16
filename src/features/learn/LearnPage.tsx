@@ -5,8 +5,6 @@ import { useGameStore } from "@/stores/useGameStore";
 import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
 import { getNextQuestion, getQuestionById, getQuestionSourceUrl } from "@/core/quizLoader";
 import { checkAnswer } from "@/core/answerChecker";
-import { PokemonCard } from "@/components/pokemon/PokemonCard";
-import { PokemonExp } from "@/components/pokemon/PokemonExp";
 import { EvolutionModal } from "@/components/pokemon/EvolutionModal";
 import { GraduationModal } from "@/components/pokemon/GraduationModal";
 import { EndingScreen } from "@/components/pokemon/EndingScreen";
@@ -14,6 +12,7 @@ import { QuizCard } from "@/components/quiz/QuizCard";
 import { WrongAnswerPanel } from "@/components/quiz/WrongAnswerPanel";
 import { resolveGraduationFlow } from "@/core/graduationFlow";
 import type { Question } from "@/content/questions/types";
+import { ActivePokemonStatus } from "./components/ActivePokemonStatus";
 
 export default function LearnPage() {
   const userId = useAuthStore((s) => s.userId);
@@ -168,15 +167,7 @@ export default function LearnPage() {
   return (
     <div className="flex flex-col items-center gap-6 min-h-screen p-6 bg-gray-50">
       {activeSpecies && activeInstance && (
-        <section className="flex flex-col items-center gap-4 w-full max-w-lg">
-          <PokemonCard species={activeSpecies} />
-          <PokemonExp exp={activeInstance.exp} />
-          {streak > 0 && (
-            <p className="text-sm text-gray-500" aria-live="polite">
-              연속 정답 <span className="font-bold text-blue-600">{streak}</span>개
-            </p>
-          )}
-        </section>
+        <ActivePokemonStatus species={activeSpecies} instance={activeInstance} streak={streak} />
       )}
 
       <section className="w-full max-w-lg flex flex-col gap-4">
