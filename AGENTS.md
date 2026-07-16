@@ -117,7 +117,7 @@ src/
 ### Import
 
 - 폴더를 넘는 import는 `@/` path alias를 사용한다.
-- 같은 폴더 내 파일 간에만 상대 경로를 허용한다.
+- 같은 feature/content 슬라이스 내부 파일 간에만 상대 경로를 허용한다.
 - `content`는 다른 애플리케이션 계층에 의존하지 않는다.
 - `core`는 `content`와 자체 타입만 사용하며 UI, 스토어, 외부 연동에 의존하지 않는다.
 - 공용 `components`는 `content`와 `core`만 사용하고 기능·스토어·외부 연동을 직접 참조하지 않는다.

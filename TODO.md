@@ -107,7 +107,7 @@
 - [x] 앱 진입 시 `useAuthStore.initialize()` 호출
 - [x] 로그인 세션 기준 `useGameStore.loadFromServer()` 호출
 - [x] 로그아웃/비로그인 상태에서 게임 스토어 게스트 상태로 초기화
-- [x] 랜딩에서 로그인 완료 시 `starterChosen` 상태에 따라 `/starter` 또는 `/learn` 으로 분기
+- [x] 랜딩에서 로그인 완료 시 `starterChosen` 상태에 따라 `/starter` 또는 `/regions` 로 분기
 - [x] 스타터 페이지에서 인증/로딩 가드 적용
 
 ---
@@ -204,7 +204,7 @@
   - [x] EXP 진행도 (`PokemonExp` 재사용)
   - [x] 진화 대기 뱃지
   - [x] 졸업 대기 뱃지
-- [x] 진화 대기 시 `<Link to="/learn">` 안내
+- [x] 진화 대기 시 학습 화면 이동 버튼 안내
 - [x] 졸업 대기 시 안내 문구 (학습 화면에서 모달 자동 오픈됨을 알림)
 - [x] 로그인 상태 공통 상단바에서 도감 진입점 제공
 - [x] 프리뷰 페이지 갱신
