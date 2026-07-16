@@ -3,6 +3,11 @@ import { supabase } from "@/lib/supabase";
 import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
 import { resolveAnswerProgression } from "@/core/answerProgression";
 import { isGraduationReady } from "@/core/evolutionChecker";
+import {
+  resolveEndingState,
+  resolveEvolutionState,
+  resolveNextPokemonState,
+} from "@/core/pokemonProgression";
 import type {
   TrainerState,
   PartyState,
@@ -243,28 +248,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     if (error) throw error;
 
-    set({
-      party: {
-        instances: state.party.instances.map((inst) =>
-          inst.instanceId === instanceId
-            ? {
-                ...inst,
-                speciesId: nextSpeciesId,
-                currentStage: inst.currentStage + 1,
-                evolutionPending: false,
-              }
-            : inst,
-        ),
-      },
-      pokedex: {
-        ...state.pokedex,
-        unlockedSpeciesIds: [...new Set([...state.pokedex.unlockedSpeciesIds, nextSpeciesId])],
-      },
-      progression: {
-        ...state.progression,
-        pendingEvolutionInstanceId: null,
-      },
+    const evolutionState = resolveEvolutionState({
+      instances: state.party.instances,
+      pokedex: state.pokedex,
+      progression: state.progression,
+      instanceId,
+      nextSpeciesId,
     });
+
+    set(evolutionState);
   },
 
   startNextPokemon: async (speciesId) => {
@@ -276,50 +268,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const result = data as StartNextPokemonResult;
     const newInstanceId = result.instance_id;
     const state = get();
-    const oldActiveId = state.trainer.activePokemonInstanceId;
-
-    const newInstance: PokemonInstance = {
-      instanceId: newInstanceId,
+    const nextPokemonState = resolveNextPokemonState({
+      trainer: state.trainer,
+      instances: state.party.instances,
+      pokedex: state.pokedex,
+      progression: state.progression,
+      session: state.session,
       speciesId,
-      currentStage: 1,
-      exp: 0,
-      totalCorrectCount: 0,
-      graduated: false,
-      evolutionPending: false,
-    };
-
-    set({
-      trainer: {
-        ...state.trainer,
-        activePokemonInstanceId: newInstanceId,
-      },
-      party: {
-        instances: [
-          ...state.party.instances.map((inst) =>
-            inst.instanceId === oldActiveId
-              ? { ...inst, graduated: true, evolutionPending: false }
-              : inst,
-          ),
-          newInstance,
-        ],
-      },
-      pokedex: {
-        ...state.pokedex,
-        unlockedSpeciesIds: [...new Set([...state.pokedex.unlockedSpeciesIds, speciesId])],
-      },
-      progression: {
-        ...state.progression,
-        streakCorrectCount: 0,
-        pendingEvolutionInstanceId: null,
-        pendingGraduationInstanceId: null,
-        unlockedLegendaryStage: result.unlocked_legendary_stage,
-      },
-      session: {
-        ...state.session,
-        currentQuestionId: null,
-        lastAnswerCorrect: null,
-      },
+      newInstanceId,
+      unlockedLegendaryStage: result.unlocked_legendary_stage,
     });
+
+    set(nextPokemonState);
   },
 
   completeEnding: async (instanceId) => {
@@ -329,21 +289,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (error) throw error;
 
     const state = get();
-    set({
-      party: {
-        instances: state.party.instances.map((inst) =>
-          inst.instanceId === instanceId
-            ? { ...inst, graduated: true, evolutionPending: false }
-            : inst,
-        ),
-      },
-      progression: {
-        ...state.progression,
-        isEnding: true,
-        pendingGraduationInstanceId: null,
-        pendingEvolutionInstanceId: null,
-      },
+    const endingState = resolveEndingState({
+      instances: state.party.instances,
+      progression: state.progression,
+      instanceId,
     });
+
+    set(endingState);
   },
 
   setCurrentQuestion: (questionId) => {
