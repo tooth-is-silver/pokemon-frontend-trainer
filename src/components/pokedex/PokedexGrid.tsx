@@ -11,8 +11,8 @@ export function PokedexGrid({ unlockedSpeciesIds }: Props) {
 
   return (
     <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 gap-2">
-      {Array.from({ length: TOTAL_DEX }, (_, i) => {
-        const dexNumber = i + 1;
+      {Array.from({ length: TOTAL_DEX }, (_value, index) => {
+        const dexNumber = index + 1;
         const species = findSpeciesByDex(dexNumber);
         const unlocked = species ? unlockedSet.has(species.speciesId) : false;
         return (

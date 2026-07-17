@@ -1,72 +1,67 @@
 import { create } from "zustand";
 import { supabase } from "@/lib/supabase";
-import { findSpeciesById } from "@/content/pokemon";
-import { isGraduationReady } from "@/core/evolutionChecker";
+import { getAllSpecies } from "@/content/pokemon";
+import { resolveAnswerProgression } from "@/core/answerProgression";
+import { resolveEndingStats, type EndingStats } from "@/core/endingSummary";
+import { resolveLoadedGameState } from "@/core/gameBootstrap";
 import type {
-  TrainerState,
   PartyState,
   PokedexState,
+  ProcessAnswerResult,
   ProgressionState,
   SessionState,
-  PokemonInstance,
-  ProcessAnswerResult,
   StartNextPokemonResult,
-} from "./types";
+  TrainerState,
+} from "@/core/types";
+import {
+  resolveEndingState,
+  resolveEvolutionState,
+  resolveNextPokemonState,
+  resolveStarterState,
+} from "@/core/pokemonProgression";
 
-interface GameStore {
+interface GameState {
   trainer: TrainerState;
   party: PartyState;
   pokedex: PokedexState;
   progression: ProgressionState;
   session: SessionState;
   loaded: boolean;
+}
 
-  // 상태 초기화 (로그아웃 시)
+interface GameStore extends GameState {
   reset: () => void;
-
-  // 서버에서 상태 로드
   loadFromServer: (userId: string) => Promise<void>;
-
-  // 스타터 선택
+  loadEndingStats: (userId: string, signal: AbortSignal) => Promise<EndingStats>;
   chooseStarter: (speciesId: string) => Promise<void>;
-
-  // 정답 처리
   submitAnswer: (
     questionId: string,
-    correct: boolean,
+    isCorrect: boolean,
     isFirstSolve: boolean,
   ) => Promise<ProcessAnswerResult>;
-
-  // 진화 처리
   evolve: (instanceId: string, nextSpeciesId: string) => Promise<void>;
-
-  // 졸업 후 새 인스턴스 시작
   startNextPokemon: (speciesId: string) => Promise<void>;
-
-  // 엔딩 처리 (뮤 졸업 시)
   completeEnding: (instanceId: string) => Promise<void>;
-
-  // 세션 (프론트 전용)
   setCurrentQuestion: (questionId: string) => void;
   addSolvedQuestion: (questionId: string) => void;
 }
 
-const initialState = {
-  trainer: { starterChosen: false, activePokemonInstanceId: null } as TrainerState,
-  party: { instances: [] } as PartyState,
-  pokedex: { unlockedSpeciesIds: [], normalPokedexCompleted: false } as PokedexState,
+const initialState: GameState = {
+  trainer: { starterChosen: false, activePokemonInstanceId: null },
+  party: { instances: [] },
+  pokedex: { unlockedSpeciesIds: [], normalPokedexCompleted: false },
   progression: {
     streakCorrectCount: 0,
     pendingEvolutionInstanceId: null,
     pendingGraduationInstanceId: null,
     unlockedLegendaryStage: "none",
     isEnding: false,
-  } as ProgressionState,
+  },
   session: {
     currentQuestionId: null,
     solvedQuestionIds: [],
     lastAnswerCorrect: null,
-  } as SessionState,
+  },
   loaded: false,
 };
 
@@ -84,7 +79,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   loadFromServer: async (userId) => {
-    const [trainerRes, instancesRes, pokedexRes, progressionRes, solvedRes] = await Promise.all([
+    const [
+      trainerResponse,
+      instancesResponse,
+      pokedexResponse,
+      progressionResponse,
+      solvedQuestionsResponse,
+    ] = await Promise.all([
       supabase.from("trainers").select("*").eq("user_id", userId).maybeSingle(),
       supabase.from("pokemon_instances").select("*").eq("user_id", userId),
       supabase.from("pokedex_entries").select("species_id").eq("user_id", userId),
@@ -96,76 +97,58 @@ export const useGameStore = create<GameStore>((set, get) => ({
         .eq("correct", true),
     ]);
 
-    // 서버 에러 시 로드 실패 처리
     const errors = [
-      trainerRes.error,
-      instancesRes.error,
-      pokedexRes.error,
-      progressionRes.error,
-      solvedRes.error,
+      trainerResponse.error,
+      instancesResponse.error,
+      pokedexResponse.error,
+      progressionResponse.error,
+      solvedQuestionsResponse.error,
     ].filter(Boolean);
 
     if (errors.length > 0) {
-      errors.forEach((err) => console.error("상태 로드 실패:", err));
+      errors.forEach((error) => console.error("상태 로드 실패:", error));
       set({ ...initialState, loaded: true });
       return;
     }
 
-    // 신규 유저: 데이터 없음
-    if (!trainerRes.data) {
+    if (!trainerResponse.data) {
       set({ ...initialState, loaded: true });
       return;
     }
 
-    const instances: PokemonInstance[] = (instancesRes.data ?? []).map((row) => ({
-      instanceId: row.id,
-      speciesId: row.species_id,
-      currentStage: row.current_stage,
-      exp: row.exp,
-      totalCorrectCount: row.total_correct_count,
-      graduated: row.graduated,
-      evolutionPending: row.evolution_pending,
-    }));
+    const loadedState = resolveLoadedGameState({
+      trainerRow: trainerResponse.data,
+      instanceRows: instancesResponse.data ?? [],
+      pokedexEntryRows: pokedexResponse.data ?? [],
+      progressionRow: progressionResponse.data,
+      solvedQuestionRows: solvedQuestionsResponse.data ?? [],
+      allSpecies: getAllSpecies(),
+    });
 
-    const solvedIds = [...new Set((solvedRes.data ?? []).map((r) => r.question_id))];
-    const activeInstanceId = trainerRes.data.active_pokemon_instance_id;
-    const activeInstance = instances.find((inst) => inst.instanceId === activeInstanceId);
-    const activeSpecies = activeInstance ? findSpeciesById(activeInstance.speciesId) : null;
-    const restoredGraduationInstanceId =
-      activeInstance && activeSpecies && isGraduationReady(activeInstance, activeSpecies)
-        ? activeInstance.instanceId
-        : null;
-    const serverProgression = progressionRes.data;
+    set(loadedState);
+  },
 
-    set({
-      trainer: {
-        starterChosen: trainerRes.data.starter_chosen,
-        activePokemonInstanceId: activeInstanceId,
-      },
-      party: { instances },
-      pokedex: {
-        unlockedSpeciesIds: (pokedexRes.data ?? []).map((r) => r.species_id),
-        normalPokedexCompleted: false,
-      },
-      progression: serverProgression
-        ? {
-            streakCorrectCount: serverProgression.streak_correct_count,
-            pendingEvolutionInstanceId: serverProgression.pending_evolution_instance_id,
-            pendingGraduationInstanceId:
-              serverProgression.pending_graduation_instance_id ?? restoredGraduationInstanceId,
-            unlockedLegendaryStage: serverProgression.unlocked_legendary_stage,
-            isEnding: serverProgression.is_ending ?? false,
-          }
-        : {
-            ...initialState.progression,
-            pendingGraduationInstanceId: restoredGraduationInstanceId,
-          },
-      session: {
-        currentQuestionId: null,
-        solvedQuestionIds: solvedIds,
-        lastAnswerCorrect: null,
-      },
-      loaded: true,
+  loadEndingStats: async (userId, signal) => {
+    const [attemptsResponse, correctResponse] = await Promise.all([
+      supabase
+        .from("solved_questions")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .abortSignal(signal),
+      supabase
+        .from("solved_questions")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .eq("correct", true)
+        .abortSignal(signal),
+    ]);
+
+    if (attemptsResponse.error) throw attemptsResponse.error;
+    if (correctResponse.error) throw correctResponse.error;
+
+    return resolveEndingStats({
+      totalAttempts: attemptsResponse.count ?? 0,
+      totalCorrect: correctResponse.count ?? 0,
     });
   },
 
@@ -176,93 +159,43 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     if (error) throw error;
 
-    const instanceId = data.instance_id as string;
-
-    const newInstance: PokemonInstance = {
-      instanceId,
-      speciesId,
-      currentStage: 1,
-      exp: 0,
-      totalCorrectCount: 0,
-      graduated: false,
-      evolutionPending: false,
-    };
-
-    set({
-      trainer: {
-        starterChosen: true,
-        activePokemonInstanceId: instanceId,
-      },
-      party: { instances: [newInstance] },
-      pokedex: {
-        unlockedSpeciesIds: [speciesId],
-        normalPokedexCompleted: false,
-      },
-    });
+    const instanceId: string = data.instance_id;
+    set(resolveStarterState({ speciesId, instanceId }));
   },
 
-  submitAnswer: async (questionId, correct, isFirstSolve) => {
+  submitAnswer: async (questionId, isCorrect, isFirstSolve) => {
     const { data, error } = await supabase.rpc("process_answer", {
       p_question_id: questionId,
-      p_correct: correct,
+      p_correct: isCorrect,
       p_is_first_solve: isFirstSolve,
     });
 
     if (error) throw error;
 
-    const result = data as ProcessAnswerResult;
+    const result: ProcessAnswerResult = data;
     const state = get();
-    const activeId = state.trainer.activePokemonInstanceId;
-
-    // 정답 반영된 인스턴스로 졸업 가능 여부 판정
-    const updatedInstances = state.party.instances.map((inst) =>
-      inst.instanceId === activeId
-        ? {
-            ...inst,
-            exp: result.exp,
-            totalCorrectCount: inst.totalCorrectCount + (correct ? 1 : 0),
-            evolutionPending: result.evolution_pending,
-          }
-        : inst,
-    );
-    const updatedActive = updatedInstances.find((i) => i.instanceId === activeId);
-    const activeSpecies = updatedActive ? findSpeciesById(updatedActive.speciesId) : null;
-    const graduationReady = Boolean(
-      correct &&
-      activeId &&
-      updatedActive &&
-      activeSpecies &&
-      isGraduationReady(updatedActive, activeSpecies),
-    );
-
-    set({
-      party: { instances: updatedInstances },
-      progression: {
-        ...state.progression,
-        streakCorrectCount: result.streak,
-        pendingEvolutionInstanceId: result.evolution_pending
-          ? activeId
-          : state.progression.pendingEvolutionInstanceId,
-        pendingGraduationInstanceId: graduationReady
-          ? activeId
-          : state.progression.pendingGraduationInstanceId,
-      },
-      session: {
-        ...state.session,
-        lastAnswerCorrect: correct,
-        solvedQuestionIds:
-          correct && isFirstSolve
-            ? [...new Set([...state.session.solvedQuestionIds, questionId])]
-            : state.session.solvedQuestionIds,
-      },
+    const answerProgression = resolveAnswerProgression({
+      activeInstanceId: state.trainer.activePokemonInstanceId,
+      instances: state.party.instances,
+      progression: state.progression,
+      session: state.session,
+      questionId,
+      isCorrect,
+      isFirstSolve,
+      result,
+      allSpecies: getAllSpecies(),
     });
+
+    set(answerProgression);
 
     return result;
   },
 
   evolve: async (instanceId, nextSpeciesId) => {
     const state = get();
-    const instance = state.party.instances.find((i) => i.instanceId === instanceId);
+    const instance = state.party.instances.find(
+      (pokemonInstance) => pokemonInstance.instanceId === instanceId,
+    );
     if (!instance) throw new Error("포켓몬 인스턴스를 찾을 수 없습니다.");
 
     const { error } = await supabase.rpc("evolve_pokemon", {
@@ -273,28 +206,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     if (error) throw error;
 
-    set({
-      party: {
-        instances: state.party.instances.map((inst) =>
-          inst.instanceId === instanceId
-            ? {
-                ...inst,
-                speciesId: nextSpeciesId,
-                currentStage: inst.currentStage + 1,
-                evolutionPending: false,
-              }
-            : inst,
-        ),
-      },
-      pokedex: {
-        ...state.pokedex,
-        unlockedSpeciesIds: [...new Set([...state.pokedex.unlockedSpeciesIds, nextSpeciesId])],
-      },
-      progression: {
-        ...state.progression,
-        pendingEvolutionInstanceId: null,
-      },
+    const evolutionState = resolveEvolutionState({
+      instances: state.party.instances,
+      pokedex: state.pokedex,
+      progression: state.progression,
+      instanceId,
+      nextSpeciesId,
     });
+
+    set(evolutionState);
   },
 
   startNextPokemon: async (speciesId) => {
@@ -303,53 +223,21 @@ export const useGameStore = create<GameStore>((set, get) => ({
     });
     if (error) throw error;
 
-    const result = data as StartNextPokemonResult;
+    const result: StartNextPokemonResult = data;
     const newInstanceId = result.instance_id;
     const state = get();
-    const oldActiveId = state.trainer.activePokemonInstanceId;
-
-    const newInstance: PokemonInstance = {
-      instanceId: newInstanceId,
+    const nextPokemonState = resolveNextPokemonState({
+      trainer: state.trainer,
+      instances: state.party.instances,
+      pokedex: state.pokedex,
+      progression: state.progression,
+      session: state.session,
       speciesId,
-      currentStage: 1,
-      exp: 0,
-      totalCorrectCount: 0,
-      graduated: false,
-      evolutionPending: false,
-    };
-
-    set({
-      trainer: {
-        ...state.trainer,
-        activePokemonInstanceId: newInstanceId,
-      },
-      party: {
-        instances: [
-          ...state.party.instances.map((inst) =>
-            inst.instanceId === oldActiveId
-              ? { ...inst, graduated: true, evolutionPending: false }
-              : inst,
-          ),
-          newInstance,
-        ],
-      },
-      pokedex: {
-        ...state.pokedex,
-        unlockedSpeciesIds: [...new Set([...state.pokedex.unlockedSpeciesIds, speciesId])],
-      },
-      progression: {
-        ...state.progression,
-        streakCorrectCount: 0,
-        pendingEvolutionInstanceId: null,
-        pendingGraduationInstanceId: null,
-        unlockedLegendaryStage: result.unlocked_legendary_stage,
-      },
-      session: {
-        ...state.session,
-        currentQuestionId: null,
-        lastAnswerCorrect: null,
-      },
+      newInstanceId,
+      unlockedLegendaryStage: result.unlocked_legendary_stage,
     });
+
+    set(nextPokemonState);
   },
 
   completeEnding: async (instanceId) => {
@@ -359,21 +247,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (error) throw error;
 
     const state = get();
-    set({
-      party: {
-        instances: state.party.instances.map((inst) =>
-          inst.instanceId === instanceId
-            ? { ...inst, graduated: true, evolutionPending: false }
-            : inst,
-        ),
-      },
-      progression: {
-        ...state.progression,
-        isEnding: true,
-        pendingGraduationInstanceId: null,
-        pendingEvolutionInstanceId: null,
-      },
+    const endingState = resolveEndingState({
+      instances: state.party.instances,
+      progression: state.progression,
+      instanceId,
     });
+
+    set(endingState);
   },
 
   setCurrentQuestion: (questionId) => {

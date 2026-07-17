@@ -44,19 +44,19 @@ describe("updateStreak", () => {
 
 describe("checkBerryReward", () => {
   it("연속 10개 → 열매 지급", () => {
-    expect(checkBerryReward(10)).not.toBeNull();
+    expect(checkBerryReward(10, () => 0)).toEqual({ name: "오랭열매" });
   });
 
   it("연속 20개 → 열매 지급", () => {
-    expect(checkBerryReward(20)).not.toBeNull();
+    expect(checkBerryReward(20, () => 0.999)).toEqual({ name: "배리열매" });
   });
 
   it("연속 11개 → 미지급", () => {
-    expect(checkBerryReward(11)).toBeNull();
+    expect(checkBerryReward(11, () => 0)).toBeNull();
   });
 
   it("연속 0개 → 미지급", () => {
-    expect(checkBerryReward(0)).toBeNull();
+    expect(checkBerryReward(0, () => 0)).toBeNull();
   });
 });
 

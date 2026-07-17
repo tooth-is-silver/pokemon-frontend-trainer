@@ -1,12 +1,21 @@
 import type { Question } from "@/content/questions/types";
 
-// 입력 정규화: trim, 소문자 변환, 연속 공백 제거
+interface EvaluateAnswerAttemptInput {
+  question: Question;
+  userAnswer: string;
+  solvedQuestionIds: string[];
+}
+
+interface AnswerAttempt {
+  isCorrect: boolean;
+  isFirstSolve: boolean;
+  solvedQuestionIds: string[];
+}
+
 export function normalizeAnswer(input: string): string {
   return input.trim().toLowerCase().replace(/\s+/g, " ");
 }
 
-// 정답 판정
-// yes_no: userAnswer는 버튼 클릭으로 전달되는 "true" | "false"
 export function checkAnswer(question: Question, userAnswer: string): boolean {
   switch (question.type) {
     case "yes_no":
@@ -20,7 +29,24 @@ export function checkAnswer(question: Question, userAnswer: string): boolean {
   }
 }
 
+export function evaluateAnswerAttempt({
+  question,
+  userAnswer,
+  solvedQuestionIds,
+}: EvaluateAnswerAttemptInput): AnswerAttempt {
+  const isCorrect = checkAnswer(question, userAnswer);
+  const isFirstSolve = isCorrect && !solvedQuestionIds.includes(question.questionId);
+
+  return {
+    isCorrect,
+    isFirstSolve,
+    solvedQuestionIds: isFirstSolve
+      ? [...solvedQuestionIds, question.questionId]
+      : solvedQuestionIds,
+  };
+}
+
 function checkFillBlank(acceptedAnswers: string[], userAnswer: string): boolean {
   const normalized = normalizeAnswer(userAnswer);
-  return acceptedAnswers.some((a) => normalizeAnswer(a) === normalized);
+  return acceptedAnswers.some((acceptedAnswer) => normalizeAnswer(acceptedAnswer) === normalized);
 }

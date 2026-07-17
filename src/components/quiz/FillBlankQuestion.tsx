@@ -8,8 +8,8 @@ interface Props {
 export function FillBlankQuestion({ onSubmit, disabled }: Props) {
   const [value, setValue] = useState("");
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
     if (disabled || !value.trim()) return;
     onSubmit(value);
     setValue("");
@@ -19,11 +19,11 @@ export function FillBlankQuestion({ onSubmit, disabled }: Props) {
     <form onSubmit={handleSubmit} className="flex min-w-0 gap-2">
       <input
         type="text"
+        aria-label="정답 입력"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(event) => setValue(event.target.value)}
         disabled={disabled}
         placeholder="답을 입력하세요"
-        autoFocus
         className="min-w-0 flex-1 rounded-lg border-2 border-gray-200 px-4 py-3 focus:border-blue-400 focus-visible:outline-none disabled:opacity-50"
       />
       <button

@@ -1,4 +1,4 @@
-export type PokemonSpecies = {
+export interface PokemonSpecies {
   speciesId: string;
   dexNumber: number;
   nameKo: string;
@@ -9,7 +9,7 @@ export type PokemonSpecies = {
   evolutionLine: string[];
   nextEvolutionSpeciesId: string | null;
   branchEvolutionSpeciesIds: string[];
-};
+}
 
 export function getSpriteUrl(dexNumber: number): string {
   return `/sprites/${dexNumber}.png`;

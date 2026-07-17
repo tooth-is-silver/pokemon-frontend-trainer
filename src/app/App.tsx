@@ -4,22 +4,23 @@ import type { DragEvent } from "react";
 import { devRoutes } from "@/features/preview/routes";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useGameStore } from "@/stores/useGameStore";
-import { AccountBar } from "@/components/layout/AccountBar";
+import { AccountBar } from "@/app/components/AccountBar";
 
 const Landing = lazy(() => import("@/features/landing/LandingPage"));
 const Starter = lazy(() => import("@/features/starter/StarterPage"));
 const Learn = lazy(() => import("@/features/learn/LearnPage"));
 const Pokedex = lazy(() => import("@/features/pokedex/PokedexPage"));
+const Regions = lazy(() => import("@/features/regions/RegionsPage"));
 
 function preventNativeDrag(event: DragEvent) {
   event.preventDefault();
 }
 
 export function App() {
-  const authLoading = useAuthStore((s) => s.loading);
-  const userId = useAuthStore((s) => s.userId);
-  const loadFromServer = useGameStore((s) => s.loadFromServer);
-  const resetGame = useGameStore((s) => s.reset);
+  const authLoading = useAuthStore((state) => state.loading);
+  const userId = useAuthStore((state) => state.userId);
+  const loadFromServer = useGameStore((state) => state.loadFromServer);
+  const resetGame = useGameStore((state) => state.reset);
   const bootstrappedRef = useRef(false);
   const loadedUserRef = useRef<string | null | undefined>(undefined);
 
@@ -65,6 +66,7 @@ export function App() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/starter" element={<Starter />} />
+            <Route path="/regions" element={<Regions />} />
             <Route path="/learn" element={<Learn />} />
             <Route path="/pokedex" element={<Pokedex />} />
             {import.meta.env.DEV && devRoutes}

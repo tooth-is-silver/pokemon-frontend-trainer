@@ -4,7 +4,7 @@ import {
   isGraduationReady,
   shouldOpenPokemonSelection,
 } from "@/core/evolutionChecker";
-import type { PokemonInstance } from "@/stores/types";
+import type { PokemonInstance } from "@/core/types";
 import type { PokemonSpecies } from "@/content/pokemon/types";
 
 function makeInstance(overrides: Partial<PokemonInstance> = {}): PokemonInstance {

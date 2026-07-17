@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { resolveGraduationEvolutionLine } from "@/components/pokemon/graduationEvolutionLine";
 import type { PokemonSpecies } from "@/content/pokemon/types";
+import { resolveGraduationEvolutionLine } from "@/core/graduationEvolutionLine";
 
 function createSpecies(speciesId: string): PokemonSpecies {
   return {

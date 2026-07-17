@@ -32,6 +32,7 @@
 
 - 코드 변경 후 `npm run build`가 통과해야 한다.
 - `npm run lint`가 통과해야 한다.
+- UI 변경은 `eslint-plugin-jsx-a11y` recommended 규칙을 통과해야 한다.
 - `src/core/` 아래 순수 함수는 입출력 기준으로 검증한다.
 - PR 리뷰에서 must-fix로 판단한 항목은 바로 수정하고 같은 브랜치에 커밋까지 반영한다.
 
@@ -64,8 +65,10 @@
 
 ```text
 src/
-  app/          # 라우터, 레이아웃
-  components/   # 공통 UI 컴포넌트
+  app/
+    App.tsx     # 라우터, 앱 조립
+    components/ # 인증·라우팅 상태를 사용하는 앱 전용 레이아웃
+  components/   # 스토어에 의존하지 않는 공통 UI 컴포넌트
   features/     # 페이지별 컴포넌트 (landing, starter, learn, pokedex)
   content/      # 정적 데이터
   core/         # 순수 로직
@@ -104,7 +107,7 @@ src/
 ### 라우팅
 
 - 모든 페이지는 `React.lazy` + `Suspense`를 사용한다.
-- 라우트는 `/`, `/starter`, `/learn`, `/pokedex`. 동시 보유 1마리 정책이라 별도 `/pokemon` 라우트는 두지 않는다.
+- 라우트는 `/`, `/starter`, `/regions`, `/learn`, `/pokedex`. 동시 보유 1마리 정책이라 별도 `/pokemon` 라우트는 두지 않는다.
 
 ### DB 변경
 
@@ -114,7 +117,13 @@ src/
 ### Import
 
 - 폴더를 넘는 import는 `@/` path alias를 사용한다.
-- 같은 폴더 내 파일 간에만 상대 경로를 허용한다.
+- 같은 feature/content 슬라이스 내부 파일 간에만 상대 경로를 허용한다.
+- `content`는 다른 애플리케이션 계층에 의존하지 않는다.
+- `core`는 `content`와 자체 타입만 사용하며 UI, 스토어, 외부 연동에 의존하지 않는다.
+- 공용 `components`는 `content`와 `core`만 사용하고 기능·스토어·외부 연동을 직접 참조하지 않는다.
+- `stores`는 `content`, `core`, `lib`만 조합한다.
+- `features`는 공용 컴포넌트·코어·스토어를 조합하되 다른 feature와 `lib`를 직접 참조하지 않는다.
+- 위 경계는 `eslint.config.js`의 `no-restricted-imports`로 강제한다.
 
 ## 환경변수
 

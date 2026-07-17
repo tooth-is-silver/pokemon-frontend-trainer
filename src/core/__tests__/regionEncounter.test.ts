@@ -1,0 +1,173 @@
+import { describe, expect, it } from "vitest";
+import {
+  createRegionSearchState,
+  getKoreanSubjectParticle,
+  isEncounterSuccessful,
+  isRegionUnlocked,
+  pickEncounterSpecies,
+  pickSearchTarget,
+  regionSearchReducer,
+  resolveRegionEncounter,
+} from "@/core/regionEncounter";
+import type { PokemonSpecies } from "@/content/pokemon/types";
+import { regions } from "@/content/regions";
+
+const speciesPool: PokemonSpecies[] = [
+  {
+    speciesId: "bulbasaur",
+    dexNumber: 1,
+    nameKo: "이상해씨",
+    nameEn: "Bulbasaur",
+    category: "normal",
+    isStarter: true,
+    evolutionStage: 1,
+    evolutionLine: ["bulbasaur", "ivysaur", "venusaur"],
+    nextEvolutionSpeciesId: "ivysaur",
+    branchEvolutionSpeciesIds: [],
+  },
+  {
+    speciesId: "charizard",
+    dexNumber: 6,
+    nameKo: "리자몽",
+    nameEn: "Charizard",
+    category: "normal",
+    isStarter: false,
+    evolutionStage: 3,
+    evolutionLine: ["charmander", "charmeleon", "charizard"],
+    nextEvolutionSpeciesId: null,
+    branchEvolutionSpeciesIds: [],
+  },
+];
+
+describe("regionEncounter", () => {
+  it("선택, 탐색, 조우, 닫기 상태를 일관된 형태로 전환", () => {
+    const initialState = createRegionSearchState("sprout-field");
+    const searchingState = regionSearchReducer(initialState, {
+      type: "searchStarted",
+      searchTarget: "풀숲을",
+    });
+    const encounteredState = regionSearchReducer(searchingState, {
+      type: "searchResolved",
+      result: {
+        searchStatus: "encountered",
+        encounteredSpeciesId: "bulbasaur",
+      },
+    });
+
+    expect(searchingState).toEqual({
+      selectedRegionId: "sprout-field",
+      searchStatus: "searching",
+      searchTarget: "풀숲을",
+      encounteredSpeciesId: null,
+    });
+    expect(encounteredState).toMatchObject({
+      searchStatus: "encountered",
+      encounteredSpeciesId: "bulbasaur",
+    });
+    expect(regionSearchReducer(encounteredState, { type: "searchClosed" })).toEqual(initialState);
+  });
+
+  it("지역을 바꾸면 이전 탐색 결과를 초기화", () => {
+    const previousState = {
+      selectedRegionId: "sprout-field",
+      searchStatus: "missed" as const,
+      searchTarget: "풀숲을",
+      encounteredSpeciesId: null,
+    };
+
+    expect(
+      regionSearchReducer(previousState, {
+        type: "regionSelected",
+        regionId: "misty-shore",
+      }),
+    ).toEqual(createRegionSearchState("misty-shore"));
+  });
+
+  it("확률 판정과 포켓몬 선택 결과를 하나의 조우 결과로 반환", () => {
+    expect(
+      resolveRegionEncounter({
+        encounterRatePercent: 50,
+        speciesPool,
+        encounterRandomValue: 0.49,
+        speciesRandomValue: 0.5,
+      }),
+    ).toEqual({
+      searchStatus: "encountered",
+      encounteredSpeciesId: "charizard",
+    });
+
+    expect(
+      resolveRegionEncounter({
+        encounterRatePercent: 50,
+        speciesPool,
+        encounterRandomValue: 0.5,
+        speciesRandomValue: 0,
+      }),
+    ).toEqual({
+      searchStatus: "missed",
+      encounteredSpeciesId: null,
+    });
+  });
+
+  it("조우 성공이어도 포켓몬 풀이 비어 있으면 실패로 처리", () => {
+    expect(
+      resolveRegionEncounter({
+        encounterRatePercent: 100,
+        speciesPool: [],
+        encounterRandomValue: 0,
+        speciesRandomValue: 0,
+      }),
+    ).toEqual({
+      searchStatus: "missed",
+      encounteredSpeciesId: null,
+    });
+  });
+
+  it("조우 확률과 랜덤 값으로 성공 여부를 판정", () => {
+    expect(isEncounterSuccessful(50, 0.49)).toBe(true);
+    expect(isEncounterSuccessful(50, 0.5)).toBe(false);
+  });
+
+  it("각 지역은 요구 도감 수에 도달한 시점부터 해금", () => {
+    regions.forEach((region) => {
+      expect(isRegionUnlocked(region, region.unlockRequiredPokedexCount)).toBe(true);
+      expect(isRegionUnlocked(region, region.unlockRequiredPokedexCount - 1)).toBe(false);
+    });
+  });
+
+  it("조우 확률을 0~100 사이로 보정", () => {
+    expect(isEncounterSuccessful(-10, 0)).toBe(false);
+    expect(isEncounterSuccessful(120, 0.999)).toBe(true);
+  });
+
+  it("탐색 대상 목록에서 랜덤 값에 맞는 항목을 선택", () => {
+    const targets = ["풀숲을", "나무 그늘을", "작은 바위를"];
+
+    expect(pickSearchTarget(targets, 0)).toBe("풀숲을");
+    expect(pickSearchTarget(targets, 0.34)).toBe("나무 그늘을");
+    expect(pickSearchTarget(targets, 0.99)).toBe("작은 바위를");
+  });
+
+  it("탐색 대상 목록이 비어 있으면 null을 반환", () => {
+    expect(pickSearchTarget([], 0.5)).toBeNull();
+  });
+
+  it("조우 포켓몬 풀에서 랜덤 값에 맞는 포켓몬을 선택", () => {
+    expect(pickEncounterSpecies(speciesPool, 0)?.speciesId).toBe("bulbasaur");
+    expect(pickEncounterSpecies(speciesPool, 0.5)?.speciesId).toBe("charizard");
+  });
+
+  it("포켓몬 풀이 비어 있으면 null을 반환", () => {
+    expect(pickEncounterSpecies([], 0.5)).toBeNull();
+  });
+
+  it("한글 받침 여부에 따라 주격 조사를 선택", () => {
+    expect(getKoreanSubjectParticle("이상해씨")).toBe("가");
+    expect(getKoreanSubjectParticle("리자몽")).toBe("이");
+  });
+
+  it("비한글 또는 빈 문자열은 가를 반환", () => {
+    expect(getKoreanSubjectParticle("Mew")).toBe("가");
+    expect(getKoreanSubjectParticle("")).toBe("가");
+  });
+});

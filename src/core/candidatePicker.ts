@@ -7,14 +7,14 @@ export type LegendaryStage = "none" | "legendary-birds" | "mewtwo" | "mew";
 const NORMAL_WAVE_SIZE = 3;
 const LEGENDARY_BIRD_IDS = ["articuno", "zapdos", "moltres"];
 
-interface PickArgs {
+interface PickGraduationCandidatesInput {
   unlockedSpeciesIds: string[];
   graduatedSpeciesIds: string[];
   // 졸업 모달을 띄운 현재 포켓몬은 아직 서버상 graduated가 아니므로 후보 계산에서 함께 제외한다.
   graduatingSpeciesId?: string;
   legendaryStage: LegendaryStage;
   allSpecies: PokemonSpecies[];
-  random?: () => number;
+  random: () => number;
 }
 
 // 졸업 후 다음 포켓몬 후보를 결정한다.
@@ -27,8 +27,8 @@ export function pickGraduationCandidates({
   graduatingSpeciesId,
   legendaryStage,
   allSpecies,
-  random = Math.random,
-}: PickArgs): PokemonSpecies[] {
+  random,
+}: PickGraduationCandidatesInput): PokemonSpecies[] {
   const pool = buildPool({
     unlockedSpeciesIds,
     graduatedSpeciesIds,
@@ -52,7 +52,7 @@ function buildPool({
   graduatingSpeciesId,
   legendaryStage,
   allSpecies,
-}: Omit<PickArgs, "random">): PokemonSpecies[] {
+}: Omit<PickGraduationCandidatesInput, "random">): PokemonSpecies[] {
   const unlocked = new Set(unlockedSpeciesIds);
   const graduated = new Set([
     ...graduatedSpeciesIds,
@@ -61,7 +61,10 @@ function buildPool({
 
   if (legendaryStage === "none") {
     const normalPool = allSpecies.filter(
-      (s) => s.category === "normal" && s.evolutionStage === 1 && !unlocked.has(s.speciesId),
+      (species) =>
+        species.category === "normal" &&
+        species.evolutionStage === 1 &&
+        !unlocked.has(species.speciesId),
     );
 
     if (normalPool.length > 0) return normalPool;
@@ -87,7 +90,9 @@ function buildPool({
 }
 
 function isNormalPokedexCompleted(unlocked: Set<string>, allSpecies: PokemonSpecies[]): boolean {
-  return allSpecies.filter((s) => s.category === "normal").every((s) => unlocked.has(s.speciesId));
+  return allSpecies
+    .filter((species) => species.category === "normal")
+    .every((species) => unlocked.has(species.speciesId));
 }
 
 function pickLegendaryBirdPool(
@@ -95,7 +100,8 @@ function pickLegendaryBirdPool(
   graduated: Set<string>,
 ): PokemonSpecies[] {
   return allSpecies.filter(
-    (s) => LEGENDARY_BIRD_IDS.includes(s.speciesId) && !graduated.has(s.speciesId),
+    (species) =>
+      LEGENDARY_BIRD_IDS.includes(species.speciesId) && !graduated.has(species.speciesId),
   );
 }
 
@@ -104,14 +110,19 @@ function pickSingleLegendary(
   graduated: Set<string>,
   speciesId: string,
 ): PokemonSpecies[] {
-  return allSpecies.filter((s) => s.speciesId === speciesId && !graduated.has(s.speciesId));
+  return allSpecies.filter(
+    (species) => species.speciesId === speciesId && !graduated.has(species.speciesId),
+  );
 }
 
-function shuffleSlice<T>(arr: T[], n: number, random: () => number): T[] {
-  const copy = [...arr];
-  for (let i = 0; i < n; i++) {
-    const j = i + Math.floor(random() * (copy.length - i));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
+function shuffleSlice<T>(items: T[], count: number, random: () => number): T[] {
+  const shuffledItems = [...items];
+  for (let index = 0; index < count; index++) {
+    const swapIndex = index + Math.floor(random() * (shuffledItems.length - index));
+    [shuffledItems[index], shuffledItems[swapIndex]] = [
+      shuffledItems[swapIndex],
+      shuffledItems[index],
+    ];
   }
-  return copy.slice(0, n);
+  return shuffledItems.slice(0, count);
 }

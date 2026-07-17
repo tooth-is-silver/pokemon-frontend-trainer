@@ -13,8 +13,9 @@ interface Props {
 
 export function QuizCard({ question, onSubmit, disabled }: Props) {
   // 문제가 바뀔 때만 보기 재생성
-  const mcOptions = useMemo(
-    () => (question.type === "multiple_choice" ? buildMultipleChoiceOptions(question) : []),
+  const multipleChoiceOptions = useMemo(
+    () =>
+      question.type === "multiple_choice" ? buildMultipleChoiceOptions(question, Math.random) : [],
     [question],
   );
 
@@ -25,7 +26,11 @@ export function QuizCard({ question, onSubmit, disabled }: Props) {
       {question.type === "yes_no" && <YesNoQuestion onSubmit={onSubmit} disabled={disabled} />}
 
       {question.type === "multiple_choice" && (
-        <MultipleChoiceQuestion options={mcOptions} onSubmit={onSubmit} disabled={disabled} />
+        <MultipleChoiceQuestion
+          options={multipleChoiceOptions}
+          onSubmit={onSubmit}
+          disabled={disabled}
+        />
       )}
 
       {question.type === "fill_blank" && (

@@ -72,13 +72,42 @@
 - ✅ 앱 초기화 / 세션 로드 연결: 완료
 - ✅ Phase A, C, D, F, G: 완료
 - ✅ Phase H (PM/QA 정책 정합화): 완료
+- ✅ Capture Phase 1 (지역 화면): 로컬 구현 완료
+- 🟡 Capture Phase 2 (탐색/포획 연결): 대기
+
+## Capture Phase 1. 지역 화면
+
+> 포획형 전환의 첫 단계. 배포 없이 로컬 브랜치에서만 진행한다.
+
+- [x] 6개 지역 데이터 정의
+  - [x] 초록 평원
+  - [x] 물안개 해안
+  - [x] 용암 동굴
+  - [x] 달그림자 폐허
+  - [x] 얼음 궁전
+  - [x] 현대 도시
+- [x] 도감 등록 수 기준 지역 해금 조건 정의
+- [x] `/regions` 라우트 추가
+- [x] 로그인/스타터 선택 이후 기본 진입점을 `/regions`로 변경
+- [x] 상단 네비게이션에 `지역` 추가
+- [x] 일러스트형 섬 지도 UI 적용
+- [x] 데스크톱/모바일 맵 이미지 적용
+
+## Capture Phase 2. 탐색/포획 연결
+
+- [x] 탐색 중 오버레이 표시
+- [x] 조우 실패 결과 UI 표시
+- [x] 선택한 지역의 `탐색하기` 버튼에 조우 판정 연결
+- [x] 조우 성공 결과 UI 표시
+- [ ] 조우 성공 시 문제 풀이 진입 연결
+- [ ] 몬스터볼 수량과 포획 확률 판정 연결
 
 ## 공통 앱 부트스트랩
 
 - [x] 앱 진입 시 `useAuthStore.initialize()` 호출
 - [x] 로그인 세션 기준 `useGameStore.loadFromServer()` 호출
 - [x] 로그아웃/비로그인 상태에서 게임 스토어 게스트 상태로 초기화
-- [x] 랜딩에서 로그인 완료 시 `starterChosen` 상태에 따라 `/starter` 또는 `/learn` 으로 분기
+- [x] 랜딩에서 로그인 완료 시 `starterChosen` 상태에 따라 `/starter` 또는 `/regions` 로 분기
 - [x] 스타터 페이지에서 인증/로딩 가드 적용
 
 ---
@@ -140,7 +169,7 @@
 - [x] `data-structures.md` `ProgressionState` 갱신
   - [x] `pendingPokemonSelection` 제거
   - [x] `pendingGraduationInstanceId: string | null` 추가
-- [x] `stores/types.ts` 정합화
+- [x] `core/types.ts` 정합화
 
 ### B.3 졸업 모달 (UI)
 
@@ -175,7 +204,7 @@
   - [x] EXP 진행도 (`PokemonExp` 재사용)
   - [x] 진화 대기 뱃지
   - [x] 졸업 대기 뱃지
-- [x] 진화 대기 시 `<Link to="/learn">` 안내
+- [x] 진화 대기 시 학습 화면 이동 버튼 안내
 - [x] 졸업 대기 시 안내 문구 (학습 화면에서 모달 자동 오픈됨을 알림)
 - [x] 로그인 상태 공통 상단바에서 도감 진입점 제공
 - [x] 프리뷰 페이지 갱신

@@ -1,6 +1,6 @@
 export type QuestionType = "yes_no" | "multiple_choice" | "fill_blank";
 
-export type QuestionBase = {
+export interface QuestionBase {
   questionId: string;
   type: QuestionType;
   prompt: string;
@@ -8,7 +8,7 @@ export type QuestionBase = {
   conceptGroup: string;
   explanation: string;
   sourceExcerptId: string;
-};
+}
 
 export type YesNoQuestion = QuestionBase & {
   type: "yes_no";
@@ -30,9 +30,9 @@ export type FillBlankQuestion = QuestionBase & {
 
 export type Question = YesNoQuestion | MultipleChoiceQuestion | FillBlankQuestion;
 
-export type QuestionPage = {
+export interface QuestionPage {
   sourceId: string;
   title: string;
   url: string;
   questions: Question[];
-};
+}
