@@ -5,12 +5,13 @@ import {
   isEncounterSuccessful,
   isRegionUnlocked,
   pickEncounterSpecies,
+  pickRegionEncounterSpeciesId,
   pickSearchTarget,
   regionSearchReducer,
   resolveRegionEncounter,
 } from "@/core/regionEncounter";
 import type { PokemonSpecies } from "@/content/pokemon/types";
-import { regions } from "@/content/regions";
+import { regionEncounterPools, regions } from "@/content/regions";
 
 const speciesPool: PokemonSpecies[] = [
   {
@@ -159,6 +160,67 @@ describe("regionEncounter", () => {
 
   it("포켓몬 풀이 비어 있으면 null을 반환", () => {
     expect(pickEncounterSpecies([], 0.5)).toBeNull();
+  });
+
+  it("지역 희귀도 구간과 고정 출현 확률에 따라 포켓몬을 선택", () => {
+    const encounterPool = regionEncounterPools.find((pool) => pool.regionId === "sprout-field");
+    if (!encounterPool) throw new Error("초록 평원 출현 풀이 필요합니다.");
+
+    const pickSpecies = (randomValue: number) =>
+      pickRegionEncounterSpeciesId({
+        encounterPool,
+        normalPokedexCompleted: false,
+        unlockedSpeciesIds: [],
+        randomValue,
+      });
+
+    expect(pickSpecies(0)).toBe("bulbasaur");
+    expect(pickSpecies(0.64)).toBe("tangela");
+    expect(pickSpecies(0.84)).toBe("ivysaur");
+    expect(pickSpecies(0.94)).toBe("venusaur");
+    expect(pickSpecies(0.98)).toBe("ditto");
+  });
+
+  it("일반 도감 완성 전에는 전설 확률을 일반 슬롯에 합산", () => {
+    const encounterPool = regionEncounterPools.find((pool) => pool.regionId === "misty-shore");
+    if (!encounterPool) throw new Error("물안개 해안 출현 풀이 필요합니다.");
+
+    const lockedResult = pickRegionEncounterSpeciesId({
+      encounterPool,
+      normalPokedexCompleted: false,
+      unlockedSpeciesIds: [],
+      randomValue: 0.995,
+    });
+    const unlockedResult = pickRegionEncounterSpeciesId({
+      encounterPool,
+      normalPokedexCompleted: true,
+      unlockedSpeciesIds: [],
+      randomValue: 0.995,
+    });
+
+    expect(lockedResult).toBe("ditto");
+    expect(unlockedResult).toBe("zapdos");
+  });
+
+  it("전설의 새 3종 등록 후에만 뮤츠를 출현 대상에 포함", () => {
+    const encounterPool = regionEncounterPools.find((pool) => pool.regionId === "neon-city");
+    if (!encounterPool) throw new Error("현대 도시 출현 풀이 필요합니다.");
+
+    const lockedResult = pickRegionEncounterSpeciesId({
+      encounterPool,
+      normalPokedexCompleted: true,
+      unlockedSpeciesIds: ["articuno", "zapdos"],
+      randomValue: 0.995,
+    });
+    const unlockedResult = pickRegionEncounterSpeciesId({
+      encounterPool,
+      normalPokedexCompleted: true,
+      unlockedSpeciesIds: ["articuno", "zapdos", "moltres"],
+      randomValue: 0.995,
+    });
+
+    expect(lockedResult).toBe("ditto");
+    expect(unlockedResult).toBe("mewtwo");
   });
 
   it("한글 받침 여부에 따라 주격 조사를 선택", () => {
