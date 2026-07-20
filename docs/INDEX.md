@@ -24,6 +24,9 @@
 - EXP, 진화, 졸업, 도감, 아이템, 전설 규칙을 구현할 때
   - `docs/specs/game-rules.md`
 
+- 지역별 출현 포켓몬, 희귀도, 조우 확률을 구현할 때
+  - `docs/specs/region-encounters.md`
+
 - 화면, 라우트, 모달 흐름, UI 컴포넌트 구조를 구현할 때
   - `docs/specs/screen-flow.md`
 
@@ -35,9 +38,10 @@
 1. `AGENTS.md`
 2. `docs/specs/data-structures.md`
 3. `docs/specs/game-rules.md`
-4. `docs/specs/content-rules.md`
-5. `docs/specs/screen-flow.md`
-6. `docs/operations/supabase-migrations.md`
-7. `TODO.md`
-8. `docs/implementation-roadmap.md`
-9. `docs/planning-draft.md`
+4. `docs/specs/region-encounters.md`
+5. `docs/specs/content-rules.md`
+6. `docs/specs/screen-flow.md`
+7. `docs/operations/supabase-migrations.md`
+8. `TODO.md`
+9. `docs/implementation-roadmap.md`
+10. `docs/planning-draft.md`
