@@ -10,6 +10,15 @@ export interface Region {
   accentClassName: string;
 }
 
+export { regionEncounterPools } from "./encounters";
+export type {
+  EncounterRarity,
+  EncounterUnlockCondition,
+  FixedRegionEncounter,
+  RegionEncounterPool,
+  RegionEncounterTier,
+} from "./encounters";
+
 export const regions: Region[] = [
   {
     regionId: "sprout-field",
