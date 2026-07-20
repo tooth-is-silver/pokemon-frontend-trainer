@@ -199,6 +199,7 @@ interface RegionEncounterTier {
 interface FixedRegionEncounter {
   speciesId: string;
   ratePercent: number;
+  unlockCondition: "always" | "normal-pokedex-completed" | "legendary-birds-completed";
 }
 
 interface RegionEncounterPool {
@@ -210,6 +211,7 @@ interface RegionEncounterPool {
 
 - 희귀도별 포켓몬 선택 확률은 `ratePercent / speciesIds.length`로 계산한다.
 - 이브이, 메타몽, 전설 포켓몬은 고정 확률이므로 `fixedEncounters`에서 관리한다.
+- 이브이와 메타몽은 `always`, 전설 포켓몬은 도감 진행에 맞는 해금 조건을 사용한다.
 - 전설 포켓몬이 잠겨 있으면 해당 고정 확률을 일반 희귀도에 합산한다.
 
 ## 6. Game State
