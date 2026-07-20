@@ -182,7 +182,35 @@ type Region = {
 
 - 지역 해금은 현재 도감 등록 수(`pokedex.unlockedSpeciesIds.length`)로 계산한다.
 - 지역 데이터는 `src/content/regions/index.ts`에서 관리한다.
+- 지역별 출현 목록과 확률은 `src/content/regions/encounters.ts`에서 관리한다.
 - 현재 단계에서는 DB에 지역 선택 상태를 저장하지 않는다.
+
+### 5.1 Region Encounter Data
+
+```ts
+type EncounterRarity = "common" | "uncommon" | "rare" | "very-rare";
+
+interface RegionEncounterTier {
+  rarity: EncounterRarity;
+  ratePercent: number;
+  speciesIds: string[];
+}
+
+interface FixedRegionEncounter {
+  speciesId: string;
+  ratePercent: number;
+}
+
+interface RegionEncounterPool {
+  regionId: string;
+  tiers: RegionEncounterTier[];
+  fixedEncounters: FixedRegionEncounter[];
+}
+```
+
+- 희귀도별 포켓몬 선택 확률은 `ratePercent / speciesIds.length`로 계산한다.
+- 이브이, 메타몽, 전설 포켓몬은 고정 확률이므로 `fixedEncounters`에서 관리한다.
+- 전설 포켓몬이 잠겨 있으면 해당 고정 확률을 일반 희귀도에 합산한다.
 
 ## 6. Game State
 
@@ -232,9 +260,14 @@ interface PartyState {
 ```ts
 interface PokedexState {
   unlockedSpeciesIds: string[];
+  encounteredSpeciesIds: string[];
   normalPokedexCompleted: boolean;
 }
 ```
+
+- `unlockedSpeciesIds`는 포획·진화로 등록한 전체 도감 상태다.
+- `encounteredSpeciesIds`는 지역 도감 체크에 사용하는 최초 조우 기록이며 서버에 저장한다.
+- 지역 도감은 `encounteredSpeciesIds`와 지역 출현 목록의 교집합으로 계산한다.
 
 ### 6.5 Progression
 

@@ -148,6 +148,9 @@ pickGraduationCandidates(state);
 
 ## 9. Phase 7: Evolution and Graduation
 
+> 아래 전설 wave 항목은 포획형 전환 전 구현 기준이다. 새 목표 정책은
+> `docs/specs/region-encounters.md`와 `TODO.md`의 Capture Phase 2를 따른다.
+
 해야 할 일:
 
 - 진화 모달 구현
