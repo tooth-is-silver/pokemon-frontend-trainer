@@ -1,6 +1,6 @@
 import { useEffect, useReducer, useRef } from "react";
-import { findSpeciesById, getAllSpecies } from "@/content/pokemon";
-import { regions } from "@/content/regions";
+import { findSpeciesById } from "@/content/pokemon";
+import { regionEncounterPools, regions } from "@/content/regions";
 import {
   createRegionSearchState,
   isRegionUnlocked,
@@ -20,7 +20,6 @@ interface MapPoint {
 
 const initialRegionId = regions[0]?.regionId ?? "";
 const SEARCH_RESULT_DELAY_MS = 1400;
-const encounterSpeciesPool = getAllSpecies();
 
 const mapPoints: Record<string, MapPoint> = {
   "sprout-field": {
@@ -63,6 +62,7 @@ const mapPoints: Record<string, MapPoint> = {
 
 export function RegionExplorer() {
   const unlockedSpeciesIds = useGameStore((state) => state.pokedex.unlockedSpeciesIds);
+  const normalPokedexCompleted = useGameStore((state) => state.pokedex.normalPokedexCompleted);
   const searchButtonRef = useRef<HTMLButtonElement>(null);
   const [searchState, dispatchSearch] = useReducer(
     regionSearchReducer,
@@ -73,6 +73,8 @@ export function RegionExplorer() {
 
   const unlockedPokedexCount = unlockedSpeciesIds.length;
   const selectedRegion = regions.find((region) => region.regionId === selectedRegionId);
+  const selectedEncounterPool =
+    regionEncounterPools.find((pool) => pool.regionId === selectedRegionId) ?? null;
   const selectedRegionUnlocked = selectedRegion
     ? isRegionUnlocked(selectedRegion, unlockedPokedexCount)
     : false;
@@ -87,7 +89,9 @@ export function RegionExplorer() {
     const timeoutId = window.setTimeout(() => {
       const result = resolveRegionEncounter({
         encounterRatePercent,
-        speciesPool: encounterSpeciesPool,
+        encounterPool: selectedEncounterPool,
+        normalPokedexCompleted,
+        unlockedSpeciesIds,
         encounterRandomValue: Math.random(),
         speciesRandomValue: Math.random(),
       });
@@ -96,7 +100,13 @@ export function RegionExplorer() {
     }, SEARCH_RESULT_DELAY_MS);
 
     return () => window.clearTimeout(timeoutId);
-  }, [encounterRatePercent, isSearching]);
+  }, [
+    encounterRatePercent,
+    isSearching,
+    normalPokedexCompleted,
+    selectedEncounterPool,
+    unlockedSpeciesIds,
+  ]);
 
   const handleSelectRegion = (regionId: string) => {
     dispatchSearch({ type: "regionSelected", regionId });

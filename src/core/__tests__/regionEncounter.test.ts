@@ -39,6 +39,8 @@ const speciesPool: PokemonSpecies[] = [
     branchEvolutionSpeciesIds: [],
   },
 ];
+const sproutEncounterPool = regionEncounterPools.find((pool) => pool.regionId === "sprout-field");
+if (!sproutEncounterPool) throw new Error("초록 평원 출현 풀이 필요합니다.");
 
 describe("regionEncounter", () => {
   it("선택, 탐색, 조우, 닫기 상태를 일관된 형태로 전환", () => {
@@ -88,19 +90,23 @@ describe("regionEncounter", () => {
     expect(
       resolveRegionEncounter({
         encounterRatePercent: 50,
-        speciesPool,
+        encounterPool: sproutEncounterPool,
+        normalPokedexCompleted: false,
+        unlockedSpeciesIds: [],
         encounterRandomValue: 0.49,
-        speciesRandomValue: 0.5,
+        speciesRandomValue: 0,
       }),
     ).toEqual({
       searchStatus: "encountered",
-      encounteredSpeciesId: "charizard",
+      encounteredSpeciesId: "bulbasaur",
     });
 
     expect(
       resolveRegionEncounter({
         encounterRatePercent: 50,
-        speciesPool,
+        encounterPool: sproutEncounterPool,
+        normalPokedexCompleted: false,
+        unlockedSpeciesIds: [],
         encounterRandomValue: 0.5,
         speciesRandomValue: 0,
       }),
@@ -114,7 +120,9 @@ describe("regionEncounter", () => {
     expect(
       resolveRegionEncounter({
         encounterRatePercent: 100,
-        speciesPool: [],
+        encounterPool: null,
+        normalPokedexCompleted: false,
+        unlockedSpeciesIds: [],
         encounterRandomValue: 0,
         speciesRandomValue: 0,
       }),

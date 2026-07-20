@@ -21,7 +21,9 @@ interface RegionEncounterResult {
 
 interface ResolveRegionEncounterInput {
   encounterRatePercent: number;
-  speciesPool: PokemonSpecies[];
+  encounterPool: RegionEncounterPool | null;
+  normalPokedexCompleted: boolean;
+  unlockedSpeciesIds: string[];
   encounterRandomValue: number;
   speciesRandomValue: number;
 }
@@ -77,20 +79,27 @@ export function regionSearchReducer(
 
 export function resolveRegionEncounter({
   encounterRatePercent,
-  speciesPool,
+  encounterPool,
+  normalPokedexCompleted,
+  unlockedSpeciesIds,
   encounterRandomValue,
   speciesRandomValue,
 }: ResolveRegionEncounterInput): RegionEncounterResult {
-  if (!isEncounterSuccessful(encounterRatePercent, encounterRandomValue)) {
+  if (!encounterPool || !isEncounterSuccessful(encounterRatePercent, encounterRandomValue)) {
     return { searchStatus: "missed", encounteredSpeciesId: null };
   }
 
-  const encounteredSpecies = pickEncounterSpecies(speciesPool, speciesRandomValue);
+  const encounteredSpeciesId = pickRegionEncounterSpeciesId({
+    encounterPool,
+    normalPokedexCompleted,
+    unlockedSpeciesIds,
+    randomValue: speciesRandomValue,
+  });
 
-  return encounteredSpecies
+  return encounteredSpeciesId
     ? {
         searchStatus: "encountered",
-        encounteredSpeciesId: encounteredSpecies.speciesId,
+        encounteredSpeciesId,
       }
     : { searchStatus: "missed", encounteredSpeciesId: null };
 }
