@@ -271,6 +271,9 @@ interface PokedexState {
 - `encounteredSpeciesIds`는 지역 도감 체크에 사용하는 최초 조우 기록이며 서버에 저장한다.
 - 지역 도감은 `encounteredSpeciesIds`와 지역 출현 목록의 교집합으로 계산한다.
 
+조우 기록은 Supabase의 `pokemon_encounters` 테이블에 사용자·포켓몬별 한 행으로 저장한다.
+클라이언트는 직접 insert하지 않고 `record_pokemon_encounter` RPC를 호출한다.
+
 ### 6.5 Progression
 
 ```ts

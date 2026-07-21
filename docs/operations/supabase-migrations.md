@@ -51,6 +51,15 @@ EXP 전환 배포에서는 아래 파일도 적용해야 한다.
 supabase/migrations/011_exp_progression.sql
 ```
 
+지역 조우 기록 저장에서는 아래 파일을 적용해야 한다.
+
+```text
+supabase/migrations/012_pokemon_encounters.sql
+```
+
+적용 후 `pokemon_encounters` 테이블과 `record_pokemon_encounter` RPC가 생성되어야 한다.
+기존 `pokedex_entries`는 최초 1회 조우 기록으로 백필된다.
+
 마지막에 schema cache 갱신을 실행한다.
 
 ```sql
@@ -67,6 +76,6 @@ notify pgrst, 'reload schema';
 select routine_name, data_type
 from information_schema.routines
 where routine_schema = 'public'
-  and routine_name in ('start_next_pokemon', 'complete_ending')
+  and routine_name in ('start_next_pokemon', 'complete_ending', 'record_pokemon_encounter')
 order by routine_name;
 ```
