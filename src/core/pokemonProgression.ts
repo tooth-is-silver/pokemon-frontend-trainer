@@ -86,6 +86,7 @@ export function resolveStarterState({
     },
     pokedex: {
       unlockedSpeciesIds: [speciesId],
+      encounteredSpeciesIds: [],
       normalPokedexCompleted: false,
     },
   };

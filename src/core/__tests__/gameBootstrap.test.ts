@@ -25,6 +25,11 @@ describe("resolveLoadedGameState", () => {
       trainerRow,
       instanceRows,
       pokedexEntryRows: [{ species_id: "charmander" }, { species_id: "charizard" }],
+      pokemonEncounterRows: [
+        { species_id: "charmander" },
+        { species_id: "charmander" },
+        { species_id: "ditto" },
+      ],
       progressionRow: {
         streak_correct_count: 4,
         pending_evolution_instance_id: null,
@@ -51,6 +56,7 @@ describe("resolveLoadedGameState", () => {
       exp: 100,
     });
     expect(state.session.solvedQuestionIds).toEqual(["question-1", "question-2"]);
+    expect(state.pokedex.encounteredSpeciesIds).toEqual(["charmander", "ditto"]);
     expect(state.loaded).toBe(true);
   });
 
@@ -59,6 +65,7 @@ describe("resolveLoadedGameState", () => {
       trainerRow,
       instanceRows,
       pokedexEntryRows: [{ species_id: "charizard" }],
+      pokemonEncounterRows: [],
       progressionRow: null,
       solvedQuestionRows: [],
       allSpecies: getAllSpecies(),
