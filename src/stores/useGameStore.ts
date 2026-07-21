@@ -235,10 +235,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (error) throw error;
 
     set((state) => ({
-      pokedex: {
-        ...state.pokedex,
-        encounteredSpeciesIds: [...state.pokedex.encounteredSpeciesIds, speciesId],
-      },
+      pokedex: state.pokedex.encounteredSpeciesIds.includes(speciesId)
+        ? state.pokedex
+        : {
+            ...state.pokedex,
+            encounteredSpeciesIds: [...state.pokedex.encounteredSpeciesIds, speciesId],
+          },
     }));
   },
 

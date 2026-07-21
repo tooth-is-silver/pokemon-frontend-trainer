@@ -9,6 +9,7 @@ import {
   pickSearchTarget,
   regionSearchReducer,
   resolveRegionEncounter,
+  resolveRegionPokedexProgress,
 } from "@/core/regionEncounter";
 import type { PokemonSpecies } from "@/content/pokemon/types";
 import { regionEncounterPools, regions } from "@/content/regions";
@@ -142,6 +143,30 @@ describe("regionEncounter", () => {
       expect(isRegionUnlocked(region, region.unlockRequiredPokedexCount)).toBe(true);
       expect(isRegionUnlocked(region, region.unlockRequiredPokedexCount - 1)).toBe(false);
     });
+  });
+
+  it("지역 출현 목록과 조우 기록의 교집합으로 지역 도감 진행률을 계산", () => {
+    expect(
+      resolveRegionPokedexProgress(sproutEncounterPool, ["bulbasaur", "ditto", "pikachu"]),
+    ).toEqual({
+      encounteredCount: 2,
+      totalCount: 24,
+    });
+    expect(resolveRegionPokedexProgress(null, ["ditto"])).toEqual({
+      encounteredCount: 0,
+      totalCount: 0,
+    });
+  });
+
+  it("공통 출현 포켓몬은 한 번의 조우 기록으로 각 지역 도감에 반영", () => {
+    const volcanoPool = regionEncounterPools.find((pool) => pool.regionId === "ashen-mountain");
+    const icePalacePool = regionEncounterPools.find((pool) => pool.regionId === "sky-garden");
+    if (!volcanoPool || !icePalacePool) throw new Error("공통 출현 지역 풀이 필요합니다.");
+
+    expect(resolveRegionPokedexProgress(volcanoPool, ["eevee", "ditto"]).encounteredCount).toBe(2);
+    expect(resolveRegionPokedexProgress(icePalacePool, ["eevee", "ditto"]).encounteredCount).toBe(
+      2,
+    );
   });
 
   it("조우 확률을 0~100 사이로 보정", () => {

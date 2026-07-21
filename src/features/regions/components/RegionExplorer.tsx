@@ -7,6 +7,7 @@ import {
   pickSearchTarget,
   regionSearchReducer,
   resolveRegionEncounter,
+  resolveRegionPokedexProgress,
 } from "@/core/regionEncounter";
 import { useGameStore } from "@/stores/useGameStore";
 import { RegionSearchOverlay } from "./RegionSearchOverlay";
@@ -62,7 +63,9 @@ const mapPoints: Record<string, MapPoint> = {
 
 export function RegionExplorer() {
   const unlockedSpeciesIds = useGameStore((state) => state.pokedex.unlockedSpeciesIds);
+  const encounteredSpeciesIds = useGameStore((state) => state.pokedex.encounteredSpeciesIds);
   const normalPokedexCompleted = useGameStore((state) => state.pokedex.normalPokedexCompleted);
+  const recordEncounter = useGameStore((state) => state.recordEncounter);
   const searchButtonRef = useRef<HTMLButtonElement>(null);
   const [searchState, dispatchSearch] = useReducer(
     regionSearchReducer,
@@ -82,6 +85,10 @@ export function RegionExplorer() {
   const isSearching = searchStatus === "searching";
   const encounterRatePercent = selectedRegion?.encounterRatePercent ?? 0;
   const encounteredSpecies = encounteredSpeciesId ? findSpeciesById(encounteredSpeciesId) : null;
+  const selectedRegionPokedexProgress = resolveRegionPokedexProgress(
+    selectedEncounterPool,
+    encounteredSpeciesIds,
+  );
 
   useEffect(() => {
     if (!isSearching) return;
@@ -97,6 +104,11 @@ export function RegionExplorer() {
       });
 
       dispatchSearch({ type: "searchResolved", result });
+      if (result.encounteredSpeciesId) {
+        void recordEncounter(result.encounteredSpeciesId).catch((error) => {
+          console.error("조우 기록 저장 실패:", error);
+        });
+      }
     }, SEARCH_RESULT_DELAY_MS);
 
     return () => window.clearTimeout(timeoutId);
@@ -104,6 +116,7 @@ export function RegionExplorer() {
     encounterRatePercent,
     isSearching,
     normalPokedexCompleted,
+    recordEncounter,
     selectedEncounterPool,
     unlockedSpeciesIds,
   ]);
@@ -201,6 +214,13 @@ export function RegionExplorer() {
                         {selectedRegion.terrainLabel} · 조우 {selectedRegion.encounterRatePercent}%
                       </p>
                       <h2 className="truncate text-lg font-black">{selectedRegion.nameKo}</h2>
+                      <p className="text-xs font-bold text-white/80" aria-live="polite">
+                        지역 도감{" "}
+                        <span className="tabular-nums">
+                          {selectedRegionPokedexProgress.encounteredCount} /{" "}
+                          {selectedRegionPokedexProgress.totalCount}
+                        </span>
+                      </p>
                       <p className="sr-only">{selectedRegion.description}</p>
                     </>
                   ) : (
