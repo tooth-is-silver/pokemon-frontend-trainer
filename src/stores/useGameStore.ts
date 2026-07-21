@@ -108,10 +108,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
       trainerResponse.error,
       instancesResponse.error,
       pokedexResponse.error,
-      encountersResponse.error,
       progressionResponse.error,
       solvedQuestionsResponse.error,
     ].filter(Boolean);
+
+    if (encountersResponse.error) {
+      console.error("조우 기록 로드 실패:", encountersResponse.error);
+    }
 
     if (errors.length > 0) {
       errors.forEach((error) => console.error("상태 로드 실패:", error));
