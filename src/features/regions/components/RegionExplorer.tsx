@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { findSpeciesById } from "@/content/pokemon";
 import { regionEncounterPools, regions } from "@/content/regions";
 import {
@@ -10,7 +10,7 @@ import {
   resolveRegionPokedexProgress,
 } from "@/core/regionEncounter";
 import { useGameStore } from "@/stores/useGameStore";
-import { RegionSearchOverlay } from "./RegionSearchOverlay";
+import { RegionSearchOverlay, type EncounterRecordStatus } from "./RegionSearchOverlay";
 
 interface MapPoint {
   positionClassName: string;
@@ -67,11 +67,13 @@ export function RegionExplorer() {
   const normalPokedexCompleted = useGameStore((state) => state.pokedex.normalPokedexCompleted);
   const recordEncounter = useGameStore((state) => state.recordEncounter);
   const searchButtonRef = useRef<HTMLButtonElement>(null);
+  const encounterRecordRequestIdRef = useRef(0);
   const [searchState, dispatchSearch] = useReducer(
     regionSearchReducer,
     initialRegionId,
     createRegionSearchState,
   );
+  const [encounterRecordStatus, setEncounterRecordStatus] = useState<EncounterRecordStatus>("idle");
   const { selectedRegionId, searchStatus, searchTarget, encounteredSpeciesId } = searchState;
 
   const unlockedPokedexCount = unlockedSpeciesIds.length;
@@ -90,6 +92,25 @@ export function RegionExplorer() {
     encounteredSpeciesIds,
   );
 
+  const saveEncounterRecord = useCallback(
+    async (speciesId: string) => {
+      const requestId = encounterRecordRequestIdRef.current + 1;
+      encounterRecordRequestIdRef.current = requestId;
+      setEncounterRecordStatus("saving");
+
+      try {
+        await recordEncounter(speciesId);
+        if (requestId !== encounterRecordRequestIdRef.current) return;
+        setEncounterRecordStatus("saved");
+      } catch (error) {
+        console.error("조우 기록 저장 실패:", error);
+        if (requestId !== encounterRecordRequestIdRef.current) return;
+        setEncounterRecordStatus("error");
+      }
+    },
+    [recordEncounter],
+  );
+
   useEffect(() => {
     if (!isSearching) return;
 
@@ -105,9 +126,7 @@ export function RegionExplorer() {
 
       dispatchSearch({ type: "searchResolved", result });
       if (result.encounteredSpeciesId) {
-        void recordEncounter(result.encounteredSpeciesId).catch((error) => {
-          console.error("조우 기록 저장 실패:", error);
-        });
+        void saveEncounterRecord(result.encounteredSpeciesId);
       }
     }, SEARCH_RESULT_DELAY_MS);
 
@@ -116,12 +135,14 @@ export function RegionExplorer() {
     encounterRatePercent,
     isSearching,
     normalPokedexCompleted,
-    recordEncounter,
+    saveEncounterRecord,
     selectedEncounterPool,
     unlockedSpeciesIds,
   ]);
 
   const handleSelectRegion = (regionId: string) => {
+    encounterRecordRequestIdRef.current += 1;
+    setEncounterRecordStatus("idle");
     dispatchSearch({ type: "regionSelected", regionId });
   };
 
@@ -130,10 +151,19 @@ export function RegionExplorer() {
 
     const nextTarget = pickSearchTarget(selectedRegion.searchTargets, Math.random());
 
+    encounterRecordRequestIdRef.current += 1;
+    setEncounterRecordStatus("idle");
     dispatchSearch({ type: "searchStarted", searchTarget: nextTarget });
   };
 
+  const handleRetryEncounterRecord = () => {
+    if (!encounteredSpeciesId) return;
+    void saveEncounterRecord(encounteredSpeciesId);
+  };
+
   const handleCloseSearch = () => {
+    encounterRecordRequestIdRef.current += 1;
+    setEncounterRecordStatus("idle");
     dispatchSearch({ type: "searchClosed" });
   };
 
@@ -260,9 +290,11 @@ export function RegionExplorer() {
             <RegionSearchOverlay
               selectedRegion={selectedRegion}
               searchStatus={searchStatus}
+              encounterRecordStatus={encounterRecordStatus}
               searchTarget={searchTarget}
               encounteredSpecies={encounteredSpecies}
               onStartSearch={handleStartSearch}
+              onRetryEncounterRecord={handleRetryEncounterRecord}
               onCloseSearch={handleCloseSearch}
               returnFocusRef={searchButtonRef}
             />
