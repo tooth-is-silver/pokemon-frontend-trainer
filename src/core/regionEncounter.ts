@@ -119,16 +119,21 @@ export function resolveRegionPokedexProgress(
 ): RegionPokedexProgress {
   if (!encounterPool) return { encounteredCount: 0, totalCount: 0 };
 
-  const regionSpeciesIds = new Set([
-    ...encounterPool.tiers.flatMap((tier) => tier.speciesIds),
-    ...encounterPool.fixedEncounters.map((encounter) => encounter.speciesId),
-  ]);
+  const regionSpeciesIds = getRegionSpeciesIds(encounterPool);
   const encounteredSpecies = new Set(encounteredSpeciesIds);
   const encounteredCount = [...regionSpeciesIds].filter((speciesId) =>
     encounteredSpecies.has(speciesId),
   ).length;
 
   return { encounteredCount, totalCount: regionSpeciesIds.size };
+}
+
+export function isSpeciesInRegionEncounterPool(
+  encounterPool: RegionEncounterPool | null,
+  speciesId: string,
+): boolean {
+  if (!encounterPool) return false;
+  return getRegionSpeciesIds(encounterPool).has(speciesId);
 }
 
 export function isEncounterSuccessful(encounterRatePercent: number, randomValue: number): boolean {
@@ -234,4 +239,11 @@ function isFixedEncounterUnlocked(
   }
 
   return LEGENDARY_BIRD_IDS.every((speciesId) => unlockedSpecies.has(speciesId));
+}
+
+function getRegionSpeciesIds(encounterPool: RegionEncounterPool) {
+  return new Set([
+    ...encounterPool.tiers.flatMap((tier) => tier.speciesIds),
+    ...encounterPool.fixedEncounters.map((encounter) => encounter.speciesId),
+  ]);
 }
