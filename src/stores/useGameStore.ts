@@ -40,6 +40,7 @@ interface GameStore extends GameState {
     isFirstSolve: boolean,
   ) => Promise<ProcessAnswerResult>;
   evolve: (instanceId: string, nextSpeciesId: string) => Promise<void>;
+  recordEncounter: (speciesId: string) => Promise<void>;
   startNextPokemon: (speciesId: string) => Promise<void>;
   completeEnding: (instanceId: string) => Promise<void>;
   setCurrentQuestion: (questionId: string) => void;
@@ -49,7 +50,11 @@ interface GameStore extends GameState {
 const initialState: GameState = {
   trainer: { starterChosen: false, activePokemonInstanceId: null },
   party: { instances: [] },
-  pokedex: { unlockedSpeciesIds: [], normalPokedexCompleted: false },
+  pokedex: {
+    unlockedSpeciesIds: [],
+    encounteredSpeciesIds: [],
+    normalPokedexCompleted: false,
+  },
   progression: {
     streakCorrectCount: 0,
     pendingEvolutionInstanceId: null,
@@ -83,12 +88,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
       trainerResponse,
       instancesResponse,
       pokedexResponse,
+      encountersResponse,
       progressionResponse,
       solvedQuestionsResponse,
     ] = await Promise.all([
       supabase.from("trainers").select("*").eq("user_id", userId).maybeSingle(),
       supabase.from("pokemon_instances").select("*").eq("user_id", userId),
       supabase.from("pokedex_entries").select("species_id").eq("user_id", userId),
+      supabase.from("pokemon_encounters").select("species_id").eq("user_id", userId),
       supabase.from("progression").select("*").eq("user_id", userId).maybeSingle(),
       supabase
         .from("solved_questions")
@@ -105,6 +112,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
       solvedQuestionsResponse.error,
     ].filter(Boolean);
 
+    if (encountersResponse.error) {
+      console.error("조우 기록 로드 실패:", encountersResponse.error);
+    }
+
     if (errors.length > 0) {
       errors.forEach((error) => console.error("상태 로드 실패:", error));
       set({ ...initialState, loaded: true });
@@ -120,6 +131,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       trainerRow: trainerResponse.data,
       instanceRows: instancesResponse.data ?? [],
       pokedexEntryRows: pokedexResponse.data ?? [],
+      pokemonEncounterRows: encountersResponse.data ?? [],
       progressionRow: progressionResponse.data,
       solvedQuestionRows: solvedQuestionsResponse.data ?? [],
       allSpecies: getAllSpecies(),
@@ -215,6 +227,24 @@ export const useGameStore = create<GameStore>((set, get) => ({
     });
 
     set(evolutionState);
+  },
+
+  recordEncounter: async (speciesId) => {
+    if (get().pokedex.encounteredSpeciesIds.includes(speciesId)) return;
+
+    const { error } = await supabase.rpc("record_pokemon_encounter", {
+      p_species_id: speciesId,
+    });
+    if (error) throw error;
+
+    set((state) => ({
+      pokedex: state.pokedex.encounteredSpeciesIds.includes(speciesId)
+        ? state.pokedex
+        : {
+            ...state.pokedex,
+            encounteredSpeciesIds: [...state.pokedex.encounteredSpeciesIds, speciesId],
+          },
+    }));
   },
 
   startNextPokemon: async (speciesId) => {

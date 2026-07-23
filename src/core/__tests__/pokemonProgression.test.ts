@@ -30,6 +30,7 @@ const trainer: TrainerState = {
 
 const pokedex: PokedexState = {
   unlockedSpeciesIds: [activeInstance.speciesId],
+  encounteredSpeciesIds: [activeInstance.speciesId],
   normalPokedexCompleted: false,
 };
 
@@ -71,6 +72,7 @@ describe("resolveStarterState", () => {
     ]);
     expect(nextState.pokedex).toEqual({
       unlockedSpeciesIds: ["bulbasaur"],
+      encounteredSpeciesIds: [],
       normalPokedexCompleted: false,
     });
   });

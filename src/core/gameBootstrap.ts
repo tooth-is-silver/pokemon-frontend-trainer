@@ -28,6 +28,10 @@ interface PokedexEntryRow {
   species_id: string;
 }
 
+interface PokemonEncounterRow {
+  species_id: string;
+}
+
 interface ProgressionRow {
   streak_correct_count: number;
   pending_evolution_instance_id: string | null;
@@ -44,6 +48,7 @@ interface ResolveLoadedGameStateInput {
   trainerRow: TrainerRow;
   instanceRows: PokemonInstanceRow[];
   pokedexEntryRows: PokedexEntryRow[];
+  pokemonEncounterRows: PokemonEncounterRow[];
   progressionRow: ProgressionRow | null;
   solvedQuestionRows: SolvedQuestionRow[];
   allSpecies: PokemonSpecies[];
@@ -62,6 +67,7 @@ export function resolveLoadedGameState({
   trainerRow,
   instanceRows,
   pokedexEntryRows,
+  pokemonEncounterRows,
   progressionRow,
   solvedQuestionRows,
   allSpecies,
@@ -78,6 +84,11 @@ export function resolveLoadedGameState({
       ? activeInstance.instanceId
       : null;
   const solvedQuestionIds = [...new Set(solvedQuestionRows.map((row) => row.question_id))];
+  const unlockedSpeciesIds = [...new Set(pokedexEntryRows.map((row) => row.species_id))];
+  const encounteredSpeciesIds = [...new Set(pokemonEncounterRows.map((row) => row.species_id))];
+  const normalPokedexCompleted = allSpecies
+    .filter((species) => species.category === "normal")
+    .every((species) => unlockedSpeciesIds.includes(species.speciesId));
 
   return {
     trainer: {
@@ -86,8 +97,9 @@ export function resolveLoadedGameState({
     },
     party: { instances },
     pokedex: {
-      unlockedSpeciesIds: pokedexEntryRows.map((row) => row.species_id),
-      normalPokedexCompleted: false,
+      unlockedSpeciesIds,
+      encounteredSpeciesIds,
+      normalPokedexCompleted,
     },
     progression: progressionRow
       ? {

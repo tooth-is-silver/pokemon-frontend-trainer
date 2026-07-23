@@ -19,6 +19,7 @@ export interface PartyState {
 
 export interface PokedexState {
   unlockedSpeciesIds: string[];
+  encounteredSpeciesIds: string[];
   normalPokedexCompleted: boolean;
 }
 

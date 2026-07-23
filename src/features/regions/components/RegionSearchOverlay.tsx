@@ -9,12 +9,16 @@ import { getKoreanSubjectParticle, type RegionSearchStatus } from "@/core/region
 interface Props {
   selectedRegion: Region;
   searchStatus: RegionSearchStatus;
+  encounterRecordStatus: EncounterRecordStatus;
   searchTarget: string | null;
   encounteredSpecies: PokemonSpecies | null;
   onStartSearch: () => void;
+  onRetryEncounterRecord: () => void;
   onCloseSearch: () => void;
   returnFocusRef: RefObject<HTMLButtonElement | null>;
 }
+
+export type EncounterRecordStatus = "idle" | "saving" | "saved" | "error";
 
 const DIALOG_TITLE: Record<RegionSearchStatus, string> = {
   idle: "포켓몬 탐색",
@@ -26,9 +30,11 @@ const DIALOG_TITLE: Record<RegionSearchStatus, string> = {
 export function RegionSearchOverlay({
   selectedRegion,
   searchStatus,
+  encounterRecordStatus,
   searchTarget,
   encounteredSpecies,
   onStartSearch,
+  onRetryEncounterRecord,
   onCloseSearch,
   returnFocusRef,
 }: Props) {
@@ -36,11 +42,12 @@ export function RegionSearchOverlay({
   const isSearching = searchStatus === "searching";
   const isSearchMissed = searchStatus === "missed";
   const isSearchEncountered = searchStatus === "encountered";
+  const encounterRecordFailed = encounterRecordStatus === "error";
   const dialogTitle = `${selectedRegion.nameKo}: ${DIALOG_TITLE[searchStatus]}`;
 
   useEffect(() => {
     primaryActionRef.current?.focus();
-  }, [searchStatus]);
+  }, [encounterRecordStatus, searchStatus]);
 
   return (
     <Dialog.Root
@@ -189,17 +196,33 @@ export function RegionSearchOverlay({
                   <br />
                   몬스터볼을 던질 수 있어요.
                 </p>
+                {encounterRecordFailed && (
+                  <p className="mt-1 text-xs font-bold text-red-700" role="alert">
+                    도감 기록을 저장하지 못했어요.
+                  </p>
+                )}
               </div>
               <div className="encounter-reveal grid w-full grid-cols-2 gap-2">
+                {encounterRecordFailed ? (
+                  <button
+                    ref={primaryActionRef}
+                    type="button"
+                    onClick={onRetryEncounterRecord}
+                    className="min-h-11 rounded-lg bg-red-700 px-3 py-2 text-sm font-black text-white"
+                  >
+                    기록 다시 저장
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    disabled
+                    className="min-h-11 rounded-lg bg-gray-950 px-3 py-2 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-55"
+                  >
+                    {encounterRecordStatus === "saving" ? "기록 저장 중" : "문제 풀기 준비 중"}
+                  </button>
+                )}
                 <button
-                  type="button"
-                  disabled
-                  className="min-h-11 rounded-lg bg-gray-950 px-3 py-2 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-55"
-                >
-                  문제 풀기 준비 중
-                </button>
-                <button
-                  ref={primaryActionRef}
+                  ref={encounterRecordFailed ? undefined : primaryActionRef}
                   type="button"
                   onClick={onCloseSearch}
                   className="min-h-11 rounded-lg border border-gray-200 px-3 py-2 text-sm font-bold text-gray-700 transition-colors hover:bg-gray-100"

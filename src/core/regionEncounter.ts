@@ -14,6 +14,11 @@ export interface RegionSearchState {
   encounteredSpeciesId: string | null;
 }
 
+export interface RegionPokedexProgress {
+  encounteredCount: number;
+  totalCount: number;
+}
+
 interface RegionEncounterResult {
   searchStatus: "missed" | "encountered";
   encounteredSpeciesId: string | null;
@@ -106,6 +111,24 @@ export function resolveRegionEncounter({
 
 export function isRegionUnlocked(region: Region, unlockedPokedexCount: number) {
   return unlockedPokedexCount >= region.unlockRequiredPokedexCount;
+}
+
+export function resolveRegionPokedexProgress(
+  encounterPool: RegionEncounterPool | null,
+  encounteredSpeciesIds: string[],
+): RegionPokedexProgress {
+  if (!encounterPool) return { encounteredCount: 0, totalCount: 0 };
+
+  const regionSpeciesIds = new Set([
+    ...encounterPool.tiers.flatMap((tier) => tier.speciesIds),
+    ...encounterPool.fixedEncounters.map((encounter) => encounter.speciesId),
+  ]);
+  const encounteredSpecies = new Set(encounteredSpeciesIds);
+  const encounteredCount = [...regionSpeciesIds].filter((speciesId) =>
+    encounteredSpecies.has(speciesId),
+  ).length;
+
+  return { encounteredCount, totalCount: regionSpeciesIds.size };
 }
 
 export function isEncounterSuccessful(encounterRatePercent: number, randomValue: number): boolean {

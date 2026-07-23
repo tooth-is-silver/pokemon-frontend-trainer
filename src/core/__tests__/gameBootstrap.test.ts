@@ -25,6 +25,11 @@ describe("resolveLoadedGameState", () => {
       trainerRow,
       instanceRows,
       pokedexEntryRows: [{ species_id: "charmander" }, { species_id: "charizard" }],
+      pokemonEncounterRows: [
+        { species_id: "charmander" },
+        { species_id: "charmander" },
+        { species_id: "ditto" },
+      ],
       progressionRow: {
         streak_correct_count: 4,
         pending_evolution_instance_id: null,
@@ -51,7 +56,27 @@ describe("resolveLoadedGameState", () => {
       exp: 100,
     });
     expect(state.session.solvedQuestionIds).toEqual(["question-1", "question-2"]);
+    expect(state.pokedex.encounteredSpeciesIds).toEqual(["charmander", "ditto"]);
+    expect(state.pokedex.normalPokedexCompleted).toBe(false);
     expect(state.loaded).toBe(true);
+  });
+
+  it("일반 포켓몬 도감 완성 여부를 서버 도감 기록에서 복원한다", () => {
+    const allSpecies = getAllSpecies();
+    const normalSpeciesRows = allSpecies
+      .filter((species) => species.category === "normal")
+      .map((species) => ({ species_id: species.speciesId }));
+    const state = resolveLoadedGameState({
+      trainerRow,
+      instanceRows,
+      pokedexEntryRows: normalSpeciesRows,
+      pokemonEncounterRows: [],
+      progressionRow: null,
+      solvedQuestionRows: [],
+      allSpecies,
+    });
+
+    expect(state.pokedex.normalPokedexCompleted).toBe(true);
   });
 
   it("졸업 가능한 포켓몬의 대기 상태를 새로고침 후 복원한다", () => {
@@ -59,6 +84,7 @@ describe("resolveLoadedGameState", () => {
       trainerRow,
       instanceRows,
       pokedexEntryRows: [{ species_id: "charizard" }],
+      pokemonEncounterRows: [],
       progressionRow: null,
       solvedQuestionRows: [],
       allSpecies: getAllSpecies(),
