@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import { findSpeciesById } from "@/content/pokemon";
 import { regionEncounterPools, regions } from "@/content/regions";
 import {
@@ -62,6 +63,7 @@ const mapPoints: Record<string, MapPoint> = {
 };
 
 export function RegionExplorer() {
+  const navigate = useNavigate();
   const unlockedSpeciesIds = useGameStore((state) => state.pokedex.unlockedSpeciesIds);
   const encounteredSpeciesIds = useGameStore((state) => state.pokedex.encounteredSpeciesIds);
   const normalPokedexCompleted = useGameStore((state) => state.pokedex.normalPokedexCompleted);
@@ -159,6 +161,18 @@ export function RegionExplorer() {
   const handleRetryEncounterRecord = () => {
     if (!encounteredSpeciesId) return;
     void saveEncounterRecord(encounteredSpeciesId);
+  };
+
+  const handleStartEncounterQuiz = () => {
+    if (!encounteredSpeciesId || encounterRecordStatus !== "saved") return;
+
+    navigate({
+      pathname: "/learn",
+      search: createSearchParams({
+        region: selectedRegionId,
+        species: encounteredSpeciesId,
+      }).toString(),
+    });
   };
 
   const handleCloseSearch = () => {
@@ -295,6 +309,7 @@ export function RegionExplorer() {
               encounteredSpecies={encounteredSpecies}
               onStartSearch={handleStartSearch}
               onRetryEncounterRecord={handleRetryEncounterRecord}
+              onStartEncounterQuiz={handleStartEncounterQuiz}
               onCloseSearch={handleCloseSearch}
               returnFocusRef={searchButtonRef}
             />
