@@ -33,10 +33,12 @@ export default function LearnPage() {
   if (!userId) return <Navigate to="/" replace />;
   if (!starterChosen) return <Navigate to="/starter" replace />;
   if (isEnding) return <EndingFlow />;
-  if (hasEncounterParams && (!encounterRegion || !isValidEncounter)) {
-    return <Navigate to="/regions" replace />;
-  }
-  if (encounterRegion && encounteredSpecies) {
+
+  if (hasEncounterParams) {
+    if (!encounterRegion || !encounteredSpecies || !isValidEncounter) {
+      return <Navigate to="/regions" replace />;
+    }
+
     return <EncounterLearningSession region={encounterRegion} species={encounteredSpecies} />;
   }
 
