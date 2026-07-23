@@ -23,6 +23,8 @@ export default function LearnPage() {
     regionEncounterPools.find((pool) => pool.regionId === encounterRegionId) ?? null;
   const encounteredSpecies = encounteredSpeciesId ? findSpeciesById(encounteredSpeciesId) : null;
   const isValidEncounter =
+    encounterRegion !== null &&
+    encounterPool !== null &&
     encounteredSpecies !== null &&
     isSpeciesInRegionEncounterPool(encounterPool, encounteredSpecies.speciesId);
 
