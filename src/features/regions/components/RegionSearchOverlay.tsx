@@ -14,6 +14,7 @@ interface Props {
   encounteredSpecies: PokemonSpecies | null;
   onStartSearch: () => void;
   onRetryEncounterRecord: () => void;
+  onStartEncounterQuiz: () => void;
   onCloseSearch: () => void;
   returnFocusRef: RefObject<HTMLButtonElement | null>;
 }
@@ -27,6 +28,12 @@ const DIALOG_TITLE: Record<RegionSearchStatus, string> = {
   encountered: "야생 포켓몬 발견",
 };
 
+const ENCOUNTER_QUIZ_ACTION_LABEL: Record<Exclude<EncounterRecordStatus, "error">, string> = {
+  idle: "문제 준비 중",
+  saving: "도감 기록 중",
+  saved: "문제 풀기",
+};
+
 export function RegionSearchOverlay({
   selectedRegion,
   searchStatus,
@@ -35,6 +42,7 @@ export function RegionSearchOverlay({
   encounteredSpecies,
   onStartSearch,
   onRetryEncounterRecord,
+  onStartEncounterQuiz,
   onCloseSearch,
   returnFocusRef,
 }: Props) {
@@ -215,10 +223,11 @@ export function RegionSearchOverlay({
                 ) : (
                   <button
                     type="button"
-                    disabled
+                    onClick={onStartEncounterQuiz}
+                    disabled={encounterRecordStatus !== "saved"}
                     className="min-h-11 rounded-lg bg-gray-950 px-3 py-2 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-55"
                   >
-                    {encounterRecordStatus === "saving" ? "기록 저장 중" : "문제 풀기 준비 중"}
+                    {ENCOUNTER_QUIZ_ACTION_LABEL[encounterRecordStatus]}
                   </button>
                 )}
                 <button

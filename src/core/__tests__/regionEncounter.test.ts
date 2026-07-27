@@ -4,6 +4,7 @@ import {
   getKoreanSubjectParticle,
   isEncounterSuccessful,
   isRegionUnlocked,
+  isSpeciesInRegionEncounterPool,
   pickEncounterSpecies,
   pickRegionEncounterSpeciesId,
   pickSearchTarget,
@@ -167,6 +168,13 @@ describe("regionEncounter", () => {
     expect(resolveRegionPokedexProgress(icePalacePool, ["eevee", "ditto"]).encounteredCount).toBe(
       2,
     );
+  });
+
+  it("지역 출현 목록에 포함된 포켓몬만 조우 문제 대상으로 인정", () => {
+    expect(isSpeciesInRegionEncounterPool(sproutEncounterPool, "bulbasaur")).toBe(true);
+    expect(isSpeciesInRegionEncounterPool(sproutEncounterPool, "ditto")).toBe(true);
+    expect(isSpeciesInRegionEncounterPool(sproutEncounterPool, "pikachu")).toBe(false);
+    expect(isSpeciesInRegionEncounterPool(null, "bulbasaur")).toBe(false);
   });
 
   it("조우 확률을 0~100 사이로 보정", () => {
